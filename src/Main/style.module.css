@@ -1,0 +1,30 @@
+html {
+  background-color: black;
+  color: #fff;
+  font-family: monospace;
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.toolbar {
+  display: flex;
+  background-color: #333;
+  padding: 0.5em;
+}

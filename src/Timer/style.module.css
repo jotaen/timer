@@ -1,0 +1,21 @@
+.title {
+  display: flex;
+  padding: 0.5em;
+}
+
+.clock {
+  font-size: 10em;
+  text-align: center;
+}
+
+.controls {
+  align-self: center;
+  margin-top: 1em;
+}
+
+.main {
+  margin: 0 auto;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,9 @@
+.setting {
+  display: flex;
+  padding: 0.5em;
+  border-bottom: 1px solid #666;
+}
+
+.setting span {
+  flex: 1;
+}
