@@ -4,21 +4,26 @@ import css from "./style.module.css"
 import { Screens, ScreenProps } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
 import { Activity } from "../activity"
+import { PersistenceString } from "../util/persistence.ts"
 
 export type EditorProps = ScreenProps & {
   // activities: Activity[]
 }
 
+const persistence = new PersistenceString("program")
+
 export function Editor({ goToScreen }: EditorProps) {
   const [text, setText] = useState<string>("")
 
   useEffect(() => {
-    const program = window.localStorage.getItem("program") || ""
-    setText(program)
+    const program = persistence.read()
+    if (program) {
+      setText(program)
+    }
   }, [])
 
   const save = () => {
-    window.localStorage.setItem("program", text)
+    persistence.save(text)
     goToScreen(Screens.Timer)
   }
 

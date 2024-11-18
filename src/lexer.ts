@@ -49,9 +49,11 @@ interface NewLineToken extends TokenBase {
 interface IndentToken extends TokenBase {
   kind: "INDENT"
 }
+
 interface DedentToken extends TokenBase {
   kind: "DEDENT"
 }
+
 interface IncorrectDedentToken extends TokenBase {
   kind: "INCORRECT_DEDENT"
 }

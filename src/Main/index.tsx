@@ -5,7 +5,8 @@ import { createRoot } from "react-dom/client"
 import { Timer } from "../Timer"
 import { Editor } from "../Editor"
 import { Settings } from "../Settings"
-import { Activity, Item } from "../activity"
+import { Item } from "../activity"
+import { SettingsContext, useSettings } from "../Settings/useSettings.ts"
 
 const testProcedure: Item[] = [
   { kind: "ACTIVITY", title: "Get ready!", duration: 5, skipLast: false },
@@ -13,7 +14,7 @@ const testProcedure: Item[] = [
     kind: "LOOP",
     repeat: 2,
     activities: [
-      { kind: "ACTIVITY", title: "Work out", duration: 5, skipLast: false },
+      { kind: "ACTIVITY", title: "Work out", duration: 10, skipLast: false },
       { kind: "ACTIVITY", title: "Rest", duration: 5, skipLast: true },
     ],
   },
@@ -35,6 +36,7 @@ export type ScreenProps = {
 
 function Main() {
   const [screen, goToScreen] = useState<Screens>(Screens.Editor)
+  const settings = useSettings()
   const Screen = {
     [Screens.Timer]: (s: ScreenProps) => (
       <Timer {...s} activities={testProcedure} />
@@ -44,7 +46,9 @@ function Main() {
   }[screen]
   return (
     <div className={css.main}>
-      <Screen goToScreen={goToScreen} />
+      <SettingsContext.Provider value={settings}>
+        <Screen goToScreen={goToScreen} />
+      </SettingsContext.Provider>
     </div>
   )
 }

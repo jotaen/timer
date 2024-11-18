@@ -1,8 +1,9 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Tick, ticker as createTicker, totalDuration } from "../ticker"
-import { Activity, Item } from "../activity"
+import { Item } from "../activity"
 import { Beeper } from "../util/beeper"
 import { Voice } from "../util/voice"
+import { SettingsContext } from "../Settings/useSettings.ts"
 
 export enum STATUS {
   "RESET",
@@ -19,6 +20,7 @@ export function useTicker(activities: Item[]) {
   const [total, setTotal] = React.useState<number>(-1)
   const [tick, setTick] = React.useState<Tick | null>(null)
   const [ticker, setTicker] = React.useState<Generator<Tick>>()
+  const settings = useContext(SettingsContext)
 
   const end = () => {
     setTick({
@@ -64,10 +66,10 @@ export function useTicker(activities: Item[]) {
     setTotal((x) => x - 1)
     setTick(t)
 
-    if (t.readOut) {
+    if (settings.callOut && t.readOut) {
       voice.say(t.activity)
     }
-    if (t.beep) {
+    if (settings.countDown && t.beep) {
       beeper.beep(700, t.beep)
     }
   }
