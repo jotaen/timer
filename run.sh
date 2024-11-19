@@ -4,13 +4,14 @@ PATH="${PATH}:./node_modules/.bin/"
 
 # Starts development environment in Docker.
 run::dev-env() {
+  PORT="${1:-8000}"
   docker build --tag "geek-timer" .
 	docker run \
 		--rm \
 		-it \
 		--volume "${PWD}:/app" \
 		--workdir /app \
-		--publish "8000:8000" \
+		--publish "${PORT}:8000" \
 		"geek-timer"
 }
 
@@ -19,7 +20,7 @@ run::install() {
   npm install
 }
 
-# Starts dev server on port 8000.
+# Starts dev server.
 run::server() {
 	esbuild \
 		src/Main/index.tsx \

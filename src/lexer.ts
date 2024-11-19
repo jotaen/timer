@@ -72,7 +72,7 @@ type Token =
   | DedentToken
   | IncorrectDedentToken
 
-export function* tokenize(text: string): Generator<Token> {
+export function* tokenizeRaw(text: string): Generator<Token> {
   const matches = text.matchAll(regex)
   for (const match of matches) {
     const groups = match.groups!
@@ -115,20 +115,29 @@ export function* recognizeIndents(
       yield token
       continue
     }
-    const currentDepth = indentationLevels.at(-1) ?? 0
+    let currentDepth = indentationLevels.at(-1) ?? 0
     if (token.indentationDepth > currentDepth) {
       yield token
       yield { kind: "INDENT", value: "" }
       indentationLevels.push(token.indentationDepth)
     } else if (token.indentationDepth < currentDepth) {
-      const previousIndentLevel = indentationLevels.at(-2)!
-      if (token.indentationDepth !== previousIndentLevel) {
-        yield { kind: "INCORRECT_DEDENT", value: "" }
-      } else {
-        yield { kind: "DEDENT", value: "" }
+      indentationLevels.pop()
+      while (true) {
+        currentDepth = indentationLevels.pop() ?? -1
+        if (token.indentationDepth <= currentDepth) {
+          yield { kind: "DEDENT", value: "" }
+        } else if (token.indentationDepth > currentDepth) {
+          yield { kind: "INCORRECT_DEDENT", value: "" }
+        }
+        if (token.indentationDepth >= currentDepth) {
+          indentationLevels.push(currentDepth)
+          break
+        }
       }
       yield token
-      indentationLevels.pop()
     }
   }
 }
+
+export const tokenize = (textInput: string) =>
+  recognizeIndents(tokenizeRaw(textInput))

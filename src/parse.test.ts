@@ -1,5 +1,5 @@
 import assert from "assert"
-import { recognizeIndents, regex, tokenize } from "./lexer.ts"
+import { recognizeIndents, regex, tokenize, tokenizeRaw } from "./lexer.ts"
 import { describe } from "mocha"
 
 describe("lexer", () => {
@@ -49,7 +49,7 @@ describe("lexer", () => {
 
   tokenKindTestData.map(([name, input, expectedKinds]) => {
     it(`should return the right kinds for ${name}`, () => {
-      const tokens = Array.from(tokenize(input))
+      const tokens = Array.from(tokenizeRaw(input))
       const kinds = tokens.map((t) => t.kind)
       assert.deepStrictEqual(kinds, expectedKinds)
     })
@@ -63,7 +63,7 @@ describe("lexer", () => {
 
   indentationDepthTestData.map(([name, input, expectedDepth]) => {
     it(`should add the indentationDepth correctly for ${name}`, () => {
-      const tokens = Array.from(tokenize(input))
+      const tokens = Array.from(tokenizeRaw(input))
       const depth = tokens.map((t) =>
         t.kind === "NEWLINE" ? t.indentationDepth : -1,
       )
@@ -85,7 +85,7 @@ describe("lexer", () => {
       ["NEWLINE", "INDENT", "NEWLINE", "INDENT", "DEDENT", "NEWLINE"],
     ],
     [
-      "...1",
+      "dedent with time",
       "\n    \n        0:01\n    \n",
       [
         "NEWLINE",
@@ -100,7 +100,7 @@ describe("lexer", () => {
       ],
     ],
     [
-      "...2",
+      "incorrect dedent",
       "\n \n   \n  \n \n",
       [
         "NEWLINE",
@@ -113,11 +113,16 @@ describe("lexer", () => {
         "NEWLINE",
       ],
     ],
+    [
+      "double dedent",
+      "\n \n  \n",
+      ["NEWLINE", "INDENT", "NEWLINE", "INDENT", "DEDENT", "DEDENT", "NEWLINE"],
+    ],
   ]
 
   indentDedentTestData.map(([name, input, expectedKinds]) => {
     it(`should should detect indents and dedents for ${name}`, () => {
-      const tokens = Array.from(recognizeIndents(tokenize(input)))
+      const tokens = Array.from(tokenize(input))
       const kinds = tokens.map((t) => t.kind)
       assert.deepStrictEqual(kinds, expectedKinds)
     })
