@@ -1,15 +1,15 @@
-import { Item } from "./activity.ts"
+import { Item } from "./program.ts"
 
 export type Tick = {
   remaining: number
-  activity: string
+  currentActivity: string
   readOut: boolean
   beep: number
 }
 
-export function* ticker(activities: Item[]): Generator<Tick> {
-  for (let i = 0; i < activities.length; i++) {
-    const item = activities[i]
+export function* ticker(items: Item[]): Generator<Tick> {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]
     if (!item) {
       return
     }
@@ -29,7 +29,7 @@ export function* ticker(activities: Item[]): Generator<Tick> {
         while (remaining > 0) {
           yield {
             remaining,
-            activity: item.title,
+            currentActivity: item.title,
             readOut: isFirstTick,
             beep:
               {
@@ -46,9 +46,9 @@ export function* ticker(activities: Item[]): Generator<Tick> {
   }
 }
 
-export function totalDuration(activities: Item[]): number {
+export function totalDuration(items: Item[]): number {
   let result = 0
-  let t = ticker(activities)
+  let t = ticker(items)
   while (!t.next().done) {
     result++
   }

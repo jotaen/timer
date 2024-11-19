@@ -9,8 +9,25 @@
 }
 
 .controls {
-  align-self: center;
   margin-top: 1em;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+.controls div {
+  flex: 1;
+  display: flex;
+}
+
+.controls div:first-child {
+  justify-content: end;
+}
+
+.activity {
+  height: 1em;
+  font-size: 2em;
+  margin-bottom: 0.5em;
 }
 
 .main {
@@ -18,4 +35,17 @@
   max-width: 600px;
   display: flex;
   flex-direction: column;
+}
+
+.btnControl {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.4em 1em 0.4em 0.75em;
+}
+
+.btnControl svg {
+  height: 1.4em;
+  width: 1.4em;
+  margin-right: 0.5em;
 }

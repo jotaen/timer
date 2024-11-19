@@ -12,3 +12,8 @@ export type Loop = {
   repeat: number
   activities: Activity[]
 }
+
+export type Program = {
+  title: string
+  items: Item[]
+}

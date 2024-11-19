@@ -1,9 +1,12 @@
 import React, { useContext } from "react"
-import { Tick, ticker as createTicker, totalDuration } from "../ticker"
-import { Item } from "../activity"
-import { Beeper } from "../util/beeper"
-import { Voice } from "../util/voice"
-import { SettingsContext } from "../Settings/useSettings.ts"
+import { Tick, ticker as createTicker, totalDuration } from "./ticker.ts"
+import { Program } from "./program.ts"
+import { Beeper } from "./util/beeper.ts"
+import { Voice } from "./util/voice.ts"
+import { SettingsContext } from "./Settings/useSettings.ts"
+
+const beeper = new Beeper()
+const voice = new Voice()
 
 export enum STATUS {
   "RESET",
@@ -12,12 +15,18 @@ export enum STATUS {
   "ENDED",
 }
 
-const beeper = new Beeper()
-const voice = new Voice()
+export type Ticker = Program & {
+  tick: Tick | null
+  status: STATUS
+  remaining: number
+  run: () => void
+  pause: () => void
+  reset: () => void
+}
 
-export function useTicker(activities: Item[]) {
+export function useTicker(program: Program): Ticker {
   const [status, setStatus] = React.useState<STATUS>(STATUS.RESET)
-  const [total, setTotal] = React.useState<number>(-1)
+  const [remaining, setRemaining] = React.useState<number>(0)
   const [tick, setTick] = React.useState<Tick | null>(null)
   const [ticker, setTicker] = React.useState<Generator<Tick>>()
   const settings = useContext(SettingsContext)
@@ -26,10 +35,10 @@ export function useTicker(activities: Item[]) {
     setTick({
       remaining: 0,
       readOut: false,
-      activity: "",
+      currentActivity: "",
       beep: 0,
     })
-    setTotal(0)
+    setRemaining(0)
     setStatus(STATUS.ENDED)
   }
 
@@ -44,8 +53,8 @@ export function useTicker(activities: Item[]) {
 
   const reset = () => {
     setTick(null)
-    setTicker(createTicker(activities))
-    setTotal(totalDuration(activities) + 1)
+    setTicker(createTicker(program.items))
+    setRemaining(totalDuration(program.items) + 1)
     setStatus(STATUS.RESET)
   }
 
@@ -63,11 +72,11 @@ export function useTicker(activities: Item[]) {
 
     const t = g.value
     console.debug(t)
-    setTotal((x) => x - 1)
+    setRemaining((x) => x - 1)
     setTick(t)
 
     if (settings.callOut && t.readOut) {
-      voice.say(t.activity)
+      voice.say(t.currentActivity)
     }
     if (settings.countDown && t.beep) {
       beeper.beep(700, t.beep)
@@ -94,7 +103,7 @@ export function useTicker(activities: Item[]) {
   // Trigger (initial) reset.
   React.useEffect(() => {
     reset()
-  }, [activities])
+  }, [program])
 
-  return { status, total, tick, run, pause, reset }
+  return { ...program, status, remaining, tick, run, pause, reset }
 }

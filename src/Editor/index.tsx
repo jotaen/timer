@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react"
 import css from "./style.module.css"
 import { Screens, ScreenProps } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
-import { Activity } from "../activity"
 import { PersistenceString } from "../util/persistence.ts"
+import { Program } from "../program.ts"
 
 export type EditorProps = ScreenProps & {
-  // activities: Activity[]
+  program: Program
 }
 
 const persistence = new PersistenceString("program")

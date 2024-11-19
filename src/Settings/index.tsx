@@ -15,22 +15,47 @@ export function Settings({ goToScreen }: SettingsProps) {
         <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
         <div style={{ flex: 1 }}></div>
       </Toolbar>
-      <div className={css.setting}>
-        <span>“Beep” count down (3, 2, 1)</span>
+      <h2>Audio</h2>
+      <Setting
+        title="“Beep” Count Down"
+        explanation="Whether to count down the last 3 seconds of an activity with a “beep” sound."
+      >
         <input
           type="checkbox"
           checked={settings.countDown}
           onChange={(evt) => settings.setCountDown(evt.target.checked)}
         />
-      </div>
-      <div className={css.setting}>
-        <span>Read out titles</span>
+      </Setting>
+      <Setting
+        title="Read Out Titles"
+        explanation="Whether to read out the titles when an activity begins."
+      >
         <input
           type="checkbox"
           checked={settings.callOut}
           onChange={(evt) => settings.setCallOut(evt.target.checked)}
         />
+      </Setting>
+    </div>
+  )
+}
+
+function Setting({
+  title,
+  explanation,
+  children,
+}: {
+  title: string
+  explanation?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className={css.setting}>
+      <div>
+        <strong>{title}</strong>
+        {children}
       </div>
+      <span>{explanation}</span>
     </div>
   )
 }
