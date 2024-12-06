@@ -10,7 +10,7 @@ export type Activity = {
 export type Loop = {
   kind: "LOOP"
   repeat: number
-  activities: Activity[]
+  items: Item[]
 }
 
 export type Program = {

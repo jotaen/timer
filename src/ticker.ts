@@ -16,7 +16,7 @@ export function* ticker(items: Item[]): Generator<Tick> {
     switch (item.kind) {
       case "LOOP":
         for (let r = item.repeat; r > 0; r--) {
-          let items = [...item.activities]
+          let items = [...item.items]
           if (r === 1) {
             items = items.filter((it) => !it.skipLast)
           }

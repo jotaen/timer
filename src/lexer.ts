@@ -1,13 +1,3 @@
-// 0:05 Get ready!
-// 2x
-//    0:05 Work out
-//    3x
-//          0:10 Hallo
-//         0:10 Hallo
-//          0:10 Hallo
-//    0:05
-//    0:05*     Rest
-
 type TokenKind = "TIME" | "LOOP" | "SKIP" | "NEWLINE" | "MESSAGE"
 
 type TokenSpec = [TokenKind, RegExp]
@@ -20,7 +10,7 @@ const tokenSpecs: TokenSpec[] = [
   ["MESSAGE", / (.*)/],
 ]
 
-export const regex = RegExp(
+const regex = RegExp(
   tokenSpecs.map(([name, re]) => `(?<${name}>${re.source})`).join("|"),
   "g",
 )
@@ -37,7 +27,7 @@ interface LoopToken extends TokenBase {
   kind: "LOOP"
 }
 
-interface SkipToken extends TokenBase {
+export interface SkipToken extends TokenBase {
   kind: "SKIP"
 }
 
@@ -62,7 +52,7 @@ interface MessageToken extends TokenBase {
   kind: "MESSAGE"
 }
 
-type Token =
+export type Token =
   | TimeToken
   | LoopToken
   | SkipToken
@@ -109,21 +99,20 @@ export function* tokenizeRaw(text: string): Generator<Token> {
 export function* recognizeIndents(
   tokenStream: Iterable<Token>,
 ): Generator<Token> {
-  const indentationLevels: number[] = [0]
+  const indentationLevels: number[] = []
   for (const token of tokenStream) {
+    yield token
     if (token.kind !== "NEWLINE") {
-      yield token
       continue
     }
     let currentDepth = indentationLevels.at(-1) ?? 0
     if (token.indentationDepth > currentDepth) {
-      yield token
       yield { kind: "INDENT", value: "" }
       indentationLevels.push(token.indentationDepth)
     } else if (token.indentationDepth < currentDepth) {
       indentationLevels.pop()
       while (true) {
-        currentDepth = indentationLevels.pop() ?? -1
+        currentDepth = indentationLevels.pop() ?? 0
         if (token.indentationDepth <= currentDepth) {
           yield { kind: "DEDENT", value: "" }
         } else if (token.indentationDepth > currentDepth) {
@@ -134,7 +123,6 @@ export function* recognizeIndents(
           break
         }
       }
-      yield token
     }
   }
 }
