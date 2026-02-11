@@ -1,8 +1,10 @@
 export class Beeper {
   beep(frequency: number, duration: number) {
-    const audioCtx = new (window.AudioContext ||
+    const audioCtx = new (
+      window.AudioContext ||
       (window as any).webkitAudioContext ||
-      (window as any).audioContext)()
+      (window as any).audioContext
+    )()
     if (!audioCtx) {
       return
     }

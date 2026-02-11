@@ -7,6 +7,7 @@ import { Editor } from "../Editor"
 import { Settings } from "../Settings"
 import { Program } from "../program.ts"
 import { SettingsContext, useSettings } from "../Settings/useSettings.ts"
+import { serialise, deserialise } from "../serialise.ts"
 
 const sampleProgram: Program = {
   title: "Sports!",
@@ -22,6 +23,10 @@ const sampleProgram: Program = {
     },
   ],
 }
+
+const s = serialise(sampleProgram)
+console.log(s)
+console.log(deserialise(s))
 
 const container = document.getElementById("app")
 const root = createRoot(container!)

@@ -18,7 +18,7 @@ export function* ticker(items: Item[]): Generator<Tick> {
         for (let r = item.repeat; r > 0; r--) {
           let items = [...item.items]
           if (r === 1) {
-            items = items.filter((it) => !it.skipLast)
+            items = items.filter((it) => it.kind === "ACTIVITY" && !it.skipLast)
           }
           yield* ticker(items)
         }
