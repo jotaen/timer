@@ -20,12 +20,16 @@ run::install() {
   npm install
 }
 
+ESBUILD_ARGS=(
+  src/Main/index.tsx \
+  --outfile=public/dist/bundle.js \
+  --bundle
+)
+
 # Starts dev server.
 run::server() {
 	esbuild \
-		src/Main/index.tsx \
-		--bundle \
-		--outfile=public/dist/bundle.js \
+		"${ESBUILD_ARGS[@]}" \
 		--watch \
 		--servedir=public
 }
@@ -33,9 +37,8 @@ run::server() {
 # Builds frontend assets.
 run::build() {
   esbuild \
-		src/Main/index.tsx \
-		--bundle \
-		--outfile=public/dist/bundle.js
+		"${ESBUILD_ARGS[@]}" \
+		--minify
 	if [[ "$1" == '--prod' ]]; then
 	  local TIMESTAMP="$(date +%s%3N)"
     sed -i "s/0000000000000/${TIMESTAMP}/g" public/index.html
