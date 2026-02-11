@@ -18,6 +18,7 @@ jobs:
       - name: Build
         run: |
           . run.sh
+          run::install
           run::build
       - name: Publish to Cloudflare Pages
         id: cloudflare-publish
