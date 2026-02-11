@@ -30,6 +30,14 @@ run::server() {
 		--servedir=public
 }
 
+# Builds frontend assets.
+run::build() {
+  esbuild \
+		src/Main/index.tsx \
+		--bundle \
+		--outfile=public/dist/bundle.js
+}
+
 # Run unit tests.
 run::test() {
   mocha
