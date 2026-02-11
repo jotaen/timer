@@ -19,7 +19,7 @@ jobs:
         run: |
           . run.sh
           run::install
-          run::build
+          run::build --prod
       - name: Publish to Cloudflare Pages
         id: cloudflare-publish
         uses: cloudflare/pages-action@v1
