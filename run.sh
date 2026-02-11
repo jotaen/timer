@@ -36,6 +36,10 @@ run::build() {
 		src/Main/index.tsx \
 		--bundle \
 		--outfile=public/dist/bundle.js
+	if [[ "$1" == '--prod' ]]; then
+	  local TIMESTAMP="$(date +%s%3N)"
+    sed -i "s/0000000000000/${TIMESTAMP}/g" public/index.html
+	fi
 }
 
 # Run unit tests.
