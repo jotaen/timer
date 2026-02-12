@@ -3,16 +3,11 @@
   flex-direction: column;
 }
 
-.label {
-  margin-top: 1em;
-  font-size: 0.9em;
-  color: #ccc;
-  text-transform: uppercase;
-}
-
 .editor {
   font-size: 0.9em;
   font-family: inherit;
   padding: 0.5em;
-  height: 10em;
+  height: 15em;
+  min-height: 15em;
+  resize: vertical;
 }

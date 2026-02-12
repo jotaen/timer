@@ -1,5 +1,3 @@
-export type PersistenceType = "PLAIN" | "JSON"
-
 class Persistence {
   protected readonly name: string
 

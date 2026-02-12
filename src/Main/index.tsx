@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { createRoot } from "react-dom/client"
@@ -24,10 +24,6 @@ const sampleProgram: Program = {
   ],
 }
 
-const s = serialise(sampleProgram)
-console.log(s)
-console.log(deserialise(s))
-
 const container = document.getElementById("app")
 const root = createRoot(container!)
 root.render(<Main />)
@@ -45,13 +41,18 @@ export type ScreenProps = {
 function Main() {
   const [screen, goToScreen] = useState<Screens>(Screens.Timer)
   const settings = useSettings()
+  const { program, setProgram } = useProgram()
+
+  if (!program) {
+    return
+  }
 
   const Screen = {
     [Screens.Timer]: (s: ScreenProps) => (
-      <Timer {...s} program={sampleProgram} />
+      <Timer {...s} program={program} />
     ),
     [Screens.Editor]: (s: ScreenProps) => (
-      <Editor program={sampleProgram} {...s} />
+      <Editor program={program} setProgram={setProgram} {...s} />
     ),
     [Screens.Settings]: (s: ScreenProps) => <Settings {...s} />,
   }[screen]
@@ -63,4 +64,28 @@ function Main() {
       </SettingsContext.Provider>
     </div>
   )
+}
+
+export type UseProgram = {
+  program: Program | undefined
+  setProgram: (p: Program) => void
+}
+
+export function useProgram(): UseProgram {
+  const [program, setProgram] = useState<Program>()
+
+  useEffect(() => {
+    const programText = window.location.hash.substring(1)
+    if (programText) {
+      setProgram(deserialise(programText))
+    }
+  }, []);
+
+  useEffect(() => {
+    if (program) {
+      window.location.hash = serialise(program)
+    }
+  }, [program])
+
+  return { program, setProgram }
 }

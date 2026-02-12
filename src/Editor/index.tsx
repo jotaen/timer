@@ -3,27 +3,25 @@ import React, { useEffect, useState } from "react"
 import css from "./style.module.css"
 import { Screens, ScreenProps } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
-import { PersistenceString } from "../util/persistence.ts"
 import { Program } from "../program.ts"
 
 export type EditorProps = ScreenProps & {
   program: Program
+  setProgram: (p: Program) => void
 }
 
-const persistence = new PersistenceString("program")
-
-export function Editor({ goToScreen }: EditorProps) {
+export function Editor({ goToScreen, program, setProgram }: EditorProps) {
   const [text, setText] = useState<string>("")
 
   useEffect(() => {
-    const program = persistence.read()
     if (program) {
-      setText(program)
+      setText(JSON.stringify(program, null, 2))
     }
   }, [])
 
   const save = () => {
-    persistence.save(text)
+    const program = JSON.parse(text) as Program
+    setProgram(program)
     goToScreen(Screens.Timer)
   }
 
@@ -35,14 +33,6 @@ export function Editor({ goToScreen }: EditorProps) {
         <button onClick={save}>Save</button>
       </Toolbar>
 
-      <label className={css.label} htmlFor="">
-        Timer Name
-      </label>
-      <input type="text" />
-
-      <label className={css.label} htmlFor="">
-        Program
-      </label>
       <textarea
         className={css.editor}
         onChange={(evt) => {
