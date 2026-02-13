@@ -9,28 +9,14 @@ import { Share } from "../Share"
 import { Program } from "../program.ts"
 import { SettingsContext, useSettings } from "../Settings/useSettings.ts"
 import { serialise, deserialise } from "../serialise.ts"
-
-const sampleProgram: Program = {
-  title: "Sports!",
-  items: [
-    { kind: "ACTIVITY", title: "Get ready!", duration: 5, skipLast: false },
-    {
-      kind: "LOOP",
-      repeat: 2,
-      items: [
-        { kind: "ACTIVITY", title: "Work out", duration: 10, skipLast: false },
-        { kind: "ACTIVITY", title: "Rest", duration: 5, skipLast: true },
-      ],
-    },
-  ],
-}
+import { Menu } from "./Menu.tsx"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
 root.render(<Main />)
 
 export enum Screens {
-  "Timer",
+  "Main",
   "Editor",
   "Settings",
   "Share",
@@ -41,23 +27,22 @@ export type ScreenProps = {
 }
 
 function Main() {
-  const [screen, goToScreen] = useState<Screens>(Screens.Timer)
+  const { program, setProgram, unsetProgram } = useProgram()
+  const [screen, goToScreen] = useState<Screens>(Screens.Main)
   const settings = useSettings()
-  const { program, setProgram } = useProgram()
-
-  if (!program) {
-    return
-  }
 
   const Screen = {
-    [Screens.Timer]: (s: ScreenProps) => (
-      <Timer {...s} program={program} />
-    ),
+    [Screens.Main]: (s: ScreenProps) =>
+      program ? (
+        <Timer {...s} program={program!} unsetProgram={unsetProgram} />
+      ) : (
+        <Menu {...s} setProgram={setProgram} />
+      ),
     [Screens.Editor]: (s: ScreenProps) => (
       <Editor program={program} setProgram={setProgram} {...s} />
     ),
     [Screens.Settings]: (s: ScreenProps) => <Settings {...s} />,
-    [Screens.Share]: (s: ScreenProps) => <Share {...s} program={program} />,
+    [Screens.Share]: (s: ScreenProps) => <Share {...s} program={program!} />,
   }[screen]
 
   return (
@@ -72,17 +57,19 @@ function Main() {
 export type UseProgram = {
   program: Program | undefined
   setProgram: (p: Program) => void
+  unsetProgram: () => void
 }
 
 export function useProgram(): UseProgram {
   const [program, setProgram] = useState<Program>()
+  const unsetProgram = () => setProgram(undefined)
 
   useEffect(() => {
     const programText = window.location.hash.substring(1)
     if (programText) {
       setProgram(deserialise(programText))
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (program) {
@@ -90,5 +77,5 @@ export function useProgram(): UseProgram {
     }
   }, [program])
 
-  return { program, setProgram }
+  return { program, setProgram, unsetProgram }
 }

@@ -6,7 +6,7 @@ import { Toolbar } from "../Main/Toolbar"
 import { Program } from "../program.ts"
 
 export type EditorProps = ScreenProps & {
-  program: Program
+  program: Program | undefined
   setProgram: (p: Program) => void
 }
 
@@ -22,13 +22,13 @@ export function Editor({ goToScreen, program, setProgram }: EditorProps) {
   const save = () => {
     const program = JSON.parse(text) as Program
     setProgram(program)
-    goToScreen(Screens.Timer)
+    goToScreen(Screens.Main)
   }
 
   return (
     <div className={css.main}>
       <Toolbar>
-        <button onClick={() => goToScreen(Screens.Timer)}>Cancel</button>
+        <button onClick={() => goToScreen(Screens.Main)}>Cancel</button>
         <div style={{ flex: 1 }}></div>
         <button onClick={save}>Save</button>
       </Toolbar>
