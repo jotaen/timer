@@ -46,3 +46,8 @@ body {
   background-color: unset;
   font-size: 1em;
 }
+
+.status {
+  font-style: italic;
+  margin-left: 0.5em;
+}

@@ -12,7 +12,6 @@ export enum STATUS {
   "RESET",
   "RUNNING",
   "PAUSED",
-  "ENDED",
 }
 
 export type Ticker = {
@@ -29,17 +28,6 @@ export function useTicker(program: Program, settings: Settings): Ticker {
   const [remaining, setRemaining] = useState<number>(0)
   const [tick, setTick] = useState<Tick | null>(null)
   const [ticker, setTicker] = useState<Generator<Tick>>()
-
-  const end = () => {
-    setTick({
-      remaining: 0,
-      readOut: false,
-      currentActivity: "",
-      beep: 0,
-    })
-    setRemaining(0)
-    setStatus(STATUS.ENDED)
-  }
 
   const run = () => {
     update()
@@ -64,7 +52,7 @@ export function useTicker(program: Program, settings: Settings): Ticker {
 
     const g = ticker.next()
     if (g.done) {
-      end()
+      reset()
       beeper.beep(900, 1000)
       return
     }

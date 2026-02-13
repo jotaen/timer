@@ -3,20 +3,24 @@ import React, { useContext } from "react"
 import css from "./style.module.css"
 import { ProgramContext } from "./index.tsx"
 import { formatClock } from "../format.ts"
+import { STATUS } from "../useTicker.ts"
 
 export type ToolbarProps = {
   children: React.ReactElement[]
-  strong?: boolean
+  isSubdued?: boolean
 }
 
-export function Toolbar({ children, strong = false }: ToolbarProps) {
-  const { hasProgram, remaining, title } = useContext(ProgramContext)
+export function Toolbar({ children, isSubdued = true }: ToolbarProps) {
+  const { hasProgram, remaining, title, status } = useContext(ProgramContext)
   return (
     <div>
       <div className={css.menubar}>{children}</div>
       {hasProgram && (
-        <div className={`${css.program} ${strong ? css.strong : ""}`}>
+        <div className={`${css.program} ${!isSubdued ? css.strong : ""}`}>
           {title}
+          {status === STATUS.PAUSED && (
+            <span className={css.status}>(Paused)</span>
+          )}
           <div style={{ flex: 1 }}></div>
           {formatClock(remaining)}
         </div>

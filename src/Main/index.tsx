@@ -37,10 +37,12 @@ export const ProgramContext = createContext<{
   hasProgram: boolean
   title: string
   remaining?: number
+  status: STATUS
 }>({
   hasProgram: false,
   title: "",
   remaining: undefined,
+  status: STATUS.RESET,
 })
 
 function Main() {
@@ -92,6 +94,7 @@ function Main() {
         hasProgram: !!program,
         title: program?.title || "",
         remaining: ticker.remaining,
+        status: ticker.status,
       }}
     >
       <div className={css.main}>{Screen}</div>

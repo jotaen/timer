@@ -15,7 +15,7 @@ export function Timer({ ticker, goToScreen }: TimerProps) {
 
   return (
     <div className={css.main}>
-      <Toolbar strong={true}>
+      <Toolbar isSubdued={false}>
         <button onClick={() => goToScreen(Screens.Editor)}>Edit</button>
         <button onClick={() => goToScreen(Screens.Share)}>Share</button>
         <div style={{ flex: 1 }}></div>
@@ -35,7 +35,6 @@ export function Timer({ ticker, goToScreen }: TimerProps) {
         <div>
           <button
             className={css.btnControl}
-            disabled={ticker.status === STATUS.ENDED}
             onClick={
               ticker.status === STATUS.RUNNING
                 ? () => ticker.pause()
@@ -45,12 +44,6 @@ export function Timer({ ticker, goToScreen }: TimerProps) {
             {
               {
                 [STATUS.RESET]: (
-                  <>
-                    <IconPlay />
-                    <span>Start</span>
-                  </>
-                ),
-                [STATUS.ENDED]: (
                   <>
                     <IconPlay />
                     <span>Start</span>
@@ -77,12 +70,7 @@ export function Timer({ ticker, goToScreen }: TimerProps) {
             className={css.btnControl}
             disabled={ticker.status === STATUS.RESET}
             onClick={() => {
-              if (
-                !(
-                  ticker.status === STATUS.ENDED ||
-                  window.confirm("Are you sure?")
-                )
-              ) {
+              if (!window.confirm("Are you sure?")) {
                 return
               }
               ticker.reset()
