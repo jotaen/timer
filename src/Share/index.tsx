@@ -20,7 +20,7 @@ export function Share({ goToScreen, program }: ShareProps) {
         <div style={{ flex: 1 }}></div>
       </Toolbar>
       <div className={css.container}>
-        <QRCodeSVG size={256} value={`https://geektimer.jotaen.net#${hash}`} />
+        <QRCodeSVG size={256} value={`${window.location.origin}#${hash}`} />
       </div>
     </div>
   )

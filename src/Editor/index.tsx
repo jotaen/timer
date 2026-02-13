@@ -4,6 +4,7 @@ import css from "./style.module.css"
 import { Screens, ScreenProps } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
 import { Program } from "../program.ts"
+import { stringify, parse } from "yaml"
 
 export type EditorProps = ScreenProps & {
   program: Program | undefined
@@ -15,12 +16,12 @@ export function Editor({ goToScreen, program, setProgram }: EditorProps) {
 
   useEffect(() => {
     if (program) {
-      setText(JSON.stringify(program, null, 2))
+      setText(stringify(program))
     }
   }, [])
 
   const save = () => {
-    const program = JSON.parse(text) as Program
+    const program = parse(text) as Program
     setProgram(program)
     goToScreen(Screens.Main)
   }
