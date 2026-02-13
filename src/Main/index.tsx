@@ -16,7 +16,8 @@ const root = createRoot(container!)
 root.render(<Main />)
 
 export enum Screens {
-  "Main",
+  "Menu",
+  "Timer",
   "Editor",
   "Settings",
   "Share",
@@ -28,16 +29,22 @@ export type ScreenProps = {
 
 function Main() {
   const { program, setProgram, unsetProgram } = useProgram()
-  const [screen, goToScreen] = useState<Screens>(Screens.Main)
+  const [screen, goToScreen] = useState<Screens>(Screens.Timer)
   const settings = useSettings()
 
+  const MenuScreen = (s: ScreenProps) => (
+    <Menu
+      {...s}
+      program={program}
+      unsetProgram={unsetProgram}
+      setProgram={setProgram}
+    />
+  )
   const Screen = {
-    [Screens.Main]: (s: ScreenProps) =>
-      program ? (
-        <Timer {...s} program={program!} unsetProgram={unsetProgram} />
-      ) : (
-        <Menu {...s} setProgram={setProgram} />
-      ),
+    [Screens.Menu]: MenuScreen,
+    [Screens.Timer]: program
+      ? (s: ScreenProps) => <Timer {...s} program={program!} />
+      : MenuScreen,
     [Screens.Editor]: (s: ScreenProps) => (
       <Editor program={program} setProgram={setProgram} {...s} />
     ),
@@ -74,6 +81,10 @@ export function useProgram(): UseProgram {
   useEffect(() => {
     if (program) {
       window.location.hash = serialise(program)
+      document.title = `${program.title} – Geek Timer`
+    } else {
+      window.location.hash = ""
+      document.title = "Geek Timer"
     }
   }, [program])
 

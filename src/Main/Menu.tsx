@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react"
 // @ts-ignore
 import css from "./style.module.css"
-import { Screens } from "./index.tsx"
+import { ScreenProps, Screens } from "./index.tsx"
 import { Program } from "../program.ts"
+import { Toolbar } from "./Toolbar.tsx"
+import {serialise} from "../serialise.ts";
 
-const sampleProgram: Program = {
+const samplePrograms: Program[] = [{
   title: "Sports!",
   items: [
     { kind: "ACTIVITY", title: "Get ready!", duration: 5, skipLast: false },
@@ -17,17 +19,53 @@ const sampleProgram: Program = {
       ],
     },
   ],
+}]
+
+export type MenuProps = ScreenProps & {
+  program: Program | undefined
+  setProgram: (p: Program) => void
+  unsetProgram: () => void
 }
 
-export function Menu({ setProgram, goToScreen }: any) {
+export function Menu({
+  program,
+  setProgram,
+  unsetProgram,
+  goToScreen,
+}: MenuProps) {
   return (
     <div className={css.main}>
-      No program selected.
-      <br />
-      <button onClick={() => goToScreen(Screens.Editor)}>New program</button>
-      <button onClick={() => setProgram(sampleProgram)}>
-        Use sample program
-      </button>
+      {program && (
+        <Toolbar>
+          <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
+          <div style={{ flex: 1 }}></div>
+        </Toolbar>
+      )}
+      <div className={css.menu}>
+        <p>
+          <button
+            onClick={() => {
+              unsetProgram()
+              goToScreen(Screens.Editor)
+            }}
+          >
+            New program
+          </button>
+        </p>
+        <p>
+          <button onClick={() => goToScreen(Screens.Settings)}>Settings</button>
+        </p>
+        <p>
+          <h2>Demo Programs:</h2>
+          {samplePrograms.map((p) => (
+            <a href={`#${serialise(p)}`} onClick={() => {
+              setProgram(p)
+              goToScreen(Screens.Timer)
+              return false
+            }}>{p.title}</a>
+          ))}
+        </p>
+      </div>
     </div>
   )
 }

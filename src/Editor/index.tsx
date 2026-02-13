@@ -23,13 +23,13 @@ export function Editor({ goToScreen, program, setProgram }: EditorProps) {
   const save = () => {
     const program = parse(text) as Program
     setProgram(program)
-    goToScreen(Screens.Main)
+    goToScreen(Screens.Timer)
   }
 
   return (
     <div className={css.main}>
       <Toolbar>
-        <button onClick={() => goToScreen(Screens.Main)}>Cancel</button>
+        <button onClick={() => goToScreen(Screens.Timer)}>Cancel</button>
         <div style={{ flex: 1 }}></div>
         <button onClick={save}>Save</button>
       </Toolbar>

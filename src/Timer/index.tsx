@@ -9,10 +9,9 @@ import { Toolbar } from "../Main/Toolbar"
 
 export type TimerProps = ScreenProps & {
   program: Program
-  unsetProgram: () => void
 }
 
-export function Timer({ program, goToScreen, unsetProgram }: TimerProps) {
+export function Timer({ program, goToScreen }: TimerProps) {
   const ticker = useTicker(program)
   const clock = ticker.tick ? formatClock(ticker.tick.remaining) : "--:--"
   const remaining = ticker.tick ? formatClock(ticker.remaining) : "--:--"
@@ -22,16 +21,14 @@ export function Timer({ program, goToScreen, unsetProgram }: TimerProps) {
       <Toolbar>
         <button onClick={() => goToScreen(Screens.Editor)}>Edit</button>
         <button onClick={() => goToScreen(Screens.Share)}>Share</button>
+        <div style={{ flex: 1 }}></div>
         <button
           onClick={() => {
-            unsetProgram()
-            goToScreen(Screens.Editor)
+            goToScreen(Screens.Menu)
           }}
         >
-          New
+          Menu
         </button>
-        <div style={{ flex: 1 }}></div>
-        <button onClick={() => goToScreen(Screens.Settings)}>Settings</button>
       </Toolbar>
       <div className={css.title}>
         <div style={{ flex: 1 }}>{program.title}</div>

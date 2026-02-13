@@ -16,7 +16,7 @@ export function Share({ goToScreen, program }: ShareProps) {
   return (
     <div>
       <Toolbar>
-        <button onClick={() => goToScreen(Screens.Main)}>Back</button>
+        <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
         <div style={{ flex: 1 }}></div>
       </Toolbar>
       <div className={css.container}>

@@ -71,7 +71,6 @@ export function useTicker(program: Program): Ticker {
     }
 
     const t = g.value
-    console.debug(t)
     setRemaining((x) => x - 1)
     setTick(t)
 
