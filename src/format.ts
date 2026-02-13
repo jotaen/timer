@@ -1,4 +1,7 @@
-export function formatClock(seconds: number): string {
+export function formatClock(seconds?: number): string {
+  if (!seconds) {
+    return "--:--"
+  }
   const minutePart = Math.floor(seconds / 60)
   const secondPart = seconds % 60
   return (

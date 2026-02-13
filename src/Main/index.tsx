@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, createContext } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { createRoot } from "react-dom/client"
@@ -33,6 +33,16 @@ const dummyProgram: Program = {
   items: [],
 }
 
+export const ProgramContext = createContext<{
+  hasProgram: boolean
+  title: string
+  remaining?: number
+}>({
+  hasProgram: false,
+  title: "",
+  remaining: undefined,
+})
+
 function Main() {
   const { program, loadProgram, clearProgram } = useProgram()
   const [screen, goToScreen] = useState<Screens>(Screens.Timer)
@@ -56,7 +66,7 @@ function Main() {
         return MenuScreen
       case Screens.Timer:
         return program ? (
-          <Timer goToScreen={goToScreen} ticker={ticker} program={program!} />
+          <Timer goToScreen={goToScreen} ticker={ticker} />
         ) : (
           MenuScreen
         )
@@ -76,5 +86,15 @@ function Main() {
     }
   })()
 
-  return <div className={css.main}>{Screen}</div>
+  return (
+    <ProgramContext
+      value={{
+        hasProgram: !!program,
+        title: program?.title || "",
+        remaining: ticker.remaining,
+      }}
+    >
+      <div className={css.main}>{Screen}</div>
+    </ProgramContext>
+  )
 }

@@ -23,13 +23,26 @@ body {
   max-width: 600px;
 }
 
-.toolbar {
+.menubar {
   display: flex;
-  background-color: #333;
-  padding: 0.5em;
   gap: 0.5em;
+  padding: 0.5em;
+  background-color: #333;
 }
 
 .menu {
   text-align: center;
+}
+
+.program {
+  background-color: #222;
+  padding: 0.5em;
+  display: flex;
+  font-size: 0.75em;
+  color: #ccc;
+}
+
+.strong {
+  background-color: unset;
+  font-size: 1em;
 }

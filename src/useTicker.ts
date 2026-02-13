@@ -53,7 +53,7 @@ export function useTicker(program: Program, settings: Settings): Ticker {
   const reset = () => {
     setTick(null)
     setTicker(createTicker(program.items))
-    setRemaining(totalDuration(program.items) + 1)
+    setRemaining(totalDuration(program.items))
     setStatus(STATUS.RESET)
   }
 
@@ -65,12 +65,13 @@ export function useTicker(program: Program, settings: Settings): Ticker {
     const g = ticker.next()
     if (g.done) {
       end()
-      beeper.beep(1000, 1000)
+      beeper.beep(900, 1000)
       return
     }
 
+    const isFirstRun = tick === null
     const t = g.value
-    setRemaining((x) => x - 1)
+    setRemaining((x) => x - (isFirstRun ? 0 : 1))
     setTick(t)
 
     if (settings.callOut && t.readOut) {
