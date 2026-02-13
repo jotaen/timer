@@ -4,7 +4,7 @@
 }
 
 .clock {
-  font-size: 10em;
+  font-size: min(20vw, 9em);
   text-align: center;
 }
 
