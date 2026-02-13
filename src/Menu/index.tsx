@@ -30,14 +30,14 @@ const samplePrograms: Program[] = [
 
 export type MenuProps = ScreenProps & {
   program: Program | undefined
-  setProgram: (p: Program) => void
-  unsetProgram: () => void
+  loadProgram: (p: Program) => void
+  clearProgram: () => void
 }
 
 export function Menu({
   program,
-  setProgram,
-  unsetProgram,
+  loadProgram,
+  clearProgram,
   goToScreen,
 }: MenuProps) {
   const { isFullscreen, toggleFullscreen } = useFullScreen()
@@ -53,7 +53,7 @@ export function Menu({
         <p>
           <button
             onClick={() => {
-              unsetProgram()
+              clearProgram()
               goToScreen(Screens.Editor)
             }}
           >
@@ -76,7 +76,7 @@ export function Menu({
               key={p.title}
               href={`#${serialise(p)}`}
               onClick={() => {
-                setProgram(p)
+                loadProgram(p)
                 goToScreen(Screens.Timer)
                 return false
               }}

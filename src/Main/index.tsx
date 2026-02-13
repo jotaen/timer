@@ -7,9 +7,10 @@ import { Editor } from "../Editor"
 import { Settings } from "../Settings"
 import { Share } from "../Share"
 import { Program } from "../program.ts"
-import { SettingsContext, useSettings } from "../Settings/useSettings.ts"
-import { serialise, deserialise } from "../serialise.ts"
+import { useSettings } from "../Settings/useSettings.ts"
 import { Menu } from "../Menu"
+import { STATUS, useTicker } from "../useTicker.ts"
+import { useProgram } from "../useProgram.ts"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
@@ -27,66 +28,53 @@ export type ScreenProps = {
   goToScreen: (s: Screens) => void
 }
 
+const dummyProgram: Program = {
+  title: "",
+  items: [],
+}
+
 function Main() {
-  const { program, setProgram, unsetProgram } = useProgram()
+  const { program, loadProgram, clearProgram } = useProgram()
   const [screen, goToScreen] = useState<Screens>(Screens.Timer)
   const settings = useSettings()
+  const ticker = useTicker(program || dummyProgram, settings)
+  const isReadonly =
+    ticker.status === STATUS.RUNNING || ticker.status === STATUS.PAUSED
 
-  const MenuScreen = (s: ScreenProps) => (
-    <Menu
-      {...s}
-      program={program}
-      unsetProgram={unsetProgram}
-      setProgram={setProgram}
-    />
-  )
-  const Screen = {
-    [Screens.Menu]: MenuScreen,
-    [Screens.Timer]: program
-      ? (s: ScreenProps) => <Timer {...s} program={program!} />
-      : MenuScreen,
-    [Screens.Editor]: (s: ScreenProps) => (
-      <Editor program={program} setProgram={setProgram} {...s} />
-    ),
-    [Screens.Settings]: (s: ScreenProps) => <Settings {...s} />,
-    [Screens.Share]: (s: ScreenProps) => <Share {...s} program={program!} />,
-  }[screen]
+  const Screen: React.JSX.Element = (() => {
+    const MenuScreen = (
+      <Menu
+        program={program}
+        clearProgram={clearProgram}
+        loadProgram={loadProgram}
+        goToScreen={goToScreen}
+      />
+    )
 
-  return (
-    <div className={css.main}>
-      <SettingsContext.Provider value={settings}>
-        <Screen goToScreen={goToScreen} />
-      </SettingsContext.Provider>
-    </div>
-  )
-}
-
-export type UseProgram = {
-  program: Program | undefined
-  setProgram: (p: Program) => void
-  unsetProgram: () => void
-}
-
-export function useProgram(): UseProgram {
-  const [program, setProgram] = useState<Program>()
-  const unsetProgram = () => setProgram(undefined)
-
-  useEffect(() => {
-    const programText = window.location.hash.substring(1)
-    if (programText) {
-      setProgram(deserialise(programText))
+    switch (screen) {
+      case Screens.Menu:
+        return MenuScreen
+      case Screens.Timer:
+        return program ? (
+          <Timer goToScreen={goToScreen} ticker={ticker} program={program!} />
+        ) : (
+          MenuScreen
+        )
+      case Screens.Editor:
+        return (
+          <Editor
+            program={program}
+            loadProgram={loadProgram}
+            isReadonly={isReadonly}
+            goToScreen={goToScreen}
+          />
+        )
+      case Screens.Settings:
+        return <Settings settings={settings} goToScreen={goToScreen} />
+      case Screens.Share:
+        return <Share goToScreen={goToScreen} program={program!} />
     }
-  }, [])
+  })()
 
-  useEffect(() => {
-    if (program) {
-      window.location.hash = serialise(program)
-      document.title = `${program.title} – Geek Timer`
-    } else {
-      window.location.hash = ""
-      document.title = "Geek Timer"
-    }
-  }, [program])
-
-  return { program, setProgram, unsetProgram }
+  return <div className={css.main}>{Screen}</div>
 }

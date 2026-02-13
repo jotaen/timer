@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { PersistenceJson } from "../util/persistence.ts"
 
 export type Settings = {
@@ -14,12 +14,6 @@ const defaultSettings = {
 }
 
 const persistence = new PersistenceJson("settings")
-
-export const SettingsContext = React.createContext<Settings>({
-  setCountDown: () => {},
-  setCallOut: () => {},
-  ...defaultSettings,
-})
 
 export function useSettings(): Settings {
   const [countDown, setCountDown] = useState<boolean>(defaultSettings.countDown)

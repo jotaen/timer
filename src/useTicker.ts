@@ -1,9 +1,9 @@
-import React, { useContext } from "react"
+import { useEffect, useState } from "react"
 import { Tick, ticker as createTicker, totalDuration } from "./ticker.ts"
 import { Program } from "./program.ts"
 import { Beeper } from "./util/beeper.ts"
 import { Voice } from "./util/voice.ts"
-import { SettingsContext } from "./Settings/useSettings.ts"
+import { Settings } from "./Settings/useSettings.ts"
 
 const beeper = new Beeper()
 const voice = new Voice()
@@ -15,7 +15,7 @@ export enum STATUS {
   "ENDED",
 }
 
-export type Ticker = Program & {
+export type Ticker = {
   tick: Tick | null
   status: STATUS
   remaining: number
@@ -24,12 +24,11 @@ export type Ticker = Program & {
   reset: () => void
 }
 
-export function useTicker(program: Program): Ticker {
-  const [status, setStatus] = React.useState<STATUS>(STATUS.RESET)
-  const [remaining, setRemaining] = React.useState<number>(0)
-  const [tick, setTick] = React.useState<Tick | null>(null)
-  const [ticker, setTicker] = React.useState<Generator<Tick>>()
-  const settings = useContext(SettingsContext)
+export function useTicker(program: Program, settings: Settings): Ticker {
+  const [status, setStatus] = useState<STATUS>(STATUS.RESET)
+  const [remaining, setRemaining] = useState<number>(0)
+  const [tick, setTick] = useState<Tick | null>(null)
+  const [ticker, setTicker] = useState<Generator<Tick>>()
 
   const end = () => {
     setTick({
@@ -82,7 +81,7 @@ export function useTicker(program: Program): Ticker {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined
     const clear = () => {
       clearInterval(interval)
@@ -100,9 +99,9 @@ export function useTicker(program: Program): Ticker {
   }, [status])
 
   // Trigger (initial) reset.
-  React.useEffect(() => {
+  useEffect(() => {
     reset()
   }, [program])
 
-  return { ...program, status, remaining, tick, run, pause, reset }
+  return { status, remaining, tick, run, pause, reset }
 }

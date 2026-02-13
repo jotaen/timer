@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { Screens, ScreenProps } from "../Main"
@@ -8,21 +8,26 @@ import { stringify, parse } from "yaml"
 
 export type EditorProps = ScreenProps & {
   program: Program | undefined
-  setProgram: (p: Program) => void
+  loadProgram: (p: Program) => void
+  isReadonly: boolean
 }
 
-export function Editor({ goToScreen, program, setProgram }: EditorProps) {
-  const [text, setText] = useState<string>("")
-
-  useEffect(() => {
+export function Editor({
+  goToScreen,
+  program,
+  loadProgram,
+  isReadonly,
+}: EditorProps) {
+  const [text, setText] = useState<string>(() => {
     if (program) {
-      setText(stringify(program))
+      return stringify(program)
     }
-  }, [])
+    return ""
+  })
 
   const save = () => {
     const program = parse(text) as Program
-    setProgram(program)
+    loadProgram(program)
     goToScreen(Screens.Timer)
   }
 
@@ -31,7 +36,9 @@ export function Editor({ goToScreen, program, setProgram }: EditorProps) {
       <Toolbar>
         <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
         <div style={{ flex: 1 }}></div>
-        <button onClick={save}>Save</button>
+        <button onClick={save} disabled={isReadonly}>
+          Save
+        </button>
       </Toolbar>
 
       <textarea
@@ -40,6 +47,7 @@ export function Editor({ goToScreen, program, setProgram }: EditorProps) {
           setText(evt.target.value)
         }}
         value={text}
+        disabled={isReadonly}
       ></textarea>
     </div>
   )

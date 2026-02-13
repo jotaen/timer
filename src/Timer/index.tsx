@@ -2,17 +2,17 @@ import React from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { formatClock } from "../format"
-import { STATUS, useTicker } from "../useTicker.ts"
+import { STATUS, Ticker } from "../useTicker.ts"
 import { Program } from "../program.ts"
 import { Screens, ScreenProps } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
 
 export type TimerProps = ScreenProps & {
   program: Program
+  ticker: Ticker
 }
 
-export function Timer({ program, goToScreen }: TimerProps) {
-  const ticker = useTicker(program)
+export function Timer({ program, ticker, goToScreen }: TimerProps) {
   const clock = ticker.tick ? formatClock(ticker.tick.remaining) : "--:--"
   const remaining = ticker.tick ? formatClock(ticker.remaining) : "--:--"
 

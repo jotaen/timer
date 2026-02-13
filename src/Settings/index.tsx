@@ -1,14 +1,15 @@
-import React, { useContext } from "react"
+import React from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { Screens, ScreenProps } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
-import { SettingsContext } from "./useSettings.ts"
+import { Settings } from "./useSettings.ts"
 
-export type SettingsProps = ScreenProps & {}
+export type SettingsProps = ScreenProps & {
+  settings: Settings
+}
 
-export function Settings({ goToScreen }: SettingsProps) {
-  const settings = useContext(SettingsContext)
+export function Settings({ goToScreen, settings }: SettingsProps) {
   return (
     <div>
       <Toolbar>
