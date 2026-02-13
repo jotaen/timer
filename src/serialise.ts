@@ -1,20 +1,27 @@
 import { encode, decode } from "@msgpack/msgpack"
 import { Program, Item, Activity, Loop } from "./program.ts"
 
+const VERSION = 1
+
 export function serialise(p: Program): string {
   const encoded = encode(compact.compact(p))
-  return btoa(String.fromCharCode(...encoded))
+  const blob = btoa(String.fromCharCode(...encoded))
+  return `${slugify(p.title)}/${VERSION};${blob}`
 }
 
-export function deserialise(c: string): Program {
-  const buffer = new Uint8Array(Array.from(atob(c), (c) => c.charCodeAt(0)))
+export function deserialise(serialisedProgram: string): Program {
+  const parts = serialisedProgram.match(/^(.+?)\/(.+?);(.+)$/)
+  if (!parts) {
+    throw new Error("Invalid Program!")
+  }
+  const [, _, version, blob] = parts
+  const buffer = new Uint8Array(Array.from(atob(blob), (c) => c.charCodeAt(0)))
   const data = decode(buffer) as compact.program
   return compact.decompact(data)
 }
 
 namespace compact {
   export type program = {
-    v: number
     t: Program["title"]
     i: item[]
   }
@@ -70,9 +77,17 @@ namespace compact {
     }
 
     return {
-      v: 1,
       t: p.title,
       i: mapItems(p.items),
     }
   }
+}
+
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
