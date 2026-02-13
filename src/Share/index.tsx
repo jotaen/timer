@@ -12,7 +12,7 @@ export type ShareProps = ScreenProps & {
 }
 
 export function Share({ goToScreen, program }: ShareProps) {
-  const hash = serialise(program)
+  const shareUrl = `${window.location.origin}#${serialise(program)}`
   return (
     <div>
       <Toolbar>
@@ -20,7 +20,10 @@ export function Share({ goToScreen, program }: ShareProps) {
         <div style={{ flex: 1 }}></div>
       </Toolbar>
       <div className={css.container}>
-        <QRCodeSVG size={256} value={`${window.location.origin}#${hash}`} />
+        <QRCodeSVG size={256} value={shareUrl} />
+        <a href={shareUrl} className={css.link}>
+          {shareUrl}
+        </a>
       </div>
     </div>
   )

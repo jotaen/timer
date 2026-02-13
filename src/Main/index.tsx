@@ -38,7 +38,7 @@ function Main() {
   const [screen, goToScreen] = useState<Screens>(Screens.Timer)
   const settings = useSettings()
   const ticker = useTicker(program || dummyProgram, settings)
-  const isReadonly =
+  const isTimerActive =
     ticker.status === STATUS.RUNNING || ticker.status === STATUS.PAUSED
 
   const Screen: React.JSX.Element = (() => {
@@ -65,7 +65,7 @@ function Main() {
           <Editor
             program={program}
             loadProgram={loadProgram}
-            isReadonly={isReadonly}
+            isReadonly={isTimerActive}
             goToScreen={goToScreen}
           />
         )

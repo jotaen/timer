@@ -41,6 +41,12 @@ export function Menu({
   goToScreen,
 }: MenuProps) {
   const { isFullscreen, toggleFullscreen } = useFullScreen()
+  const confirm = () => {
+    return (
+      !program ||
+      window.confirm("Your current program will be cleared. Continue?")
+    )
+  }
   return (
     <div className={css.main}>
       {program && (
@@ -53,6 +59,9 @@ export function Menu({
         <p>
           <button
             onClick={() => {
+              if (!confirm()) {
+                return
+              }
               clearProgram()
               goToScreen(Screens.Editor)
             }}
@@ -76,6 +85,9 @@ export function Menu({
               key={p.title}
               href={`#${serialise(p)}`}
               onClick={() => {
+                if (!confirm()) {
+                  return
+                }
                 loadProgram(p)
                 goToScreen(Screens.Timer)
                 return false

@@ -1,5 +1,12 @@
 .container {
-  display: flex;
-  justify-content: center;
+  text-align: center;
   padding: 1em;
+}
+
+.container svg {
+  margin-bottom: 1em;
+}
+
+.link {
+  word-wrap: break-word;
 }
