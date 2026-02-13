@@ -12,7 +12,11 @@ export type ShareProps = ScreenProps & {
 }
 
 export function Share({ goToScreen, program }: ShareProps) {
-  const shareUrl = `${window.location.origin}#${serialise(program)}`
+  const baseUrl =
+    window.location.hostname === "localhost"
+      ? "https://geektimer.jotaen.net"
+      : window.location.origin
+  const shareUrl = `${baseUrl}/#${serialise(program)}`
   return (
     <div>
       <Toolbar>
