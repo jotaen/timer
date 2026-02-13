@@ -12,7 +12,7 @@ export function Settings({ goToScreen }: SettingsProps) {
   return (
     <div>
       <Toolbar>
-        <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
+        <button onClick={() => goToScreen(Screens.Menu)}>Back</button>
         <div style={{ flex: 1 }}></div>
       </Toolbar>
       <h2>Audio</h2>

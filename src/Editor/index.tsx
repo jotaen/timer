@@ -29,7 +29,7 @@ export function Editor({ goToScreen, program, setProgram }: EditorProps) {
   return (
     <div className={css.main}>
       <Toolbar>
-        <button onClick={() => goToScreen(Screens.Timer)}>Cancel</button>
+        <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
         <div style={{ flex: 1 }}></div>
         <button onClick={save}>Save</button>
       </Toolbar>

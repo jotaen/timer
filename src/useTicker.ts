@@ -66,7 +66,7 @@ export function useTicker(program: Program): Ticker {
     const g = ticker.next()
     if (g.done) {
       end()
-      beeper.beep(1400, 1000)
+      beeper.beep(1000, 1000)
       return
     }
 

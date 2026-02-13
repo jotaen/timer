@@ -9,7 +9,7 @@ import { Share } from "../Share"
 import { Program } from "../program.ts"
 import { SettingsContext, useSettings } from "../Settings/useSettings.ts"
 import { serialise, deserialise } from "../serialise.ts"
-import { Menu } from "./Menu.tsx"
+import { Menu } from "../Menu"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
