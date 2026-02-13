@@ -20,6 +20,7 @@ export function Timer({ program, goToScreen }: TimerProps) {
     <div className={css.main}>
       <Toolbar>
         <button onClick={() => goToScreen(Screens.Editor)}>Edit</button>
+        <button onClick={() => goToScreen(Screens.Share)}>Share</button>
         <div style={{ flex: 1 }}></div>
         <button onClick={() => goToScreen(Screens.Settings)}>Settings</button>
       </Toolbar>

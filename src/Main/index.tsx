@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client"
 import { Timer } from "../Timer"
 import { Editor } from "../Editor"
 import { Settings } from "../Settings"
+import { Share } from "../Share"
 import { Program } from "../program.ts"
 import { SettingsContext, useSettings } from "../Settings/useSettings.ts"
 import { serialise, deserialise } from "../serialise.ts"
@@ -32,6 +33,7 @@ export enum Screens {
   "Timer",
   "Editor",
   "Settings",
+  "Share",
 }
 
 export type ScreenProps = {
@@ -55,6 +57,7 @@ function Main() {
       <Editor program={program} setProgram={setProgram} {...s} />
     ),
     [Screens.Settings]: (s: ScreenProps) => <Settings {...s} />,
+    [Screens.Share]: (s: ScreenProps) => <Share {...s} program={program} />,
   }[screen]
 
   return (
