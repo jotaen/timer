@@ -1,13 +1,13 @@
 import React, { useState } from "react"
 // @ts-ignore
 import css from "./style.module.css"
-import { Screens, ScreenProps } from "../Main"
+import { ScreenProps, Screens } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
 import { Program } from "../program.ts"
-import { stringify, parse } from "yaml"
+import { parse, stringify } from "yaml"
 
 export type EditorProps = ScreenProps & {
-  program: Program | undefined
+  program?: Program
   loadProgram: (p: Program) => void
   isReadonly: boolean
 }
@@ -46,9 +46,62 @@ export function Editor({
         onChange={(evt) => {
           setText(evt.target.value)
         }}
+        onKeyDown={handleControlKeys}
         value={text}
         disabled={isReadonly}
       ></textarea>
     </div>
   )
+}
+
+function handleControlKeys(evt: React.KeyboardEvent<HTMLTextAreaElement>) {
+  const textarea = evt.target as HTMLTextAreaElement
+  const start = textarea.selectionStart
+  const end = textarea.selectionEnd
+  const INDENTATION = "  "
+
+  if (evt.key == "Tab") {
+    evt.preventDefault()
+
+    textarea.value =
+      textarea.value.substring(0, start) +
+      INDENTATION +
+      textarea.value.substring(end)
+    textarea.selectionStart = textarea.selectionEnd = start + INDENTATION.length
+  }
+
+  if (evt.key == "Enter") {
+    evt.preventDefault()
+    const textBeforeCursor = textarea.value.substring(0, start)
+    const currentLineStart = textBeforeCursor.lastIndexOf("\n") + 1
+    const currentLine = textarea.value.substring(currentLineStart, start)
+
+    const indentMatch = currentLine.match(/^(\s*)/)
+    const indent = indentMatch ? indentMatch[1] : ""
+
+    textarea.value =
+      textarea.value.substring(0, start) +
+      "\n" +
+      indent +
+      textarea.value.substring(end)
+    textarea.selectionStart = textarea.selectionEnd = start + 1 + indent.length
+  }
+
+  if (evt.key === "Backspace") {
+    if (start === end && start > 0) {
+      const textBeforeCursor = textarea.value.substring(0, start)
+      const currentLineStart = textBeforeCursor.lastIndexOf("\n") + 1
+      const currentLine = textarea.value.substring(currentLineStart, start)
+
+      if (/^\s+$/.test(currentLine) && currentLine.length >= 2) {
+        evt.preventDefault()
+        const removeCount = Math.min(2, currentLine.length)
+
+        textarea.value =
+          textarea.value.substring(0, start - removeCount) +
+          textarea.value.substring(end)
+        textarea.selectionStart = textarea.selectionEnd = start - removeCount
+      }
+    }
+  }
 }

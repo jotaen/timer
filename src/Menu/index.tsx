@@ -29,7 +29,7 @@ const samplePrograms: Program[] = [
 ]
 
 export type MenuProps = ScreenProps & {
-  program: Program | undefined
+  program?: Program
   loadProgram: (p: Program) => void
   clearProgram: () => void
 }

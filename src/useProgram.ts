@@ -3,7 +3,7 @@ import { deserialise, serialise } from "./serialise.ts"
 import { useState } from "react"
 
 export type UseProgram = {
-  program: Program | undefined
+  program?: Program
   loadProgram: (p: Program) => void
   clearProgram: () => void
 }
@@ -29,12 +29,8 @@ export function useProgram(): UseProgram {
   }
 }
 
-function setPage(p: Program | undefined) {
-  if (p) {
-    window.location.hash = serialise(p)
-    document.title = `${p.title} – Geek Timer`
-  } else {
-    window.location.hash = ""
-    document.title = "Geek Timer"
-  }
+function setPage(p?: Program) {
+  const prefix = p ? `${p.title} – ` : ""
+  document.title = `${prefix}Geek Timer`
+  window.location.hash = p ? serialise(p) : ""
 }
