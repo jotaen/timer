@@ -6,14 +6,15 @@ import { formatClock } from "../format.ts"
 import { STATUS } from "../useTicker.ts"
 
 export type ToolbarProps = {
-  children: React.ReactElement[]
+  children: React.ReactNode
   isSubdued?: boolean
 }
 
 export function Toolbar({ children, isSubdued = true }: ToolbarProps) {
   const { hasProgram, remaining, title, status } = useContext(ProgramContext)
   return (
-    <div>
+    <div style={{ position: "relative" }}>
+      <div className={css.logo}>Geek Timer</div>
       <div className={css.menubar}>{children}</div>
       {hasProgram && (
         <div className={`${css.program} ${!isSubdued ? css.strong : ""}`}>

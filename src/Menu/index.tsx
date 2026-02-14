@@ -49,18 +49,17 @@ export function Menu({
   }
   return (
     <div className={css.main}>
-      {program && (
-        <Toolbar>
+      <Toolbar>
+        {program && (
           <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
-          <div style={{ flex: 1 }}></div>
-        </Toolbar>
-      )}
+        )}
+      </Toolbar>
       <div className={css.menu}>
         <p>
           <button
             onClick={() => {
               if (!confirm()) {
-                return
+                return false
               }
               clearProgram()
               goToScreen(Screens.Editor)
@@ -84,9 +83,10 @@ export function Menu({
             <a
               key={p.title}
               href={`#${serialise(p)}`}
-              onClick={() => {
+              onClick={(evt) => {
+                evt.preventDefault()
                 if (!confirm()) {
-                  return
+                  return false
                 }
                 loadProgram(p)
                 goToScreen(Screens.Timer)

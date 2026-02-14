@@ -28,10 +28,27 @@ body {
   gap: 0.5em;
   padding: 0.5em;
   background-color: #333;
+  min-height: 1em;
 }
 
 .menu {
   text-align: center;
+}
+
+.logo {
+  position: absolute;
+  height: 2.7em;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 8em;
+  text-align: center;
+  color: #9f9d8d;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .program {

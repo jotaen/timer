@@ -11,22 +11,30 @@ export type UseProgram = {
 export function useProgram(): UseProgram {
   const programText = window.location.hash.substring(1)
   const [program, setProgram] = useState<Program | undefined>(() => {
-    if (programText) {
-      return deserialise(programText)
-    }
+    const p = programText ? deserialise(programText) : undefined
+    setPage(p)
+    return p
   })
 
   return {
     program,
     loadProgram: (p: Program) => {
-      window.location.hash = serialise(p)
-      document.title = `${p.title} – Geek Timer`
+      setPage(p)
       setProgram(p)
     },
     clearProgram: () => {
-      window.location.hash = ""
-      document.title = "Geek Timer"
+      setPage(undefined)
       setProgram(undefined)
     },
+  }
+}
+
+function setPage(p: Program | undefined) {
+  if (p) {
+    window.location.hash = serialise(p)
+    document.title = `${p.title} – Geek Timer`
+  } else {
+    window.location.hash = ""
+    document.title = "Geek Timer"
   }
 }
