@@ -10,7 +10,7 @@ import { Program } from "../program.ts"
 import { useSettings } from "../Settings/useSettings.ts"
 import { Menu } from "../Menu"
 import { STATUS, useTicker } from "../useTicker.ts"
-import { useProgram } from "../useProgram.ts"
+import { useProgram } from "./useProgram.ts"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
