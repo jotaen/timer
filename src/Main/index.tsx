@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react"
+import React, { useState, createContext } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { createRoot } from "react-dom/client"
@@ -7,7 +7,6 @@ import { Editor } from "../Editor"
 import { Settings } from "../Settings"
 import { Share } from "../Share"
 import { Program } from "../program.ts"
-import { useSettings } from "../Settings/useSettings.ts"
 import { Menu } from "../Menu"
 import { STATUS, useTicker } from "../useTicker.ts"
 import { useProgram } from "./useProgram.ts"
@@ -48,8 +47,7 @@ export const ProgramContext = createContext<{
 function Main() {
   const { program, loadProgram, clearProgram } = useProgram()
   const [screen, goToScreen] = useState<Screens>(Screens.Timer)
-  const settings = useSettings()
-  const ticker = useTicker(program || dummyProgram, settings)
+  const ticker = useTicker(program || dummyProgram)
   const isTimerActive =
     ticker.status === STATUS.RUNNING || ticker.status === STATUS.PAUSED
 
@@ -82,7 +80,7 @@ function Main() {
           />
         )
       case Screens.Settings:
-        return <Settings settings={settings} goToScreen={goToScreen} />
+        return <Settings goToScreen={goToScreen} />
       case Screens.Share:
         return <Share goToScreen={goToScreen} program={program!} />
     }

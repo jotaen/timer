@@ -3,13 +3,12 @@ import React from "react"
 import css from "./style.module.css"
 import { Screens, ScreenProps } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
-import { Settings } from "./useSettings.ts"
+import { useSettings } from "./useSettings.ts"
 
-export type SettingsProps = ScreenProps & {
-  settings: Settings
-}
+export type SettingsProps = ScreenProps & {}
 
-export function Settings({ goToScreen, settings }: SettingsProps) {
+export function Settings({ goToScreen }: SettingsProps) {
+  const { countDown, setCountDown, callOut, setCallOut } = useSettings()
   return (
     <div>
       <Toolbar>
@@ -23,8 +22,8 @@ export function Settings({ goToScreen, settings }: SettingsProps) {
       >
         <input
           type="checkbox"
-          checked={settings.countDown}
-          onChange={(evt) => settings.setCountDown(evt.target.checked)}
+          checked={countDown}
+          onChange={(evt) => setCountDown(evt.target.checked)}
         />
       </Setting>
       <Setting
@@ -33,8 +32,8 @@ export function Settings({ goToScreen, settings }: SettingsProps) {
       >
         <input
           type="checkbox"
-          checked={settings.callOut}
-          onChange={(evt) => settings.setCallOut(evt.target.checked)}
+          checked={callOut}
+          onChange={(evt) => setCallOut(evt.target.checked)}
         />
       </Setting>
     </div>

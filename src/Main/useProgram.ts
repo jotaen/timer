@@ -21,9 +21,9 @@ export function useProgram(): UseProgram {
       populateTabState(p, false)
       setProgram(p)
     }
-    window.addEventListener('hashchange', handleHashChange)
+    window.addEventListener("hashchange", handleHashChange)
     return () => {
-      window.removeEventListener('hashchange', handleHashChange)
+      window.removeEventListener("hashchange", handleHashChange)
     }
   }, [])
 
@@ -51,7 +51,7 @@ function populateTabState(p?: Program, newHistoryEntry = true): void {
   }
 }
 
-function loadFromUrl(): Program|undefined {
+function loadFromUrl(): Program | undefined {
   const programText = window.location.hash.substring(1)
   return programText ? decode(programText) : undefined
 }

@@ -1,56 +1,21 @@
-import { useEffect, useState } from "react"
-import { PersistenceJson } from "../util/persistence.ts"
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
 
 export type Settings = {
   countDown: boolean
-  setCountDown: (s: boolean) => void
+  setCountDown: (countDown: boolean) => void
   callOut: boolean
-  setCallOut: (s: boolean) => void
+  setCallOut: (callOut: boolean) => void
 }
 
-const defaultSettings = {
-  countDown: true,
-  callOut: true,
-}
-
-const persistence = new PersistenceJson("settings")
-
-export function useSettings(): Settings {
-  const [countDown, setCountDown] = useState<boolean>(defaultSettings.countDown)
-  const [callOut, setCallOut] = useState<boolean>(defaultSettings.callOut)
-
-  // Read initial settings from local storage.
-  useEffect(() => {
-    const initialSettings = persistence.read()
-    if (!initialSettings) {
-      return
-    }
-
-    if (
-      "countDown" in initialSettings &&
-      typeof initialSettings.countDown === "boolean"
-    ) {
-      setCountDown(initialSettings.countDown)
-    }
-
-    if (
-      "callOut" in initialSettings &&
-      typeof initialSettings.callOut === "boolean"
-    ) {
-      setCallOut(initialSettings.callOut)
-    }
-  }, [])
-
-  // Persist settings in local storage.
-  useEffect(() => {
-    window.localStorage.setItem(
-      "settings",
-      JSON.stringify({
-        countDown,
-        callOut,
-      }),
-    )
-  }, [countDown, callOut])
-
-  return { countDown, setCountDown, callOut, setCallOut }
-}
+export const useSettings = create<Settings>()(
+  persist(
+    (set) => ({
+      countDown: true,
+      setCountDown: (countDown) => set({ countDown }),
+      callOut: true,
+      setCallOut: (callOut) => set({ callOut }),
+    }),
+    { name: "settings" },
+  ),
+)

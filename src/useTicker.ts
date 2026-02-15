@@ -3,7 +3,8 @@ import { Tick, ticker as createTicker, totalDuration } from "./ticker.ts"
 import { Program } from "./program.ts"
 import { Beeper } from "./util/beeper.ts"
 import { Voice } from "./util/voice.ts"
-import { Settings } from "./Settings/useSettings.ts"
+import { useSettings } from "./Settings/useSettings.ts"
+import { useInterval } from "./util/interval.ts"
 
 const beeper = new Beeper()
 const voice = new Voice()
@@ -23,29 +24,13 @@ export type Ticker = {
   reset: () => void
 }
 
-export function useTicker(program: Program, settings: Settings): Ticker {
+export function useTicker(program: Program): Ticker {
   const [status, setStatus] = useState<STATUS>(STATUS.RESET)
   const [remaining, setRemaining] = useState<number>(0)
   const [tick, setTick] = useState<Tick | null>(null)
   const [ticker, setTicker] = useState<Generator<Tick>>()
-
-  const run = () => {
-    update()
-    setStatus(STATUS.RUNNING)
-  }
-
-  const pause = () => {
-    setStatus(STATUS.PAUSED)
-  }
-
-  const reset = () => {
-    setTick(null)
-    setTicker(createTicker(program.items))
-    setRemaining(totalDuration(program.items))
-    setStatus(STATUS.RESET)
-  }
-
-  const update = () => {
+  const settings = useSettings()
+  const interval = useInterval(() => {
     if (!ticker) {
       return
     }
@@ -53,39 +38,43 @@ export function useTicker(program: Program, settings: Settings): Ticker {
     const g = ticker.next()
     if (g.done) {
       reset()
-      beeper.beep(900, 1000)
+      if (settings.countDown) {
+        beeper.beep(900, 1000)
+      }
       return
     }
 
-    const isFirstRun = tick === null
+    if (tick !== null) {
+      // Skip on initial run.
+      setRemaining((x) => x - 1)
+    }
     const t = g.value
-    setRemaining((x) => x - (isFirstRun ? 0 : 1))
     setTick(t)
-
     if (settings.callOut && t.readOut) {
       voice.say(t.currentActivity)
     }
     if (settings.countDown && t.beep) {
       beeper.beep(700, t.beep)
     }
+  }, 1000)
+
+  const run = () => {
+    interval.start()
+    setStatus(STATUS.RUNNING)
   }
 
-  useEffect(() => {
-    let interval: number | undefined = undefined
-    const clear = () => {
-      clearInterval(interval)
-      interval = undefined
-    }
-    const start = () => {
-      interval = setInterval(update, 1000)
-    }
-    if (status === STATUS.RUNNING) {
-      start()
-    } else {
-      clear()
-    }
-    return clear
-  }, [status])
+  const pause = () => {
+    interval.stop()
+    setStatus(STATUS.PAUSED)
+  }
+
+  const reset = () => {
+    interval.stop()
+    setTick(null)
+    setTicker(createTicker(program.items))
+    setRemaining(totalDuration(program.items))
+    setStatus(STATUS.RESET)
+  }
 
   // Trigger (initial) reset.
   useEffect(() => {
