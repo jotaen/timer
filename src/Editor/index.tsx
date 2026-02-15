@@ -1,10 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { ScreenProps, Screens } from "../Main"
 import { Toolbar } from "../Main/Toolbar"
 import { Program } from "../program.ts"
-import { parse, stringify } from "yaml"
+import { serialise } from "../serialise.ts"
+import { parse } from "../parse.ts"
 
 export type EditorProps = ScreenProps & {
   program?: Program
@@ -18,22 +19,25 @@ export function Editor({
   loadProgram,
   isReadonly,
 }: EditorProps) {
-  const [text, setText] = useState<string>(() => {
+  const [text, setText] = useState<string>("")
+  const [title, setTitle] = useState<string>("")
+  useEffect(() => {
     if (program) {
-      return stringify(program)
+      const p = serialise(program)
+      setTitle(p.title)
+      setText(p.program)
     }
-    return ""
-  })
+  }, [program])
 
   const save = () => {
-    const program = parse(text) as Program
+    const program = parse(title, text)
     loadProgram(program)
     goToScreen(Screens.Timer)
   }
 
   return (
     <div className={css.main}>
-      <Toolbar>
+      <Toolbar showProgram={isReadonly}>
         <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
         <div style={{ flex: 1 }}></div>
         <button onClick={save} disabled={isReadonly}>
@@ -41,6 +45,15 @@ export function Editor({
         </button>
       </Toolbar>
 
+      {!isReadonly && (
+        <input
+          type="text"
+          defaultValue={title}
+          className={css.title}
+          onChange={(evt) => setTitle(evt.target.value)}
+          placeholder="Title"
+        />
+      )}
       <textarea
         className={css.editor}
         onChange={(evt) => {
@@ -49,6 +62,7 @@ export function Editor({
         onKeyDown={handleControlKeys}
         value={text}
         disabled={isReadonly}
+        placeholder="Program"
       ></textarea>
     </div>
   )

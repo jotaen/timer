@@ -3,7 +3,7 @@ import React from "react"
 import css from "./style.module.css"
 import { QRCodeSVG } from "qrcode.react"
 import { Program } from "../program.ts"
-import { serialise } from "../serialise.ts"
+import { encode } from "../encode.ts"
 import { Toolbar } from "../Main/Toolbar.tsx"
 import { ScreenProps, Screens } from "../Main"
 
@@ -16,7 +16,7 @@ export function Share({ goToScreen, program }: ShareProps) {
     window.location.hostname === "localhost"
       ? "https://geektimer.jotaen.net"
       : window.location.origin
-  const shareUrl = `${baseUrl}/#${serialise(program)}`
+  const shareUrl = `${baseUrl}/#${encode(program)}`
   return (
     <div>
       <Toolbar>

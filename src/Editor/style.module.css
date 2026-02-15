@@ -3,6 +3,13 @@
   flex-direction: column;
 }
 
+.title {
+  font-size: inherit;
+  font-family: inherit;
+  margin: 0.5em 0;
+  padding: 0.25em 0.5em;
+}
+
 .editor {
   font-size: 0.9em;
   font-family: inherit;

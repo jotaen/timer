@@ -8,15 +8,20 @@ import { STATUS } from "../useTicker.ts"
 export type ToolbarProps = {
   children: React.ReactNode
   isSubdued?: boolean
+  showProgram?: boolean
 }
 
-export function Toolbar({ children, isSubdued = true }: ToolbarProps) {
+export function Toolbar({
+  children,
+  isSubdued = true,
+  showProgram = true,
+}: ToolbarProps) {
   const { hasProgram, remaining, title, status } = useContext(ProgramContext)
   return (
     <div style={{ position: "relative" }}>
       <div className={css.logo}>Geek Timer</div>
       <div className={css.menubar}>{children}</div>
-      {hasProgram && (
+      {hasProgram && showProgram && (
         <div className={`${css.program} ${!isSubdued ? css.strong : ""}`}>
           {title}
           {status === STATUS.PAUSED && (

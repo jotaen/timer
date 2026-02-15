@@ -1,5 +1,5 @@
 import { Program } from "./program.ts"
-import { deserialise, serialise } from "./serialise.ts"
+import { decode, encode } from "./encode.ts"
 import { useState } from "react"
 
 export type UseProgram = {
@@ -11,7 +11,7 @@ export type UseProgram = {
 export function useProgram(): UseProgram {
   const programText = window.location.hash.substring(1)
   const [program, setProgram] = useState<Program | undefined>(() => {
-    const p = programText ? deserialise(programText) : undefined
+    const p = programText ? decode(programText) : undefined
     setPage(p)
     return p
   })
@@ -32,5 +32,5 @@ export function useProgram(): UseProgram {
 function setPage(p?: Program) {
   const prefix = p ? `${p.title} – ` : ""
   document.title = `${prefix}Geek Timer`
-  window.location.hash = p ? serialise(p) : ""
+  window.location.hash = p ? encode(p) : ""
 }

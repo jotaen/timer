@@ -1,93 +1,32 @@
-import { encode, decode } from "@msgpack/msgpack"
-import { Program, Item, Activity, Loop } from "./program.ts"
+import { Item, Program } from "./program.ts"
 
-const VERSION = 1
-
-export function serialise(p: Program): string {
-  const encoded = encode(compact.compact(p))
-  const blob = btoa(String.fromCharCode(...encoded))
-  return `${slugify(p.title)}/${VERSION};${blob}`
-}
-
-export function deserialise(serialisedProgram: string): Program {
-  const parts = serialisedProgram.match(/^(.+?)\/(.+?);(.+)$/)
-  if (!parts) {
-    throw new Error("Invalid Program!")
-  }
-  const [, _, version, blob] = parts
-  const buffer = new Uint8Array(Array.from(atob(blob), (c) => c.charCodeAt(0)))
-  const data = decode(buffer) as compact.program
-  return compact.decompact(data)
-}
-
-namespace compact {
-  export type program = {
-    t: Program["title"]
-    i: item[]
-  }
-
-  type activity = {
-    k: "A"
-    t: Activity["title"]
-    d: Activity["duration"]
-    s: Activity["skipLast"]
-  }
-
-  type loop = {
-    k: "L"
-    r: Loop["repeat"]
-    i: item[]
-  }
-
-  type item = activity | loop
-
-  export function decompact(p: program): Program {
-    function mapItems(items: item[]): Item[] {
-      return items.map((item) => {
-        switch (item.k) {
-          case "A":
-            return {
-              kind: "ACTIVITY",
-              title: item.t,
-              duration: item.d,
-              skipLast: item.s,
-            }
-          case "L":
-            return { kind: "LOOP", repeat: item.r, items: mapItems(item.i) }
-        }
-      })
-    }
-
-    return {
-      title: p.t,
-      items: mapItems(p.i),
-    }
-  }
-
-  export function compact(p: Program): program {
-    function mapItems(items: Item[]): item[] {
-      return items.map((item) => {
-        switch (item.kind) {
-          case "ACTIVITY":
-            return { k: "A", t: item.title, d: item.duration, s: item.skipLast }
-          case "LOOP":
-            return { k: "L", r: item.repeat, i: mapItems(item.items) }
-        }
-      })
-    }
-
-    return {
-      t: p.title,
-      i: mapItems(p.items),
-    }
+export function serialise(program: Program): {
+  title: string
+  program: string
+} {
+  return {
+    title: program.title,
+    program: serialiseItems(program.items, 0),
   }
 }
 
-function slugify(s: string) {
-  return s
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-    .replace(/-+/g, "-")
-    .replace(/^-+|-+$/g, "")
+function serialiseItems(items: Item[], indent: number): string {
+  const indentation = "  ".repeat(indent)
+  return items
+    .map((item) => {
+      switch (item.kind) {
+        case "ACTIVITY":
+          const hour = String(Math.floor(item.duration / 60))
+          const minute = String(item.duration % 60).padStart(2, "0")
+          const duration = `${hour}:${minute}`
+          const skipLast = item.skipLast ? "*" : ""
+          const title = item.title.length > 0 ? ` ${item.title}` : ""
+          return `${indentation}${duration}${skipLast}${title}`
+        case "LOOP":
+          const repeat = `${item.repeat}x`
+          const items = serialiseItems(item.items, indent + 1)
+          return `${indentation}${repeat}\n${items}`
+      }
+    })
+    .join("\n")
 }

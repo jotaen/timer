@@ -4,7 +4,7 @@ import css from "../Main/style.module.css"
 import { ScreenProps, Screens } from "../Main"
 import { Program } from "../program.ts"
 import { Toolbar } from "../Main/Toolbar.tsx"
-import { serialise } from "../serialise.ts"
+import { encode } from "../encode.ts"
 
 const samplePrograms: Program[] = [
   {
@@ -82,7 +82,7 @@ export function Menu({
           {samplePrograms.map((p) => (
             <a
               key={p.title}
-              href={`#${serialise(p)}`}
+              href={`#${encode(p)}`}
               onClick={(evt) => {
                 evt.preventDefault()
                 if (!confirm()) {
