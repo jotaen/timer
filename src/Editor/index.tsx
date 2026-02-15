@@ -49,7 +49,11 @@ export function Editor({
   return (
     <div className={css.main}>
       <Toolbar showProgram={isReadonly}>
-        <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
+        <button
+          onClick={() => goToScreen(program ? Screens.Timer : Screens.Menu)}
+        >
+          Back
+        </button>
         <div style={{ flex: 1 }}></div>
         <button onClick={save} disabled={isReadonly}>
           Save

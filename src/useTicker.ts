@@ -24,7 +24,12 @@ export type Ticker = {
   reset: () => void
 }
 
-export function useTicker(program: Program): Ticker {
+const voidProgram = { title: "", items: [] }
+
+export function useTicker(program?: Program): Ticker {
+  if (!program) {
+    program = voidProgram
+  }
   const [status, setStatus] = useState<STATUS>(STATUS.RESET)
   const [remaining, setRemaining] = useState<number>(0)
   const [tick, setTick] = useState<Tick | null>(null)

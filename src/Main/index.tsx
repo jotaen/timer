@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react"
+import React, { useState, createContext, useEffect } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { createRoot } from "react-dom/client"
@@ -27,11 +27,6 @@ export type ScreenProps = {
   goToScreen: (s: Screens) => void
 }
 
-const dummyProgram: Program = {
-  title: "",
-  items: [],
-}
-
 export const ProgramContext = createContext<{
   hasProgram: boolean
   title: string
@@ -46,36 +41,28 @@ export const ProgramContext = createContext<{
 
 function Main() {
   const { program, loadProgram, clearProgram } = useProgram()
-  const [screen, goToScreen] = useState<Screens>(Screens.Timer)
-  const ticker = useTicker(program || dummyProgram)
-  const isTimerActive =
-    ticker.status === STATUS.RUNNING || ticker.status === STATUS.PAUSED
+  const { screen, goToScreen } = useScreen(program)
+  const ticker = useTicker(program)
 
   const Screen: React.JSX.Element = (() => {
-    const MenuScreen = (
-      <Menu
-        program={program}
-        clearProgram={clearProgram}
-        loadProgram={loadProgram}
-        goToScreen={goToScreen}
-      />
-    )
-
     switch (screen) {
       case Screens.Menu:
-        return MenuScreen
-      case Screens.Timer:
-        return program ? (
-          <Timer goToScreen={goToScreen} ticker={ticker} />
-        ) : (
-          MenuScreen
+        return (
+          <Menu
+            program={program}
+            clearProgram={clearProgram}
+            loadProgram={loadProgram}
+            goToScreen={goToScreen}
+          />
         )
+      case Screens.Timer:
+        return <Timer goToScreen={goToScreen} ticker={ticker!} />
       case Screens.Editor:
         return (
           <Editor
             program={program}
             loadProgram={loadProgram}
-            isReadonly={isTimerActive}
+            isReadonly={ticker.status !== STATUS.RESET}
             goToScreen={goToScreen}
           />
         )
@@ -98,4 +85,15 @@ function Main() {
       <div className={css.main}>{Screen}</div>
     </ProgramContext>
   )
+}
+
+function useScreen(program?: Program) {
+  const [screen, setScreen] = useState<Screens>(
+    program ? Screens.Timer : Screens.Menu,
+  )
+  useEffect(() => {
+    // Make sure to reset screen after program reload.
+    setScreen(program ? Screens.Timer : Screens.Menu)
+  }, [program])
+  return { screen, goToScreen: setScreen }
 }
