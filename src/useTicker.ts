@@ -71,7 +71,7 @@ export function useTicker(program: Program, settings: Settings): Ticker {
   }
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | undefined = undefined
+    let interval: number | undefined = undefined
     const clear = () => {
       clearInterval(interval)
       interval = undefined
