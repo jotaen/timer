@@ -125,10 +125,62 @@ describe("parse()", () => {
         ],
       },
     },
+    {
+      desc: "leading blank lines",
+      input: ["\n  \nTest", "0:01"],
+      expect: {
+        title: "Test",
+        items: [{ kind: "ACTIVITY", title: "", duration: 1, skipLast: false }],
+      },
+    },
+    {
+      desc: "trailing blank lines",
+      input: ["Test", "0:01\n  \n"],
+      expect: {
+        title: "Test",
+        items: [{ kind: "ACTIVITY", title: "", duration: 1, skipLast: false }],
+      },
+    },
   ]
   tests.forEach(({ desc, input, expect }) => {
     it(`parses ${desc}`, () => {
       assert.deepStrictEqual(parse(input[0], input[1]), expect)
+    })
+  })
+
+  it("rejects invalid entry type", () => {
+    ;["hello", "1h30m Hello"].forEach((input) => {
+      assert.throws(() => parse("", input), /Invalid entry/, input)
+    })
+  })
+
+  it("rejects blank or empty lines in between", () => {
+    ;["0:10\n\n0:20", "0:10\n  \n0:20"].forEach((input) => {
+      assert.throws(() => parse("", input), /Illegal empty line/, input)
+    })
+  })
+
+  it("rejects invalid durations", () => {
+    ;["0:1", "0:60", "0:61", "0:100"].forEach((input) => {
+      assert.throws(() => parse("", input), /Invalid duration/, input)
+    })
+  })
+
+  it("rejects missing whitespace separator", () => {
+    ;["0:10Hello", "0:10**", "0:10*Hello"].forEach((input) => {
+      assert.throws(() => parse("", input), /Missing space separator/, input)
+    })
+  })
+
+  it("rejects illegal indentation sequences", () => {
+    ;[" 0:10", "   2x", "0:10\n 0:05"].forEach((input) => {
+      assert.throws(() => parse("", input), /Malformed indentation/, input)
+    })
+  })
+
+  it("rejects illegal indentation changes", () => {
+    ;["  0:10", "  2x", "0:10\n  0:05"].forEach((input) => {
+      assert.throws(() => parse("", input), /Invalid indentation/, input)
     })
   })
 })

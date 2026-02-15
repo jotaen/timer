@@ -18,3 +18,13 @@
   min-height: 15em;
   resize: vertical;
 }
+
+.error {
+  background-color: #ff9a9a;
+  color: #5b0000;
+  padding: 0.5em;
+}
+
+.errorDetails {
+  font-size: 0.8em;
+}
