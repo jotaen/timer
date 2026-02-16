@@ -52,6 +52,14 @@ function populateTabState(p?: Program, newHistoryEntry = true): void {
 }
 
 function loadFromUrl(): Program | undefined {
-  const programText = window.location.hash.substring(1)
-  return programText ? decode(programText) : undefined
+  const blob = window.location.hash.substring(1)
+  if (!blob) {
+    return undefined
+  }
+  try {
+    return decode(blob)
+  } catch (e) {
+    console.error(e)
+    return undefined
+  }
 }

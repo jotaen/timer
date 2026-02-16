@@ -6,22 +6,29 @@ const VERSION = 1
 
 export function encode(p: Program): string {
   const s = serialise(p)
-  const text = `${s.title}\n${s.program}`
-  return `${slugify(p.title)}/${VERSION};${btoa(text)}`
+  const blob = btoa(`${s.title}\n${s.program}`)
+  return `${slugify(p.title)}/${VERSION}:${crc32ish(blob)}:${blob}`
 }
 
-export function decode(serialisedProgram: string): Program {
-  const parts = serialisedProgram.match(/^(.+?)\/(.+?);(.+)$/)
-  if (!parts) {
-    throw new Error("Invalid Program!")
-  }
-  const [, _, version, blob] = parts
+export function decode(encodedData: string): Program {
+  const { version, checksum, blob } = (() => {
+    const parts = encodedData.match(/^(.*)\/(\d+):(.{4}):(.+)$/) || []
+    if (!parts.length) {
+      throw new Error("Invalid URL")
+    }
+    return { version: parseInt(parts[2]), checksum: parts[3], blob: parts[4] }
+  })()
   const text = atob(blob)
+  if (crc32ish(blob) !== checksum) {
+    throw new Error("Checksum mismatch")
+  }
   const firstLineBreak = text.indexOf("\n")
-  return parse(
-    text.substring(0, firstLineBreak),
-    text.substring(firstLineBreak + 1),
-  )
+  const programText = text.substring(firstLineBreak + 1)
+  const title = text.substring(0, firstLineBreak)
+  if (version <= 0 || version > VERSION) {
+    throw new Error(`Unsupported encoding version ${version}`)
+  }
+  return parse(title, programText)
 }
 
 function slugify(s: string) {
@@ -31,4 +38,19 @@ function slugify(s: string) {
     .replace(/[^a-z0-9-]/g, "")
     .replace(/-+/g, "-")
     .replace(/^-+|-+$/g, "")
+}
+
+function crc32ish(text: string): string {
+  let crc = 0xffffffff
+  for (let i = 0; i < text.length; i++) {
+    const byte = text.charCodeAt(i)
+    crc ^= byte
+    for (let j = 0; j < 8; j++) {
+      crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1))
+    }
+  }
+  return ((crc ^ 0xffffffff) >>> 0)
+    .toString(36)
+    .padStart(4, "0")
+    .substring(0, 4)
 }
