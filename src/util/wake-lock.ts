@@ -1,19 +1,30 @@
-export class WakeLock {
-  // https://developer.mozilla.org/en-US/docs/Web/API/Screen_Wake_Lock_API
+import { useCallback, useRef } from "react"
 
-  wakeLock: any = null
+export function useWakeLock() {
+  const lockRef = useRef<WakeLockSentinel | null>(null)
 
-  async on() {
+  const on = useCallback(async () => {
     if (!("wakeLock" in navigator)) {
       return
     }
-    this.wakeLock = await navigator.wakeLock.request("screen")
-  }
 
-  async off() {
-    if (!this.wakeLock) {
+    off()
+
+    try {
+      lockRef.current = (await navigator.wakeLock.request("screen")) ?? null
+    } catch {}
+  }, [])
+
+  const off = useCallback(async () => {
+    if (!lockRef.current) {
       return
     }
-    await this.wakeLock.release()
-  }
+
+    try {
+      await lockRef.current.release()
+      lockRef.current = null
+    } catch {}
+  }, [])
+
+  return { on, off }
 }

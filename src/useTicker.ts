@@ -5,6 +5,7 @@ import { Beeper } from "./util/beeper.ts"
 import { Voice } from "./util/voice.ts"
 import { useSettings } from "./Settings/useSettings.ts"
 import { useInterval } from "./util/interval.ts"
+import { useWakeLock } from "./util/wake-lock.ts"
 
 const beeper = new Beeper()
 const voice = new Voice()
@@ -35,6 +36,7 @@ export function useTicker(program?: Program): Ticker {
   const [tick, setTick] = useState<Tick | null>(null)
   const [ticker, setTicker] = useState<Generator<Tick>>()
   const settings = useSettings()
+  const wakeLock = useWakeLock()
   const interval = useInterval(() => {
     if (!ticker) {
       return
@@ -66,11 +68,13 @@ export function useTicker(program?: Program): Ticker {
   const run = () => {
     interval.start()
     setStatus(STATUS.RUNNING)
+    wakeLock.on()
   }
 
   const pause = () => {
     interval.stop()
     setStatus(STATUS.PAUSED)
+    wakeLock.off()
   }
 
   const reset = () => {
@@ -79,6 +83,7 @@ export function useTicker(program?: Program): Ticker {
     setTicker(createTicker(program.items))
     setRemaining(totalDuration(program.items))
     setStatus(STATUS.RESET)
+    wakeLock.off()
   }
 
   // Trigger (initial) reset.
