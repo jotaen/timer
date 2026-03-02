@@ -4,8 +4,8 @@ import { Program } from "./program.ts"
 import { Beeper } from "./util/beeper.ts"
 import { Voice } from "./util/voice.ts"
 import { useSettings } from "./Settings/useSettings.ts"
-import { useInterval } from "./util/interval.ts"
-import { useWakeLock } from "./util/wake-lock.ts"
+import { useInterval } from "./util/useInterval.ts"
+import { useWakeLock } from "./util/useWakeLock.ts"
 
 const beeper = new Beeper()
 const voice = new Voice()
