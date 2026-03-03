@@ -46,6 +46,8 @@ export function Editor({
     setParseError(null)
   }
 
+  const isEmpty = text.trim() === "" // Empty title is fine.
+
   return (
     <div className={css.main}>
       <Toolbar showProgram={isReadonly}>
@@ -55,7 +57,7 @@ export function Editor({
           Back
         </button>
         <div style={{ flex: 1 }}></div>
-        <button onClick={save} disabled={isReadonly}>
+        <button onClick={save} disabled={isReadonly || isEmpty}>
           Save
         </button>
       </Toolbar>
@@ -63,7 +65,7 @@ export function Editor({
       {!isReadonly && (
         <input
           type="text"
-          defaultValue={title}
+          value={title}
           className={css.title}
           onChange={(evt) => setTitle(evt.target.value)}
           placeholder="Title"
