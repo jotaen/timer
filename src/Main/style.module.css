@@ -1,7 +1,8 @@
 html {
   background-color: black;
+  font-family: "Cascadia Mono", monospace;
+  font-variant-numeric: slashed-zero;
   color: #fff;
-  font-family: monospace;
   font-size: 18px;
   margin: 0;
   padding: 0;
@@ -11,6 +12,7 @@ button {
   cursor: pointer;
   text-transform: uppercase;
   font-family: inherit;
+  font-size: 0.8em;
 }
 
 button:disabled,
@@ -45,5 +47,5 @@ a:hover {
 
 .main {
   margin: 0 auto;
-  max-width: 600px;
+  max-width: 700px;
 }
