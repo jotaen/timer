@@ -18,6 +18,18 @@ body {
   padding: 0;
 }
 
+a,
+a:visited,
+a:active {
+  color: #9595fb;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #dbc3ff;
+  text-decoration: underline;
+}
+
 .main {
   margin: 0 auto;
   max-width: 600px;
