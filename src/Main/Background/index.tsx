@@ -1,43 +1,55 @@
-import React, { useMemo } from "react"
+import React, { useEffect, useRef } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
 interface BlobDef {
-  color1: string
-  color2: string
-  sizeVmin: number
+  color: string // single CSS color, we build the radial gradient ourselves
+  radius: number // as fraction of vmin (0–1), e.g. 0.55 = 55vmin
 }
 
-interface BlobConfig extends BlobDef {
-  top: number
-  left: number
-  duration: number
-  delay: number
-  keyframeName: string
-  keyframeCSS: string
+interface Waypoint {
+  x: number // 0–1 fraction of canvas width
+  y: number // 0–1 fraction of canvas height
+  scale: number
 }
+
+interface BlobState {
+  def: BlobDef
+  waypoints: Waypoint[]
+  duration: number // ms for one full alternate cycle
+  offset: number // ms, initial phase offset
+}
+
+// ---------------------------------------------------------------------------
+// Blob definitions — same palette as before
+// ---------------------------------------------------------------------------
 
 const BLOBS: BlobDef[] = [
   // Large slow anchors
-  { color1: "#5b21b6", color2: "#7c3aed44", sizeVmin: 110 },
-  { color1: "#0c4a6e", color2: "#0ea5e944", sizeVmin: 100 },
-  { color1: "#831843", color2: "#ec489944", sizeVmin: 95 },
-  { color1: "#134e4a", color2: "#0d948844", sizeVmin: 105 },
+  { color: "rgba(60,  20, 120, 0.40)", radius: 0.55 },
+  { color: "rgba(10,  50,  90, 0.40)", radius: 0.5 },
+  { color: "rgba(90,  15,  50, 0.40)", radius: 0.48 },
+  { color: "rgba(12,  55,  52, 0.40)", radius: 0.52 },
   // Mid-size roamers
-  { color1: "#064e3b", color2: "#10b98144", sizeVmin: 70 },
-  { color1: "#7c2d12", color2: "#f9731644", sizeVmin: 65 },
-  { color1: "#1e1b4b", color2: "#818cf844", sizeVmin: 60 },
-  { color1: "#4a1942", color2: "#d946ef44", sizeVmin: 68 },
-  { color1: "#1e3a5f", color2: "#3b82f644", sizeVmin: 62 },
-  // Small fast accents
-  { color1: "#fcd34d88", color2: "transparent", sizeVmin: 42 },
-  { color1: "#f0abfc88", color2: "transparent", sizeVmin: 38 },
-  { color1: "#67e8f988", color2: "transparent", sizeVmin: 45 },
-  { color1: "#a7f3d088", color2: "transparent", sizeVmin: 35 },
-  { color1: "#fb923c88", color2: "transparent", sizeVmin: 38 },
-  { color1: "#a78bfa88", color2: "transparent", sizeVmin: 40 },
-  { color1: "#34d39988", color2: "transparent", sizeVmin: 32 },
+  { color: "rgba(5,   55,  40, 0.35)", radius: 0.35 },
+  { color: "rgba(55,  15,  50, 0.35)", radius: 0.34 },
+  { color: "rgba(20,  30,  80, 0.35)", radius: 0.38 },
+  { color: "rgba(70,  10,  30, 0.35)", radius: 0.32 },
+  { color: "rgba(10,  60,  70, 0.35)", radius: 0.36 },
+  // Small accents
+  { color: "rgba(180, 150, 50,  0.25)", radius: 0.21 },
+  { color: "rgba(60,  170, 185, 0.25)", radius: 0.23 },
+  { color: "rgba(160, 80,  180, 0.25)", radius: 0.19 },
+  { color: "rgba(50,  140, 100, 0.25)", radius: 0.2 },
 ]
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 function rand(min: number, max: number): number {
   return Math.random() * (max - min) + min
@@ -47,18 +59,20 @@ function randInt(min: number, max: number): number {
   return Math.floor(rand(min, max))
 }
 
-function spreadPositions(count: number): Array<{ top: number; left: number }> {
+/**
+ * Grid-based spread so blobs start evenly distributed,
+ * with a small jitter so it doesn't look rigid.
+ */
+function spreadPositions(count: number): Array<{ x: number; y: number }> {
   const cols = Math.ceil(Math.sqrt(count))
   const rows = Math.ceil(count / cols)
-  const jitter = 0.35
-
-  const topMin = 5,
-    topMax = 85
-  const leftMin = 5,
-    leftMax = 85
-
-  const cellW = (leftMax - leftMin) / cols
-  const cellH = (topMax - topMin) / rows
+  const jitter = 0.3
+  const xMin = 0.05,
+    xMax = 0.85
+  const yMin = 0.05,
+    yMax = 0.85
+  const cellW = (xMax - xMin) / cols
+  const cellH = (yMax - yMin) / rows
 
   const cells = Array.from({ length: cols * rows }, (_, i) => i)
     .sort(() => Math.random() - 0.5)
@@ -67,73 +81,159 @@ function spreadPositions(count: number): Array<{ top: number; left: number }> {
   return cells.map((cell) => {
     const col = cell % cols
     const row = Math.floor(cell / cols)
-    const centerLeft = leftMin + cellW * (col + 0.5)
-    const centerTop = topMin + cellH * (row + 0.5)
     return {
-      left: centerLeft + rand(-cellW * jitter, cellW * jitter),
-      top: centerTop + rand(-cellH * jitter, cellH * jitter),
+      x: xMin + cellW * (col + 0.5) + rand(-cellW * jitter, cellW * jitter),
+      y: yMin + cellH * (row + 0.5) + rand(-cellH * jitter, cellH * jitter),
     }
   })
 }
 
-function makeKeyframes(id: number): string {
-  const steps = randInt(3, 5)
-  const frames: string[] = ["0% { transform: translate(0vw, 0vh) scale(1); }"]
-
-  for (let i = 1; i < steps; i++) {
-    const pct = Math.round((i / steps) * 100)
-    const tx = rand(-20, 20).toFixed(1)
-    const ty = rand(-15, 15).toFixed(1)
-    const sc = rand(0.88, 1.2).toFixed(2)
-    frames.push(
-      `${pct}% { transform: translate(${tx}vw, ${ty}vh) scale(${sc}); }`,
-    )
+function generateWaypoints(start: { x: number; y: number }): Waypoint[] {
+  const count = randInt(3, 5)
+  const pts: Waypoint[] = [{ x: start.x, y: start.y, scale: 1 }]
+  for (let i = 0; i < count; i++) {
+    pts.push({
+      x: Math.max(0, Math.min(1, start.x + rand(-0.25, 0.25))),
+      y: Math.max(0, Math.min(1, start.y + rand(-0.2, 0.2))),
+      scale: rand(0.88, 1.2),
+    })
   }
-
-  const tx = rand(-20, 20).toFixed(1)
-  const ty = rand(-15, 15).toFixed(1)
-  const sc = rand(0.88, 1.2).toFixed(2)
-  frames.push(`100% { transform: translate(${tx}vw, ${ty}vh) scale(${sc}); }`)
-
-  return `@keyframes blob-${id} { ${frames.join(" ")} }`
+  return pts
 }
 
-function generateBlobs(): BlobConfig[] {
+function initBlobs(): BlobState[] {
   const positions = spreadPositions(BLOBS.length)
-
   return BLOBS.map((def, i) => ({
-    ...def,
-    top: positions[i].top,
-    left: positions[i].left,
-    duration: parseFloat(rand(8, 28).toFixed(1)),
-    delay: parseFloat(rand(-20, 0).toFixed(1)),
-    keyframeName: `blob-${i}`,
-    keyframeCSS: makeKeyframes(i),
+    def,
+    waypoints: generateWaypoints(positions[i]),
+    duration: rand(20000, 50000),
+    offset: rand(0, 50000),
   }))
 }
 
+// ---------------------------------------------------------------------------
+// Easing
+// ---------------------------------------------------------------------------
+
+function easeInOut(t: number): number {
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+}
+
+/**
+ * Ping-pong t in [0,1] → alternates forward/backward through waypoints.
+ * Returns interpolated {x, y, scale} for the current moment in time.
+ */
+function interpolateWaypoints(
+  waypoints: Waypoint[],
+  progress: number, // 0–1, ping-pong progress
+): Waypoint {
+  const segments = waypoints.length - 1
+  const scaled = progress * segments
+  const idx = Math.min(Math.floor(scaled), segments - 1)
+  const t = easeInOut(scaled - idx)
+  const a = waypoints[idx]
+  const b = waypoints[idx + 1]
+  return {
+    x: a.x + (b.x - a.x) * t,
+    y: a.y + (b.y - a.y) * t,
+    scale: a.scale + (b.scale - a.scale) * t,
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Canvas rendering
+// ---------------------------------------------------------------------------
+
+/**
+ * We render at half the device pixel ratio — the content is so blurry
+ * that the quality difference is invisible, but it halves the texture size
+ * (and therefore roughly quarters the blur pass cost on Retina displays).
+ */
+const RENDER_SCALE = 0.3
+const TARGET_FPS = 12
+const FRAME_MS = 1000 / TARGET_FPS
+
+function drawFrame(
+  ctx: CanvasRenderingContext2D,
+  blobs: BlobState[],
+  w: number,
+  h: number,
+  now: number,
+): void {
+  const vmin = Math.min(w, h)
+
+  ctx.clearRect(0, 0, w, h)
+
+  // Dark base
+  ctx.fillStyle = "#060612"
+  ctx.fillRect(0, 0, w, h)
+
+  for (const blob of blobs) {
+    // Ping-pong: triangle wave from offset + now
+    const elapsed = (now + blob.offset) % (blob.duration * 2)
+    const forward = elapsed < blob.duration
+    const t = forward
+      ? elapsed / blob.duration
+      : 1 - (elapsed - blob.duration) / blob.duration
+    const wp = interpolateWaypoints(blob.waypoints, t)
+
+    const cx = wp.x * w
+    const cy = wp.y * h
+    const radius = blob.def.radius * vmin * wp.scale
+
+    const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius)
+    gradient.addColorStop(0, blob.def.color)
+    gradient.addColorStop(0.6, blob.def.color.replace(/[\d.]+\)$/, "0.15)"))
+    gradient.addColorStop(1, "transparent")
+
+    ctx.globalCompositeOperation = "screen"
+    ctx.beginPath()
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+    ctx.fillStyle = gradient
+    ctx.fill()
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
 export function Background() {
-  const blobs = useMemo<BlobConfig[]>(generateBlobs, [])
-  return (
-    <>
-      <style>{blobs.map((b) => b.keyframeCSS).join("\n")}</style>
-      <div className={css.stage}>
-        {blobs.map((b, i) => (
-          <div
-            key={i}
-            className={css.blob}
-            style={{
-              width: `${b.sizeVmin}vmin`,
-              height: `${b.sizeVmin}vmin`,
-              top: `${b.top}%`,
-              left: `${b.left}%`,
-              background: `radial-gradient(circle, ${b.color1}, ${b.color2} 60%, transparent 80%)`,
-              animation: `${b.keyframeName} ${b.duration}s ease-in-out infinite alternate`,
-              animationDelay: `${b.delay}s`,
-            }}
-          />
-        ))}
-      </div>
-    </>
-  )
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    const blobs = initBlobs()
+    let rafId = 0
+    let lastFrame = 0
+
+    function resize() {
+      const w = Math.floor(window.innerWidth * RENDER_SCALE)
+      const h = Math.floor(window.innerHeight * RENDER_SCALE)
+      canvas!.width = w
+      canvas!.height = h
+    }
+
+    function loop(now: number) {
+      rafId = requestAnimationFrame(loop)
+      if (now - lastFrame < FRAME_MS) return
+      lastFrame = now
+      drawFrame(ctx!, blobs, canvas!.width, canvas!.height, now)
+    }
+
+    resize()
+    window.addEventListener("resize", resize)
+    rafId = requestAnimationFrame(loop)
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      window.removeEventListener("resize", resize)
+    }
+  }, [])
+
+  return <canvas ref={canvasRef} className={css.canvas} />
 }
