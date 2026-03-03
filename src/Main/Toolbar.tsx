@@ -19,7 +19,7 @@ export function Toolbar({
   const { hasProgram, remaining, title, status } = useContext(ProgramContext)
   return (
     <div style={{ position: "relative" }}>
-      <div className={css.logo}>Geek Timer</div>
+      <div className={css.logo}>Timer</div>
       <div className={css.menubar}>{children}</div>
       {hasProgram && showProgram && (
         <div className={`${css.program} ${!isSubdued ? css.strong : ""}`}>

@@ -42,7 +42,7 @@ export function useProgram(): UseProgram {
 
 function populateTabState(p?: Program, newHistoryEntry = true): void {
   const prefix = p ? `${p.title} – ` : ""
-  document.title = `${prefix}Geek Timer`
+  document.title = `${prefix}Timer`
   const hash = p ? `/#${encode(p)}` : "/"
   if (newHistoryEntry) {
     window.history.pushState({}, "", hash)
