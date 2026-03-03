@@ -22,6 +22,13 @@ input:disabled {
 body {
   margin: 0;
   padding: 0;
+  height: 100vh;
+}
+
+:global(#app) {
+  height: 100vh;
+  padding-top: 2vh;
+  box-sizing: border-box;
 }
 
 a,
@@ -38,5 +45,5 @@ a:hover {
 
 .main {
   margin: 0 auto;
-  max-width: 600px;
+  width: 600px;
 }
