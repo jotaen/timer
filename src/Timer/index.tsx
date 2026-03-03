@@ -4,7 +4,7 @@ import css from "./style.module.css"
 import { formatClock } from "../format"
 import { STATUS, Ticker } from "../useTicker.ts"
 import { Screens, ScreenProps } from "../Main"
-import { Toolbar } from "../Main/Toolbar"
+import { Toolbar } from "../Toolbar"
 
 export type TimerProps = ScreenProps & {
   ticker: Ticker

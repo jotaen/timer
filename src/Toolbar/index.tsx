@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 // @ts-ignore
 import css from "./style.module.css"
-import { ProgramContext } from "./index.tsx"
+import { ProgramContext } from "../Main"
 import { formatClock } from "../format.ts"
 import { STATUS } from "../useTicker.ts"
 
@@ -18,7 +18,7 @@ export function Toolbar({
 }: ToolbarProps) {
   const { hasProgram, remaining, title, status } = useContext(ProgramContext)
   return (
-    <div style={{ position: "relative" }}>
+    <div className={css.container}>
       <div className={css.logo}>Timer</div>
       <div className={css.menubar}>{children}</div>
       {hasProgram && showProgram && (

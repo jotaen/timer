@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { ScreenProps, Screens } from "../Main"
-import { Toolbar } from "../Main/Toolbar"
+import { Toolbar } from "../Toolbar"
 import { Program } from "../program.ts"
 import { serialise } from "../serialise.ts"
 import { parse, ParseError } from "../parse.ts"

@@ -2,7 +2,7 @@ import React from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { Screens, ScreenProps } from "../Main"
-import { Toolbar } from "../Main/Toolbar"
+import { Toolbar } from "../Toolbar"
 import { useSettings } from "./useSettings.ts"
 
 export type SettingsProps = ScreenProps & {}

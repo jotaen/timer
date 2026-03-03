@@ -1,0 +1,55 @@
+.container {
+  position: relative;
+}
+
+.menubar {
+  display: flex;
+  gap: 0.5em;
+  padding: 0.5em;
+  min-height: 1em;
+  background-color: rgba(50 50 50 / 0.5);
+  border: 1px solid #666;
+  border-radius: 5px;
+}
+
+.menu {
+  text-align: center;
+}
+
+.logo {
+  position: absolute;
+  height: 2.7em;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 8em;
+  text-align: center;
+  color: #9f9d8d;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.program {
+  background-color: #222;
+  padding: 0.5em;
+  display: flex;
+  font-size: 0.75em;
+  color: #ccc;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.strong {
+  background-color: unset;
+  font-size: 1em;
+}
+
+.status {
+  font-style: italic;
+  margin-left: 0.5em;
+}

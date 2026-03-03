@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react"
 import css from "../Main/style.module.css"
 import { ScreenProps, Screens } from "../Main"
 import { Program } from "../program.ts"
-import { Toolbar } from "../Main/Toolbar.tsx"
+import { Toolbar } from "../Toolbar"
 import { encode } from "../encode.ts"
 
 const samplePrograms: Program[] = [
