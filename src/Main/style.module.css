@@ -22,12 +22,12 @@ input:disabled {
 body {
   margin: 0;
   padding: 0;
-  height: 100vh;
+  height: 100dvh;
 }
 
 :global(#app) {
-  height: 100vh;
-  padding: 2vh 0.5em 0.5em 0.5em;
+  height: 100dvh;
+  padding: 2dvh 0.5em 0.5em 0.5em;
   box-sizing: border-box;
 }
 
