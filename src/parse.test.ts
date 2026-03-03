@@ -148,6 +148,10 @@ describe("parse()", () => {
     })
   })
 
+  it("rejects too long title", () => {
+    assert.throws(() => parse("1234567890123456789012345678901", ""), /Title/)
+  })
+
   it("rejects invalid entry type", () => {
     ;["hello", "1h30m Hello"].forEach((input) => {
       assert.throws(() => parse("", input), /Invalid entry/, input)

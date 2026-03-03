@@ -67,6 +67,7 @@ export function Editor({
           className={css.title}
           onChange={(evt) => setTitle(evt.target.value)}
           placeholder="Title"
+          maxLength={30}
         />
       )}
       {parseError && (

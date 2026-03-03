@@ -1,6 +1,9 @@
 import { Item, Program } from "./program.ts"
 
 export function parse(title: string, text: string): Program {
+  if (title.length > 30) {
+    throw new Error("Title cannot be longer than 30 characters")
+  }
   const lines = trimLeadingAndTrailingBlankLines(
     text.replace(/\r\n/g, "\n").split("\n").map(makeLine),
   )
