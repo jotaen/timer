@@ -22,12 +22,12 @@ export function decode(encodedData: string): Program {
     }
     return { version: parseInt(parts[2]), checksum: parts[3], blob: parts[4] }
   })()
-  const text = new TextDecoder().decode(
-    Uint8Array.from(atob(blob), (c) => c.charCodeAt(0)),
-  )
   if (crc32ish(blob) !== checksum) {
     throw new Error("Checksum mismatch")
   }
+  const text = new TextDecoder().decode(
+    Uint8Array.from(atob(blob), (c) => c.charCodeAt(0)),
+  )
   const firstLineBreak = text.indexOf("\n")
   const programText = text.substring(firstLineBreak + 1)
   const title = text.substring(0, firstLineBreak)
