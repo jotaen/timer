@@ -6,7 +6,11 @@ const VERSION = 1
 
 export function encode(p: Program): string {
   const s = serialise(p)
-  const blob = btoa(`${s.title}\n${s.program}`)
+  const blob = btoa(
+    String.fromCharCode(
+      ...new TextEncoder().encode(`${s.title}\n${s.program}`),
+    ),
+  )
   return `${slugify(p.title)}/${VERSION}:${crc32ish(blob)}:${blob}`
 }
 
@@ -18,7 +22,9 @@ export function decode(encodedData: string): Program {
     }
     return { version: parseInt(parts[2]), checksum: parts[3], blob: parts[4] }
   })()
-  const text = atob(blob)
+  const text = new TextDecoder().decode(
+    Uint8Array.from(atob(blob), (c) => c.charCodeAt(0)),
+  )
   if (crc32ish(blob) !== checksum) {
     throw new Error("Checksum mismatch")
   }
