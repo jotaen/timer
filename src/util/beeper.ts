@@ -28,6 +28,9 @@ export class Beeper {
     const oscillator = this.audioCtx.createOscillator()
     const gainNode = this.audioCtx.createGain()
     oscillator.connect(gainNode)
+    oscillator.onended = () => {
+      console.debug("Audio context: beep ended")
+    }
     gainNode.connect(this.audioCtx.destination)
     gainNode.gain.value = 0.5 // volume
     oscillator.frequency.value = frequency
