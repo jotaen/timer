@@ -10,6 +10,7 @@ import { Program } from "../program.ts"
 import { Menu } from "../Menu"
 import { STATUS, useTicker } from "../useTicker.ts"
 import { useProgram } from "./useProgram.ts"
+import { Background } from "./Background"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
@@ -82,6 +83,7 @@ function Main() {
         status: ticker.status,
       }}
     >
+      <Background />
       <div className={css.main}>{Screen}</div>
     </ProgramContext>
   )

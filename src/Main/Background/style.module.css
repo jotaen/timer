@@ -1,0 +1,17 @@
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #060612;
+  filter: blur(clamp(40px, 8cqi, 110px)) saturate(130%) contrast(1.08);
+  container-type: inline-size;
+  z-index: -1;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  will-change: transform;
+}
