@@ -91,9 +91,5 @@ function useScreen(program?: Program) {
   const [screen, setScreen] = useState<Screens>(
     program ? Screens.Timer : Screens.Menu,
   )
-  useEffect(() => {
-    // Make sure to reset screen after program reload.
-    setScreen(program ? Screens.Timer : Screens.Menu)
-  }, [program])
   return { screen, goToScreen: setScreen }
 }
