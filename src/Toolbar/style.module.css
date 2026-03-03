@@ -14,7 +14,7 @@
 
 .logo {
   position: absolute;
-  height: 2.7em;
+  height: 3em;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -29,15 +29,10 @@
 }
 
 .program {
-  background-color: #222;
   padding: 0.5em;
   display: flex;
-  font-size: 0.75em;
+  font-size: 0.8em;
   color: #ccc;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
 }
 
 .strong {

@@ -2,16 +2,33 @@ html {
   background-color: black;
   font-family: "Cascadia Mono", monospace;
   font-variant-numeric: slashed-zero;
+  font-weight: 350;
   color: #fff;
   font-size: 18px;
   margin: 0;
   padding: 0;
 }
 
+button,
+textarea,
+input {
+  font-family: inherit;
+}
+
+b,
+strong,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+}
+
 button {
   cursor: pointer;
   text-transform: uppercase;
-  font-family: inherit;
   font-size: 0.8em;
 }
 
@@ -19,6 +36,15 @@ button:disabled,
 textarea:disabled,
 input:disabled {
   cursor: not-allowed;
+}
+
+textarea,
+textarea:disabled,
+input {
+  background-color: rgba(255 255 255 / 0.15);
+  border: 1px solid #acacac;
+  border-radius: 4px;
+  color: inherit;
 }
 
 body {
