@@ -18,7 +18,14 @@ export function Settings({ goToScreen }: SettingsProps) {
       <h2>Audio</h2>
       <Setting
         title="“Beep” Count Down"
-        explanation="Whether to count down the last 3 seconds of an activity with a “beep” sound."
+        explanation={
+          <>
+            Whether to count down the last 3 seconds of an activity with a
+            “beep” sound.
+            <br />
+            Note: make sure to unsilence your device for this to work.
+          </>
+        }
       >
         <input
           type="checkbox"
@@ -46,7 +53,7 @@ function Setting({
   children,
 }: {
   title: string
-  explanation?: string
+  explanation?: React.ReactNode
   children: React.ReactNode
 }) {
   return (
