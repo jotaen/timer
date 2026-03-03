@@ -1,15 +1,22 @@
 export class Beeper {
   private audioCtx: AudioContext | undefined
 
-  constructor() {
-    this.audioCtx = new (
-      window.AudioContext ||
-      (window as any).webkitAudioContext ||
-      (window as any).audioContext
-    )()
+  async activate() {
+    if (!this.audioCtx) {
+      this.audioCtx = new (
+        window.AudioContext ||
+        (window as any).webkitAudioContext ||
+        (window as any).audioContext
+      )()
+    }
+
+    if (this.audioCtx.state === "suspended") {
+      await this.audioCtx.resume()
+    }
   }
 
-  beep(frequency: number, duration: number) {
+  async beep(frequency: number, duration: number) {
+    await this.activate()
     if (!this.audioCtx) {
       return
     }

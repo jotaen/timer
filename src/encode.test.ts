@@ -7,7 +7,10 @@ describe("encode()", () => {
     assert.match(encode({ title: "", items: [] }), /^\//)
     assert.match(encode({ title: "Hello World!", items: [] }), /^hello-world\//)
     assert.match(encode({ title: "hello-world", items: [] }), /^hello-world\//)
-    assert.match(encode({ title: "Hey! 😀ö↓¼ foo \"\']}", items: [] }), /^hey-foo\//)
+    assert.match(
+      encode({ title: "Hey! 😀ö↓¼ foo \"\']}", items: [] }),
+      /^hey-foo\//,
+    )
   })
 
   it("encodes the program", () => {
