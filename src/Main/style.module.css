@@ -27,7 +27,7 @@ body {
 
 :global(#app) {
   height: 100vh;
-  padding-top: 2vh;
+  padding: 2vh 0.5em 0.5em 0.5em;
   box-sizing: border-box;
 }
 
@@ -45,5 +45,5 @@ a:hover {
 
 .main {
   margin: 0 auto;
-  width: 600px;
+  max-width: 600px;
 }
