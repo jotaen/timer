@@ -150,7 +150,7 @@ function interpolateWaypoints(
  * (and therefore roughly quarters the blur pass cost on Retina displays).
  */
 const RENDER_SCALE = 0.3
-const TARGET_FPS = 12
+const TARGET_FPS = 15
 const FRAME_MS = 1000 / TARGET_FPS
 
 function drawFrame(
@@ -210,18 +210,29 @@ export function Background() {
     const blobs = initBlobs()
     let rafId = 0
     let lastFrame = 0
+    let pendingW = Math.floor(window.innerWidth * RENDER_SCALE)
+    let pendingH = Math.floor(window.innerHeight * RENDER_SCALE)
 
+    // Don't touch canvas.width/height directly on resize — that clears the
+    // canvas instantly and causes a flicker. Instead just store the desired
+    // size and apply it at the start of the next draw, right before we paint.
     function resize() {
-      const w = Math.floor(window.innerWidth * RENDER_SCALE)
-      const h = Math.floor(window.innerHeight * RENDER_SCALE)
-      canvas!.width = w
-      canvas!.height = h
+      pendingW = Math.floor(window.innerWidth * RENDER_SCALE)
+      pendingH = Math.floor(window.innerHeight * RENDER_SCALE)
     }
 
     function loop(now: number) {
       rafId = requestAnimationFrame(loop)
       if (now - lastFrame < FRAME_MS) return
       lastFrame = now
+
+      // Apply any pending resize immediately before drawing so there is
+      // never a frame where the canvas is blank.
+      if (canvas!.width !== pendingW || canvas!.height !== pendingH) {
+        canvas!.width = pendingW
+        canvas!.height = pendingH
+      }
+
       drawFrame(ctx!, blobs, canvas!.width, canvas!.height, now)
     }
 
