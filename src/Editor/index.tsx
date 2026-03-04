@@ -6,6 +6,7 @@ import { Toolbar } from "../Toolbar"
 import { Program } from "../program.ts"
 import { serialise } from "../serialise.ts"
 import { parse, ParseError } from "../parse.ts"
+import { useNavigationGuard } from "../util/useNavigationGuard.ts"
 
 export type EditorProps = ScreenProps & {
   program?: Program
@@ -19,12 +20,16 @@ export function Editor({
   loadProgram,
   isReadonly,
 }: EditorProps) {
+  const [initialText, setInitialText] = useState<string>("")
   const [text, setText] = useState<string>("")
   const [title, setTitle] = useState<string>("")
   const [parseError, setParseError] = useState<ParseError | Error | null>(null)
+  const navigationGuard = useNavigationGuard()
+
   useEffect(() => {
     if (program) {
       const p = serialise(program)
+      setInitialText(p.program)
       setTitle(p.title)
       setText(p.program)
     }
@@ -35,13 +40,15 @@ export function Editor({
       const program = parse(title, text)
       loadProgram(program)
       goToScreen(Screens.Timer)
+      navigationGuard.disable()
     } catch (e) {
       setParseError(e as Error)
       return
     }
   }
 
-  const handleChange = (text: string) => {
+  const handleTextChange = (text: string) => {
+    navigationGuard.enable(text !== initialText)
     setText(text)
     setParseError(null)
   }
@@ -52,7 +59,12 @@ export function Editor({
     <div className={css.main}>
       <Toolbar showProgram={isReadonly}>
         <button
-          onClick={() => goToScreen(program ? Screens.Timer : Screens.Menu)}
+          onClick={() => {
+            if (!navigationGuard.checkAndConfirm()) {
+              return
+            }
+            goToScreen(program ? Screens.Timer : Screens.Menu)
+          }}
         >
           Back
         </button>
@@ -91,12 +103,12 @@ export function Editor({
       )}
       <textarea
         className={css.editor}
-        onChange={(evt) => handleChange(evt.target.value)}
+        onChange={(evt) => handleTextChange(evt.target.value)}
         onKeyDown={(evt) => {
           const hasIntercepted = handleControlKeys(evt)
           if (hasIntercepted) {
             evt.preventDefault()
-            handleChange((evt.target as HTMLTextAreaElement).value)
+            handleTextChange((evt.target as HTMLTextAreaElement).value)
           }
         }}
         value={text}
