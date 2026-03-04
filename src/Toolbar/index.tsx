@@ -17,9 +17,11 @@ export function Toolbar({
   showProgram = true,
 }: ToolbarProps) {
   const { hasProgram, remaining, title, status } = useContext(ProgramContext)
+  if (!children) {
+    children = <div className={css.title}>Programmable Timer</div>
+  }
   return (
     <div className={css.container}>
-      <div className={css.logo}>Timer</div>
       <div className={css.menubar}>{children}</div>
       {hasProgram && showProgram && (
         <div className={`${css.program} ${!isSubdued ? css.strong : ""}`}>

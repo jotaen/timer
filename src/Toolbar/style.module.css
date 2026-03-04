@@ -12,20 +12,10 @@
   border-radius: 5px;
 }
 
-.logo {
-  position: absolute;
-  height: 3em;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  width: 8em;
+.title {
   text-align: center;
-  color: #9f9d8d;
-  font-size: 0.8em;
+  width: 100%;
   text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .program {
