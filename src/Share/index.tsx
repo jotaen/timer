@@ -14,7 +14,7 @@ export type ShareProps = ScreenProps & {
 export function Share({ goToScreen, program }: ShareProps) {
   const baseUrl =
     window.location.hostname === "localhost"
-      ? "https://geektimer.jotaen.net"
+      ? "https://timer.jotaen.net"
       : window.location.origin
   const shareUrl = `${baseUrl}/#${encode(program)}`
   return (

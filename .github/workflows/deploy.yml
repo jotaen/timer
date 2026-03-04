@@ -26,7 +26,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: b41a4d3bbf853994590a9568dda2c43e
-          projectName: geektimer-jotaen-net
+          projectName: timer-jotaen-net
           directory: public/
       - name: Print URL
         run: echo ${{ steps.cloudflare-publish.outputs.url }}
