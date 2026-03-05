@@ -5,14 +5,14 @@ PATH="${PATH}:./node_modules/.bin/"
 # Starts development environment in Docker.
 run::dev-env() {
   PORT="${1:-8000}"
-  docker build --tag "geek-timer" .
+  docker build --tag "timer" .
 	docker run \
 		--rm \
 		-it \
 		--volume "${PWD}:/app" \
 		--workdir /app \
 		--publish "${PORT}:8000" \
-		"geek-timer"
+		"timer"
 }
 
 # Install all dependencies.
