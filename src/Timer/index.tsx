@@ -27,7 +27,9 @@ export function Timer({ ticker, goToScreen }: TimerProps) {
           Menu
         </button>
       </Toolbar>
-      <div className={css.clock}>{clock}</div>
+      <div className={css.clock}>
+        <span>{clock}</span>
+      </div>
       <div className={css.activity} style={{ alignSelf: "center" }}>
         {ticker.tick?.currentActivity}
       </div>

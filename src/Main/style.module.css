@@ -50,12 +50,12 @@ input {
 body {
   margin: 0;
   padding: 0;
-  height: 100dvh;
+  height: 100svh;
 }
 
 :global(#app) {
-  height: 100dvh;
-  padding: 2dvh 0.5em 0.5em 0.5em;
+  height: 100svh;
+  padding: 0.5em;
   box-sizing: border-box;
 }
 
@@ -74,4 +74,5 @@ a:hover {
 .main {
   margin: 0 auto;
   max-width: 700px;
+  height: 100%;
 }

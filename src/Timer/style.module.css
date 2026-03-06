@@ -1,6 +1,13 @@
 .clock {
-  font-size: min(20vw, 9em);
-  text-align: center;
+  container-type: size;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clock span {
+  font-size: min(calc(100cqw / 5 / 0.6), calc(100cqh / 1.2));
 }
 
 .controls {
@@ -26,7 +33,9 @@
 }
 
 .main {
-  margin: 0 auto;
+  container-type: size;
+  height: 100%;
+  max-height: 25em;
   display: flex;
   flex-direction: column;
 }
