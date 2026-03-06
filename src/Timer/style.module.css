@@ -7,7 +7,17 @@
 }
 
 .clock span {
-  font-size: min(calc(100cqw / 5 / 0.6), calc(100cqh / 1.2));
+  /**
+  Font size determined via container CSS container query:
+  - Width: 95% of the container width, divided by 5 characters
+  - Height: 100% of the container height
+  The font factor is a specific adjustor for the font family.
+   */
+  --font-factor: 0.6;
+  font-size: min(
+    calc(95cqw / 5 / var(--font-factor)),
+    calc(100cqh / (2 * var(--font-factor)))
+  );
 }
 
 .controls {
