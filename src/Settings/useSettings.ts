@@ -6,6 +6,8 @@ export type Settings = {
   setCountDown: (countDown: boolean) => void
   callOut: boolean
   setCallOut: (callOut: boolean) => void
+  showSyntaxRules: boolean
+  setShowSyntaxRules: (showSyntaxRules: boolean) => void
 }
 
 export const useSettings = create<Settings>()(
@@ -15,6 +17,8 @@ export const useSettings = create<Settings>()(
       setCountDown: (countDown) => set({ countDown }),
       callOut: true,
       setCallOut: (callOut) => set({ callOut }),
+      showSyntaxRules: true,
+      setShowSyntaxRules: (showSyntaxRules) => set({ showSyntaxRules }),
     }),
     { name: "settings" },
   ),

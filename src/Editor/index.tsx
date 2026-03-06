@@ -8,6 +8,7 @@ import { serialise } from "../serialise.ts"
 import { parse, ParseError } from "../parse.ts"
 import { useNavigationGuard } from "../util/useNavigationGuard.ts"
 import { handleControlKeys } from "./handleControlKeys.ts"
+import { useSettings } from "../Settings/useSettings.ts"
 
 export type EditorProps = ScreenProps & {
   program?: Program
@@ -25,7 +26,7 @@ export function Editor({
   const [text, setText] = useState<string>("")
   const [title, setTitle] = useState<string>("")
   const [parseError, setParseError] = useState<ParseError | Error | null>(null)
-  const [isSyntaxRulesShown, setIsSyntaxRulesShown] = useState<boolean>(true)
+  const settings = useSettings()
   const navigationGuard = useNavigationGuard()
 
   useEffect(() => {
@@ -118,10 +119,12 @@ export function Editor({
         placeholder="Program"
       ></textarea>
       <div className={css.syntaxRules}>
-        <strong onClick={() => setIsSyntaxRulesShown(!isSyntaxRulesShown)}>
-          {isSyntaxRulesShown ? "⏷" : "⏵"} Syntax Rules
+        <strong
+          onClick={() => settings.setShowSyntaxRules(!settings.showSyntaxRules)}
+        >
+          {settings.showSyntaxRules ? "⏷" : "⏵"} Syntax Rules
         </strong>
-        {isSyntaxRulesShown && (
+        {settings.showSyntaxRules && (
           <p>
             A timer program is processed line by line, where each line denotes
             either an activity or a loop.
