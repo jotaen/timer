@@ -30,6 +30,7 @@
 }
 
 .syntaxRules {
+  font-size: 0.9em;
   margin-top: 1em;
   cursor: pointer;
   color: #ddd;

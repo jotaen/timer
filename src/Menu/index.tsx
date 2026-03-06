@@ -6,27 +6,27 @@ import { Program } from "../program.ts"
 import { Toolbar } from "../Toolbar"
 import { encode } from "../encode.ts"
 
-const samplePrograms: Program[] = [
-  {
-    title: "Sports!",
-    items: [
-      { kind: "ACTIVITY", title: "Get ready!", duration: 5, skipLast: false },
-      {
-        kind: "LOOP",
-        repeat: 2,
-        items: [
-          {
-            kind: "ACTIVITY",
-            title: "Work out",
-            duration: 10,
-            skipLast: false,
-          },
-          { kind: "ACTIVITY", title: "Rest", duration: 5, skipLast: true },
-        ],
-      },
-    ],
-  },
-]
+const sampleProgram: Program = {
+  title: "Sports!",
+  items: [
+    { kind: "ACTIVITY", title: "Get ready", duration: 5, skipLast: false },
+    {
+      kind: "LOOP",
+      repeat: 3,
+      items: [
+        {
+          kind: "ACTIVITY",
+          title: "Work out",
+          duration: 45,
+          skipLast: false,
+        },
+        { kind: "ACTIVITY", title: "Rest", duration: 30, skipLast: true },
+      ],
+    },
+    { kind: "ACTIVITY", title: "Cool down", duration: 60, skipLast: false },
+  ],
+}
+const sampleProgramEncoded = encode(sampleProgram)
 
 export type MenuProps = ScreenProps & {
   program?: Program
@@ -55,48 +55,32 @@ export function Menu({
         )}
       </Toolbar>
       <div className={css.menu}>
-        <p>
-          <button
-            onClick={() => {
-              if (!confirm()) {
-                return false
-              }
-              clearProgram()
-              goToScreen(Screens.Editor)
-            }}
-          >
-            New program
-          </button>
-        </p>
-        <p>
-          <button onClick={() => goToScreen(Screens.Settings)}>Settings</button>
-        </p>
-        <p>
-          <button onClick={async () => toggleFullscreen()}>
-            {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-          </button>
-        </p>
-        <p>
-          <strong>Demo Programs:</strong>
-          <br />
-          {samplePrograms.map((p) => (
-            <a
-              key={p.title}
-              href={`#${encode(p)}`}
-              onClick={(evt) => {
-                evt.preventDefault()
-                if (!confirm()) {
-                  return false
-                }
-                loadProgram(p)
-                goToScreen(Screens.Timer)
-                return false
-              }}
-            >
-              {p.title}
-            </a>
-          ))}
-        </p>
+        <button onClick={() => goToScreen(Screens.Settings)}>Settings</button>
+        <button onClick={async () => toggleFullscreen()}>
+          {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+        </button>
+        <button
+          onClick={() => {
+            if (!confirm()) {
+              return false
+            }
+            clearProgram()
+            goToScreen(Screens.Editor)
+          }}
+        >
+          New program
+        </button>
+        <button
+          onClick={() => {
+            if (!confirm()) {
+              return
+            }
+            loadProgram(sampleProgram)
+            goToScreen(Screens.Timer)
+          }}
+        >
+          Load demo
+        </button>
       </div>
     </div>
   )
