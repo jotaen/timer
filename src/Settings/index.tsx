@@ -23,7 +23,7 @@ export function Settings({ goToScreen }: SettingsProps) {
             Whether to count down the last 3 seconds of an activity with a
             “beep” sound.
             <br />
-            Note: make sure to unsilence your device for this to work.
+            Note: make sure to unsilence the ringtone on your device for this to work.
           </>
         }
       >
