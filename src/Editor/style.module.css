@@ -11,7 +11,7 @@
 }
 
 .editor {
-  font-size: 0.9em;
+  font-size: inherit;
   font-family: inherit;
   padding: 0.5em;
   height: 15em;
@@ -27,4 +27,23 @@
 
 .errorDetails {
   font-size: 0.8em;
+}
+
+.syntaxRules {
+  margin-top: 1em;
+  cursor: pointer;
+  color: #ddd;
+  line-height: 1.35;
+}
+
+.syntaxRules h4 {
+  font-size: inherit;
+  margin: 1.5em 0 0.75em 0;
+}
+
+.syntaxRules code {
+  background-color: #aaeaff2e;
+  padding: 0em 0.25em;
+  border-radius: 5px;
+  border: 1px solid #ccf2ff45;
 }
