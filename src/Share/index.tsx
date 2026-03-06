@@ -29,6 +29,11 @@ export function Share({ goToScreen, program }: ShareProps) {
           {shareUrl}
         </a>
       </div>
+      <p style={{ textAlign: "center" }}>
+        Your timer program is encoded in the URL and QR code.
+        <br />
+        You can share it with others or save it as bookmark.
+      </p>
     </div>
   )
 }
