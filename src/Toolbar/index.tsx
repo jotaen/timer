@@ -27,7 +27,7 @@ export function Toolbar({
         <div className={`${css.program} ${!isSubdued ? css.strong : ""}`}>
           {title}
           {status === STATUS.PAUSED && (
-            <span className={css.status}>(Paused)</span>
+            <span className={css.status}>{title && "\u00A0"}(Paused)</span>
           )}
           <div style={{ flex: 1 }}></div>
           {formatClock(remaining)}
