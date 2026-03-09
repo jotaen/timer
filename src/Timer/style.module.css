@@ -15,7 +15,7 @@
    */
   --font-factor: 0.6;
   font-size: min(
-    calc(95cqw / 5 / var(--font-factor)),
+    calc(100cqw / 5 / var(--font-factor)),
     calc(100cqh / (2 * var(--font-factor)))
   );
 }

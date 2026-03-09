@@ -11,7 +11,7 @@ export type TimerProps = ScreenProps & {
 }
 
 export function Timer({ ticker, goToScreen }: TimerProps) {
-  const clock = formatClock(ticker.tick?.remaining)
+  const [mins, secs] = formatClock(ticker.tick?.remaining).split(":")
 
   return (
     <div className={css.main}>
@@ -28,7 +28,9 @@ export function Timer({ ticker, goToScreen }: TimerProps) {
         </button>
       </Toolbar>
       <div className={css.clock}>
-        <span>{clock}</span>
+        <span>{mins}</span>
+        <span style={{ margin: "-0.1em -0.08em 0 -0.08em" }}>:</span>
+        <span>{secs}</span>
       </div>
       <div className={css.activity} style={{ alignSelf: "center" }}>
         {ticker.tick?.currentActivity}
