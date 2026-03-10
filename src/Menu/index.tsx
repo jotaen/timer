@@ -26,7 +26,6 @@ const sampleProgram: Program = {
     { kind: "ACTIVITY", title: "Cool down", duration: 60, skipLast: false },
   ],
 }
-const sampleProgramEncoded = encode(sampleProgram)
 
 export type MenuProps = ScreenProps & {
   program?: Program
@@ -68,7 +67,7 @@ export function Menu({
             goToScreen(Screens.Editor)
           }}
         >
-          New program
+          New timer program
         </button>
         <button
           onClick={() => {
@@ -79,7 +78,7 @@ export function Menu({
             goToScreen(Screens.Timer)
           }}
         >
-          Load demo
+          Load demo timer
         </button>
       </div>
     </div>

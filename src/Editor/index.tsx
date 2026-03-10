@@ -118,6 +118,11 @@ export function Editor({
         disabled={isReadonly}
         placeholder="Program"
       ></textarea>
+      {isReadonly && (
+        <div className={css.readonlyHint}>
+          You cannot edit while timer is running or paused.
+        </div>
+      )}
       <div className={css.syntaxRules}>
         <strong
           onClick={() => settings.setShowSyntaxRules(!settings.showSyntaxRules)}
