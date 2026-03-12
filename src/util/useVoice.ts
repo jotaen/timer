@@ -30,13 +30,17 @@ export function useVoice(): UseVoice {
     const check = () => {
       const vs = synth!.getVoices()
       if (vs.length > 0) {
-        clearInterval(poll)
         setVoices(groupVoicesByLanguage(vs))
+        clearInterval(poll)
       }
     }
+    let i = 0
     poll = setInterval(() => {
+      if (i++ > 30) {
+        clearInterval(poll)
+      }
       check()
-    }, 1000)
+    }, 200)
     check()
   }, [])
 
