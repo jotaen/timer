@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from "react"
+import React, { useState } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { createRoot } from "react-dom/client"
@@ -11,10 +11,16 @@ import { Menu } from "../Menu"
 import { STATUS, useTicker } from "../useTicker.ts"
 import { useProgram } from "./useProgram.ts"
 import { Background } from "./Background"
+import { ProgramContext } from "./useProgramContext.ts"
+import { Voice } from "../util/voice.ts"
+import { Beeper } from "../util/beeper.ts"
+import { useNavigationGuard } from "../util/useNavigationGuard.ts"
+import { useWakeLock } from "../util/useWakeLock.ts"
+import { ServiceContext } from "./useServiceContext.ts"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
-root.render(<Main />)
+root.render(<App />)
 
 export enum Screens {
   "Menu",
@@ -28,17 +34,19 @@ export type ScreenProps = {
   goToScreen: (s: Screens) => void
 }
 
-export const ProgramContext = createContext<{
-  hasProgram: boolean
-  title: string
-  remaining?: number
-  status: STATUS
-}>({
-  hasProgram: false,
-  title: "",
-  remaining: undefined,
-  status: STATUS.RESET,
-})
+function App() {
+  const services = {
+    beeper: new Beeper(),
+    voice: new Voice(),
+    navigationGuard: useNavigationGuard(),
+    wakeLock: useWakeLock(),
+  }
+  return (
+    <ServiceContext value={services}>
+      <Main />
+    </ServiceContext>
+  )
+}
 
 function Main() {
   const { program, loadProgram, clearProgram } = useProgram()
@@ -57,7 +65,7 @@ function Main() {
           />
         )
       case Screens.Timer:
-        return <Timer goToScreen={goToScreen} ticker={ticker!} />
+        return <Timer goToScreen={goToScreen} ticker={ticker} />
       case Screens.Editor:
         return (
           <Editor
@@ -75,14 +83,7 @@ function Main() {
   })()
 
   return (
-    <ProgramContext
-      value={{
-        hasProgram: !!program,
-        title: program?.title || "",
-        remaining: ticker.remaining,
-        status: ticker.status,
-      }}
-    >
+    <ProgramContext value={program ? { program, ticker } : null}>
       <Background />
       <div className={css.main}>{Screen}</div>
     </ProgramContext>

@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react"
 import { Tick, ticker as createTicker, totalDuration } from "./ticker.ts"
 import { Program } from "./program.ts"
-import { Beeper } from "./util/beeper.ts"
-import { Voice } from "./util/voice.ts"
 import { useSettings } from "./Settings/useSettings.ts"
 import { useInterval } from "./util/useInterval.ts"
 import { useWakeLock } from "./util/useWakeLock.ts"
 
-const beeper = new Beeper()
-const voice = new Voice()
+import { useServiceContext } from "./App/useServiceContext.ts"
 
 export enum STATUS {
   "RESET",
@@ -36,7 +33,7 @@ export function useTicker(program?: Program): Ticker {
   const [tick, setTick] = useState<Tick | null>(null)
   const [ticker, setTicker] = useState<Generator<Tick>>()
   const settings = useSettings()
-  const wakeLock = useWakeLock()
+  const { beeper, voice, wakeLock } = useServiceContext()
   const interval = useInterval(() => {
     if (!ticker) {
       return

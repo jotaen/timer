@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react"
 // @ts-ignore
 import css from "./style.module.css"
-import { ScreenProps, Screens } from "../Main"
+import { ScreenProps, Screens } from "../App"
 import { Toolbar } from "../Toolbar"
 import { Program } from "../program.ts"
 import { serialise } from "../serialise.ts"
 import { parse, ParseError } from "../parse.ts"
-import { useNavigationGuard } from "../util/useNavigationGuard.ts"
 import { handleControlKeys } from "./handleControlKeys.ts"
 import { useSettings } from "../Settings/useSettings.ts"
+
+import { useServiceContext } from "../App/useServiceContext.ts"
 
 export type EditorProps = ScreenProps & {
   program?: Program
@@ -27,7 +28,7 @@ export function Editor({
   const [title, setTitle] = useState<string>("")
   const [parseError, setParseError] = useState<ParseError | Error | null>(null)
   const settings = useSettings()
-  const navigationGuard = useNavigationGuard()
+  const { navigationGuard } = useServiceContext()
 
   useEffect(() => {
     if (program) {

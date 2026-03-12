@@ -21,7 +21,7 @@ run::install() {
 }
 
 ESBUILD_ARGS=(
-  src/Main/index.tsx \
+  src/App/index.tsx \
   --outfile=public/dist/bundle.js \
   --bundle
 )

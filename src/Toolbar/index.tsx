@@ -1,9 +1,9 @@
-import React, { useContext } from "react"
+import React from "react"
 // @ts-ignore
 import css from "./style.module.css"
-import { ProgramContext } from "../Main"
 import { formatClock } from "../format.ts"
 import { STATUS } from "../useTicker.ts"
+import { useProgramContext } from "../App/useProgramContext.ts"
 
 export type ToolbarProps = {
   children: React.ReactNode
@@ -16,21 +16,23 @@ export function Toolbar({
   isSubdued = true,
   showProgram = true,
 }: ToolbarProps) {
-  const { hasProgram, remaining, title, status } = useContext(ProgramContext)
+  const ctx = useProgramContext()
   if (!children) {
     children = <div className={css.title}>Programmable Timer</div>
   }
   return (
     <div className={css.container}>
       <div className={css.menubar}>{children}</div>
-      {hasProgram && showProgram && (
+      {ctx && showProgram && (
         <div className={`${css.program} ${!isSubdued ? css.strong : ""}`}>
-          {title}
-          {status === STATUS.PAUSED && (
-            <span className={css.status}>{title && "\u00A0"}(Paused)</span>
+          {ctx.program.title}
+          {ctx.ticker.status === STATUS.PAUSED && (
+            <span className={css.status}>
+              {ctx.program.title && "\u00A0"}(Paused)
+            </span>
           )}
           <div style={{ flex: 1 }}></div>
-          {formatClock(remaining)}
+          {formatClock(ctx.ticker.remaining)}
         </div>
       )}
     </div>

@@ -3,7 +3,7 @@ import React from "react"
 import css from "./style.module.css"
 import { formatClock } from "../format"
 import { STATUS, Ticker } from "../useTicker.ts"
-import { Screens, ScreenProps } from "../Main"
+import { Screens, ScreenProps } from "../App"
 import { Toolbar } from "../Toolbar"
 
 export type TimerProps = ScreenProps & {

@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef } from "react"
 
-type NavigationGuard = {
+export type NavigationGuard = {
   enable: (isEnabled?: boolean) => void
   disable: () => void
   checkAndConfirm: () => boolean

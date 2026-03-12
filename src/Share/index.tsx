@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react"
 import { Program } from "../program.ts"
 import { encode } from "../encode.ts"
 import { Toolbar } from "../Toolbar"
-import { ScreenProps, Screens } from "../Main"
+import { ScreenProps, Screens } from "../App"
 
 export type ShareProps = ScreenProps & {
   program: Program

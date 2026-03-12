@@ -1,7 +1,7 @@
 import React from "react"
 // @ts-ignore
 import css from "./style.module.css"
-import { Screens, ScreenProps } from "../Main"
+import { Screens, ScreenProps } from "../App"
 import { Toolbar } from "../Toolbar"
 import { useSettings } from "./useSettings.ts"
 

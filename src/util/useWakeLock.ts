@@ -1,5 +1,10 @@
 import { useCallback, useRef } from "react"
 
+export type WakeLock = {
+  on: () => void
+  off: () => void
+}
+
 export function useWakeLock() {
   const lockRef = useRef<WakeLockSentinel | null>(null)
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 // @ts-ignore
 import css from "./style.module.css"
-import { ScreenProps, Screens } from "../Main"
+import { ScreenProps, Screens } from "../App"
 import { Program } from "../program.ts"
 import { Toolbar } from "../Toolbar"
 import { encode } from "../encode.ts"
