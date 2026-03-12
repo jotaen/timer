@@ -24,5 +24,11 @@
     <div id="app"></div>
     <script src="/dist/bundle.js?0000000000000"></script>
     <link rel="stylesheet" href="/dist/bundle.css?0000000000000" />
+    <div id="fonts-preloader" style="position: absolute; color: #000000">
+      <span>.</span><i>.</i>
+      <script>
+        setTimeout(() => document.querySelector("#fonts-preloader").remove(), 0)
+      </script>
+    </div>
   </body>
 </html>
