@@ -8,6 +8,7 @@ html {
   margin: 0;
   padding: 0;
   scrollbar-gutter: stable;
+  text-size-adjust: 100%;
 }
 
 b,

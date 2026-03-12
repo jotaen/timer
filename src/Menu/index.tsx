@@ -14,7 +14,7 @@ import {
 const sampleProgram: Program = {
   title: "Sports!",
   items: [
-    { kind: "ACTIVITY", title: "Get ready", duration: 5, skipLast: false },
+    { kind: "ACTIVITY", title: "Get ready", duration: 10, skipLast: false },
     {
       kind: "LOOP",
       repeat: 3,
@@ -22,13 +22,31 @@ const sampleProgram: Program = {
         {
           kind: "ACTIVITY",
           title: "Work out",
+          duration: 30,
+          skipLast: false,
+        },
+        { kind: "ACTIVITY", title: "Rest", duration: 15, skipLast: true },
+      ],
+    },
+    {
+      kind: "LOOP",
+      repeat: 4,
+      items: [
+        {
+          kind: "ACTIVITY",
+          title: "Stretch",
           duration: 45,
           skipLast: false,
         },
-        { kind: "ACTIVITY", title: "Rest", duration: 30, skipLast: true },
+        {
+          kind: "ACTIVITY",
+          title: "Change position",
+          duration: 10,
+          skipLast: true,
+        },
       ],
     },
-    { kind: "ACTIVITY", title: "Cool down", duration: 60, skipLast: false },
+    { kind: "ACTIVITY", title: "Cool down", duration: 20, skipLast: false },
   ],
 }
 
