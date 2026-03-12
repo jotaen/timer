@@ -3,11 +3,14 @@ import { useLocalStorage } from "./useLocalStorage.ts"
 
 export type UseBeeper = {
   beep: (frequency: number, duration: number) => void
+  enable: () => void
   shouldBeep: boolean
   setShouldBeep: (b: boolean) => void
   volume: number // 0.0 - 1.0
   setVolume: (v: number) => void
 }
+
+const AudioContext = window.AudioContext ?? (window as any).webkitAudioContext
 
 export function useBeeper(): UseBeeper {
   const getAudioCtx = useAudioContext()
@@ -18,7 +21,7 @@ export function useBeeper(): UseBeeper {
   const [volume, setVolume] = useLocalStorage<number>("beep:volume", 1.0)
 
   const beep = useCallback(
-    async (frequency: number, duration: number) => {
+    async (frequency: number, duration: number, volumeOverride?: number) => {
       if (!shouldBeep) {
         return
       }
@@ -35,7 +38,7 @@ export function useBeeper(): UseBeeper {
 
       const t = audioCtx.currentTime
       const endTime = t + duration / 1000
-      gainNode.gain.value = 0.4 * volume // volume
+      gainNode.gain.value = volumeOverride || 0.4 * volume
       oscillator.frequency.value = frequency
       oscillator.type = "square"
       oscillator.start(t)
@@ -43,21 +46,18 @@ export function useBeeper(): UseBeeper {
     },
     [getAudioCtx, shouldBeep, volume],
   )
-  return { beep, shouldBeep, setShouldBeep, volume, setVolume }
+
+  const enable = useCallback(() => {
+    beep(15000, 1, 0.01)
+  }, [])
+
+  return { beep, enable, shouldBeep, setShouldBeep, volume, setVolume }
 }
 
 export function useAudioContext() {
   const audioCtx = useRef<AudioContext | null>(null)
 
   useEffect(() => {
-    ['click', 'keydown', 'touchstart', 'pointerdown'].forEach(event => {
-      document.addEventListener(event, () => {
-        if (!audioCtx.current) {
-          audioCtx.current = new AudioContext()
-          audioCtx.current.resume()
-        }
-      }, { once: true });
-    })
     return () => {
       audioCtx.current?.close()
       audioCtx.current = null
@@ -65,7 +65,7 @@ export function useAudioContext() {
   }, [])
 
   return useCallback(async (): Promise<AudioContext | null> => {
-    if (!window.AudioContext) {
+    if (!AudioContext) {
       return null
     }
     if (!audioCtx.current || audioCtx.current.state === "closed") {

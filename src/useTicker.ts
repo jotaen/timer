@@ -58,6 +58,7 @@ export function useTicker(program?: Program): Ticker {
   }, 1000)
 
   const run = () => {
+    beeper.enable()
     interval.start()
     setStatus(STATUS.RUNNING)
     wakeLock.on()
