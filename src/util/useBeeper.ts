@@ -50,6 +50,14 @@ export function useAudioContext() {
   const audioCtx = useRef<AudioContext | null>(null)
 
   useEffect(() => {
+    ['click', 'keydown', 'touchstart', 'pointerdown'].forEach(event => {
+      document.addEventListener(event, () => {
+        if (!audioCtx.current) {
+          audioCtx.current = new AudioContext()
+          audioCtx.current.resume()
+        }
+      }, { once: true });
+    })
     return () => {
       audioCtx.current?.close()
       audioCtx.current = null
