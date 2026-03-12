@@ -17,6 +17,7 @@ import { Beeper } from "../util/beeper.ts"
 import { useNavigationGuard } from "../util/useNavigationGuard.ts"
 import { useWakeLock } from "../util/useWakeLock.ts"
 import { ServiceContext } from "./useServiceContext.ts"
+import { useLocalStorage } from "../util/useLocalStorage.ts"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
@@ -35,11 +36,16 @@ export type ScreenProps = {
 }
 
 function App() {
+  const [showSyntaxRules, setShowSyntaxRules] = useLocalStorage<boolean>(
+    "view:showSyntaxRules",
+    true,
+  )
   const services = {
     beeper: new Beeper(),
     voice: new Voice(),
     navigationGuard: useNavigationGuard(),
     wakeLock: useWakeLock(),
+    viewPreferences: { showSyntaxRules, setShowSyntaxRules },
   }
   return (
     <ServiceContext value={services}>

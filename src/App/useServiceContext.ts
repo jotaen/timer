@@ -9,6 +9,7 @@ export type ServiceContext = {
   voice: Voice
   navigationGuard: NavigationGuard
   wakeLock: WakeLock
+  viewPreferences: ViewPreferences
 }
 
 export const ServiceContext = createContext<ServiceContext>(
@@ -17,4 +18,9 @@ export const ServiceContext = createContext<ServiceContext>(
 
 export function useServiceContext(): ServiceContext {
   return useContext(ServiceContext)
+}
+
+type ViewPreferences = {
+  showSyntaxRules: boolean
+  setShowSyntaxRules: (show: boolean) => void
 }
