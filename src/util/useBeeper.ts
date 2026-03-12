@@ -1,13 +1,24 @@
 import { useCallback, useEffect, useRef } from "react"
+import { useLocalStorage } from "./useLocalStorage.ts"
 
 export type UseBeeper = {
   beep: (frequency: number, duration: number) => void
+  shouldBeep: boolean
+  setShouldBeep: (b: boolean) => void
 }
 
 export function useBeeper(): UseBeeper {
   const getAudioCtx = useAudioContext()
+  const [shouldBeep, setShouldBeep] = useLocalStorage<boolean>(
+    "beep:enabled",
+    true,
+  )
   const beep = useCallback(
     async (frequency: number, duration: number) => {
+      if (!shouldBeep) {
+        return
+      }
+
       const audioCtx = await getAudioCtx()
       if (!audioCtx) {
         return
@@ -26,9 +37,9 @@ export function useBeeper(): UseBeeper {
       oscillator.start(t)
       oscillator.stop(endTime)
     },
-    [getAudioCtx],
+    [getAudioCtx, shouldBeep],
   )
-  return { beep }
+  return { beep, shouldBeep, setShouldBeep }
 }
 
 export function useAudioContext() {

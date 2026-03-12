@@ -3,12 +3,12 @@ import React from "react"
 import css from "./style.module.css"
 import { Screens, ScreenProps } from "../App"
 import { Toolbar } from "../Toolbar"
-import { useSettings } from "./useSettings.ts"
+import { useServiceContext } from "../App/useServiceContext.ts"
 
 export type SettingsProps = ScreenProps & {}
 
 export function Settings({ goToScreen }: SettingsProps) {
-  const { countDown, setCountDown, callOut, setCallOut } = useSettings()
+  const { beeper, voice } = useServiceContext()
   return (
     <div>
       <Toolbar>
@@ -30,8 +30,8 @@ export function Settings({ goToScreen }: SettingsProps) {
       >
         <input
           type="checkbox"
-          checked={countDown}
-          onChange={(evt) => setCountDown(evt.target.checked)}
+          checked={beeper.shouldBeep}
+          onChange={(evt) => beeper.setShouldBeep(evt.target.checked)}
         />
       </Setting>
       <Setting
@@ -40,8 +40,8 @@ export function Settings({ goToScreen }: SettingsProps) {
       >
         <input
           type="checkbox"
-          checked={callOut}
-          onChange={(evt) => setCallOut(evt.target.checked)}
+          checked={voice.shouldSpeak}
+          onChange={(evt) => voice.setShouldSpeak(evt.target.checked)}
         />
       </Setting>
     </div>

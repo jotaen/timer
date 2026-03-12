@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 import { Tick, ticker as createTicker, totalDuration } from "./ticker.ts"
 import { Program } from "./program.ts"
-import { useSettings } from "./Settings/useSettings.ts"
 import { useInterval } from "./util/useInterval.ts"
-import { useWakeLock } from "./util/useWakeLock.ts"
 
 import { useServiceContext } from "./App/useServiceContext.ts"
 
@@ -32,7 +30,6 @@ export function useTicker(program?: Program): Ticker {
   const [remaining, setRemaining] = useState<number>(0)
   const [tick, setTick] = useState<Tick | null>(null)
   const [ticker, setTicker] = useState<Generator<Tick>>()
-  const settings = useSettings()
   const { beeper, voice, wakeLock } = useServiceContext()
   const interval = useInterval(() => {
     if (!ticker) {
@@ -42,9 +39,7 @@ export function useTicker(program?: Program): Ticker {
     const g = ticker.next()
     if (g.done) {
       reset()
-      if (settings.countDown) {
-        beeper.beep(900, 1000)
-      }
+      beeper.beep(900, 1000)
       return
     }
 
@@ -54,10 +49,10 @@ export function useTicker(program?: Program): Ticker {
     }
     const t = g.value
     setTick(t)
-    if (settings.callOut && t.readOut) {
+    if (t.readOut) {
       voice.say(t.currentActivity)
     }
-    if (settings.countDown && t.beep) {
+    if (t.beep) {
       beeper.beep(700, t.beep)
     }
   }, 1000)
