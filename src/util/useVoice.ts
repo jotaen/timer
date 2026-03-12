@@ -26,16 +26,18 @@ export function useVoice(): UseVoice {
     if (!synth) {
       return
     }
-    const poll = setInterval(() => {
-      if (voices.length > 0) {
-        clearInterval(poll)
-        return
-      }
+    let poll: number | undefined = undefined
+    const check = () => {
       const vs = synth!.getVoices()
       if (vs.length > 0) {
+        clearInterval(poll)
         setVoices(groupVoicesByLanguage(vs))
       }
-    }, 500)
+    }
+    poll = setInterval(() => {
+      check()
+    }, 1000)
+    check()
   }, [])
 
   const say = useCallback(
