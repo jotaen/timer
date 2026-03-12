@@ -1,12 +1,12 @@
 import { useContext, createContext } from "react"
-import { Beeper } from "../util/beeper.ts"
-import { Voice } from "../util/voice.ts"
+import { UseBeeper } from "../util/useBeeper.ts"
+import { UseVoice } from "../util/useVoice.ts"
 import { NavigationGuard } from "../util/useNavigationGuard.ts"
 import { WakeLock } from "../util/useWakeLock.ts"
 
 export type ServiceContext = {
-  beeper: Beeper
-  voice: Voice
+  beeper: UseBeeper
+  voice: UseVoice
   navigationGuard: NavigationGuard
   wakeLock: WakeLock
   viewPreferences: ViewPreferences

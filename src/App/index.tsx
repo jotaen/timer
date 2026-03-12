@@ -12,8 +12,8 @@ import { STATUS, useTicker } from "../useTicker.ts"
 import { useProgram } from "./useProgram.ts"
 import { Background } from "./Background"
 import { ProgramContext } from "./useProgramContext.ts"
-import { Voice } from "../util/voice.ts"
-import { Beeper } from "../util/beeper.ts"
+import { useVoice } from "../util/useVoice.ts"
+import { useBeeper } from "../util/useBeeper.ts"
 import { useNavigationGuard } from "../util/useNavigationGuard.ts"
 import { useWakeLock } from "../util/useWakeLock.ts"
 import { ServiceContext } from "./useServiceContext.ts"
@@ -41,8 +41,8 @@ function App() {
     true,
   )
   const services = {
-    beeper: new Beeper(),
-    voice: new Voice(),
+    beeper: useBeeper(),
+    voice: useVoice(),
     navigationGuard: useNavigationGuard(),
     wakeLock: useWakeLock(),
     viewPreferences: { showSyntaxRules, setShowSyntaxRules },
