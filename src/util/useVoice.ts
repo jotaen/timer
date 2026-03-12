@@ -26,19 +26,16 @@ export function useVoice(): UseVoice {
     if (!synth) {
       return
     }
-    synth.addEventListener("voiceschanged", () => {
-      setVoices(
-        Object.entries(
-          synth!.getVoices().reduce<Record<string, string[]>>((acc, voice) => {
-            if (!acc[voice.lang]) {
-              acc[voice.lang] = []
-            }
-            acc[voice.lang].push(voice.name)
-            return acc
-          }, {}),
-        ),
-      )
-    })
+    const poll = setInterval(() => {
+      if (voices.length > 0) {
+        clearInterval(poll)
+        return
+      }
+      const vs = synth!.getVoices()
+      if (vs.length > 0) {
+        setVoices(groupVoicesByLanguage(vs))
+      }
+    }, 500)
   }, [])
 
   const say = useCallback(
@@ -69,4 +66,16 @@ export function useVoice(): UseVoice {
     volume,
     setVolume,
   }
+}
+
+function groupVoicesByLanguage(voices: SpeechSynthesisVoice[]) {
+  return Object.entries(
+    voices.reduce<Record<string, string[]>>((acc, voice) => {
+      if (!acc[voice.lang]) {
+        acc[voice.lang] = []
+      }
+      acc[voice.lang].push(voice.name)
+      return acc
+    }, {}),
+  )
 }
