@@ -6,7 +6,7 @@
 .title {
   font-size: inherit;
   font-family: inherit;
-  margin: 0.5em 0;
+  margin: 0.5em -0.5em;
   padding: 0.25em 0.5em;
   border-radius: 5px;
 }
@@ -15,16 +15,30 @@
   font-size: inherit;
   font-family: inherit;
   padding: 0.5em;
+  margin: 0 -0.5em;
   height: 15em;
   min-height: 15em;
   resize: vertical;
   border-radius: 5px;
 }
 
+.noTopBorderRadius {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.noBottomBorderRadius {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
 .error {
   background-color: #ff9a9a;
   color: #5b0000;
   padding: 0.5em;
+  margin: 0 -0.5em;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
 }
 
 .errorDetails {
@@ -57,6 +71,6 @@
   padding: 0.2em 0.5em;
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
-  margin-top: -3px;
+  margin: 0 -0.5rem;
   font-size: 0.9em;
 }

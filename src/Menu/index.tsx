@@ -4,7 +4,12 @@ import css from "./style.module.css"
 import { ScreenProps, Screens } from "../App"
 import { Program } from "../program.ts"
 import { Toolbar } from "../Toolbar"
-import { encode } from "../encode.ts"
+import {
+  IconFullScreen,
+  IconGear,
+  IconPencil,
+  IconRocket,
+} from "../util/Icons.tsx"
 
 const sampleProgram: Program = {
   title: "Sports!",
@@ -54,8 +59,12 @@ export function Menu({
         )}
       </Toolbar>
       <div className={css.menu}>
-        <button onClick={() => goToScreen(Screens.Settings)}>Settings</button>
+        <button onClick={() => goToScreen(Screens.Settings)}>
+          <IconGear />
+          Settings
+        </button>
         <button onClick={async () => toggleFullscreen()}>
+          <IconFullScreen />
           {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
         </button>
         <button
@@ -67,6 +76,7 @@ export function Menu({
             goToScreen(Screens.Editor)
           }}
         >
+          <IconPencil />
           New timer program
         </button>
         <button
@@ -78,7 +88,8 @@ export function Menu({
             goToScreen(Screens.Timer)
           }}
         >
-          Load demo timer
+          <IconRocket />
+          Try demo timer
         </button>
       </div>
     </div>

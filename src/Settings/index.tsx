@@ -26,13 +26,12 @@ export function Settings({ goToScreen }: SettingsProps) {
         </label>
         <h2>“Beep” Countdown</h2>
       </div>
-      <div>
+      <div className={css.details}>
         <div className={css.hint}>
           Count down the last 3 seconds of an activity with a “beep” sound.
-          (Note: make sure to unsilence the ringtone on your device for this to
-          work.)
+          (Note: make sure to unsilence your device ringtone for this to work.)
         </div>
-        <div>
+        <div className={css.subsetting}>
           Volume:
           <input
             type="range"
@@ -56,11 +55,11 @@ export function Settings({ goToScreen }: SettingsProps) {
         </label>
         <h2>Call Out Titles</h2>
       </div>
-      <div>
+      <div className={css.details}>
         <div className={css.hint}>
           Read out the titles when an activity begins.
         </div>
-        <div>
+        <div className={css.subsetting}>
           Volume:
           <input
             type="range"
@@ -71,13 +70,14 @@ export function Settings({ goToScreen }: SettingsProps) {
             onChange={(evt) => voice.setVolume(evt.target.valueAsNumber / 100)}
           />
         </div>
-        <div>
+        <div className={css.subsetting}>
           Voice/Language:
           <select
+            disabled={!voice.shouldSpeak}
             onChange={(evt) => voice.setVoice(evt.target.value)}
             value={voice.currentVoice}
           >
-            {voice.voices().map(([lang, vs]) => (
+            {voice.voices.map(([lang, vs]) => (
               <optgroup label={lang} key={lang}>
                 {vs.map((v) => (
                   <option key={v} value={v}>

@@ -25,10 +25,10 @@ export function Toolbar({
       <div className={css.menubar}>{children}</div>
       {ctx && showProgram && (
         <div className={`${css.program} ${!isSubdued ? css.strong : ""}`}>
-          {ctx.program.title}
+          <span className={css.programTitle}>{ctx.program.title}</span>
           {ctx.ticker.status === STATUS.PAUSED && (
             <span className={css.status}>
-              {ctx.program.title && "\u00A0"}(Paused)
+              {ctx.program.title && "\u00A0"}(Paused){"\u00A0"}
             </span>
           )}
           <div style={{ flex: 1 }}></div>

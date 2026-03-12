@@ -105,7 +105,7 @@ export function Editor({
         </div>
       )}
       <textarea
-        className={css.editor}
+        className={`${css.editor} ${isReadonly ? css.noBottomBorderRadius : ""} ${parseError ? css.noTopBorderRadius : ""}`}
         onChange={(evt) => handleTextChange(evt.target.value)}
         onKeyDown={(evt) => {
           const hasIntercepted = handleControlKeys(evt)
@@ -119,9 +119,7 @@ export function Editor({
         placeholder="Program"
       ></textarea>
       {isReadonly && (
-        <div className={css.readonlyHint}>
-          You cannot edit while timer is running or paused.
-        </div>
+        <div className={css.readonlyHint}>Reset timer to make edits.</div>
       )}
       <div className={css.syntaxRules}>
         <strong onClick={() => setShowSyntaxRules(!showSyntaxRules)}>

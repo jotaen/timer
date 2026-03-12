@@ -7,12 +7,7 @@ html {
   font-size: 18px;
   margin: 0;
   padding: 0;
-}
-
-button,
-textarea,
-input {
-  font-family: inherit;
+  scrollbar-gutter: stable;
 }
 
 b,
@@ -27,14 +22,22 @@ h6 {
 }
 
 button {
-  cursor: pointer;
   text-transform: uppercase;
   font-size: 0.8em;
 }
 
+button,
+textarea,
+input,
+select {
+  cursor: pointer;
+  font-family: inherit;
+}
+
 button:disabled,
 textarea:disabled,
-input:disabled {
+input:disabled,
+select:disabled {
   cursor: not-allowed;
 }
 
@@ -43,8 +46,12 @@ textarea:disabled,
 input {
   background-color: rgba(255 255 255 / 0.15);
   border: 1px solid #acacac;
-  border-radius: 4px;
+  border-radius: 5px;
   color: inherit;
+}
+
+select {
+  padding: 0.25em;
 }
 
 body {
@@ -55,8 +62,14 @@ body {
 
 :global(#app) {
   height: 100svh;
-  padding: 0.5em;
   box-sizing: border-box;
+  padding: 0.5em;
+}
+
+@media (max-height: 500px) {
+  :global(#app) {
+    padding-top: 0;
+  }
 }
 
 a,
@@ -73,6 +86,7 @@ a:hover {
 
 .main {
   margin: 0 auto;
+  padding-bottom: 0.5em;
+  box-sizing: border-box;
   max-width: 700px;
-  height: 100%;
 }

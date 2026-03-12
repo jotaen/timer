@@ -1,4 +1,5 @@
 #!/bin/bash
+# Use this script with https://run.jotaen.net
 
 PATH="${PATH}:./node_modules/.bin/"
 

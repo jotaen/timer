@@ -1,4 +1,13 @@
 .menu button {
-  display: block;
+  display: flex;
   margin: 1.5em auto;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.4em 1em 0.4em 0.75em;
+}
+
+.menu button svg {
+  height: 1.4em;
+  width: 1.4em;
+  margin-right: 0.5em;
 }

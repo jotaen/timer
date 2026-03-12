@@ -14,9 +14,12 @@
   The font factor is a specific adjustor for the font family.
    */
   --font-factor: 0.6;
-  font-size: min(
-    calc(100cqw / 5 / var(--font-factor)),
-    calc(100cqh / (2 * var(--font-factor)))
+  font-size: max(
+    3em,
+    min(
+      calc(100cqw / 5 / var(--font-factor)),
+      calc(100cqh / (2 * var(--font-factor)))
+    )
   );
 }
 
@@ -40,11 +43,15 @@
   height: 1em;
   font-size: 2em;
   margin-bottom: 0.5em;
+  text-overflow: ellipsis;
+  max-width: 95%;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .main {
   container-type: size;
-  height: 100%;
+  height: calc(100svh - 1em);
   max-height: 25em;
   display: flex;
   flex-direction: column;
