@@ -15,55 +15,80 @@ export function Settings({ goToScreen }: SettingsProps) {
         <button onClick={() => goToScreen(Screens.Menu)}>Back</button>
         <div style={{ flex: 1 }}></div>
       </Toolbar>
-      <h2>Audio</h2>
-      <Setting
-        title="“Beep” Count Down"
-        explanation={
-          <>
-            Whether to count down the last 3 seconds of an activity with a
-            “beep” sound.
-            <br />
-            Note: make sure to unsilence the ringtone on your device for this to
-            work.
-          </>
-        }
-      >
-        <input
-          type="checkbox"
-          checked={beeper.shouldBeep}
-          onChange={(evt) => beeper.setShouldBeep(evt.target.checked)}
-        />
-      </Setting>
-      <Setting
-        title="Read Out Titles"
-        explanation="Whether to read out the titles when an activity begins."
-      >
-        <input
-          type="checkbox"
-          checked={voice.shouldSpeak}
-          onChange={(evt) => voice.setShouldSpeak(evt.target.checked)}
-        />
-      </Setting>
-    </div>
-  )
-}
-
-function Setting({
-  title,
-  explanation,
-  children,
-}: {
-  title: string
-  explanation?: React.ReactNode
-  children: React.ReactNode
-}) {
-  return (
-    <div className={css.setting}>
-      <div>
-        <strong>{title}</strong>
-        {children}
+      <div className={css.title}>
+        <label className={css.toggle}>
+          <input
+            type="checkbox"
+            checked={beeper.shouldBeep}
+            onChange={(evt) => beeper.setShouldBeep(evt.target.checked)}
+          />
+          <span className={css.toggleSlider}></span>
+        </label>
+        <h2>“Beep” Countdown</h2>
       </div>
-      <span>{explanation}</span>
+      <div>
+        <div className={css.hint}>
+          Count down the last 3 seconds of an activity with a “beep” sound.
+          (Note: make sure to unsilence the ringtone on your device for this to
+          work.)
+        </div>
+        <div>
+          Volume:
+          <input
+            type="range"
+            disabled={!beeper.shouldBeep}
+            value={(beeper.volume * 100).toFixed(0)}
+            min={0}
+            max={100}
+            onChange={(evt) => beeper.setVolume(evt.target.valueAsNumber / 100)}
+          />
+        </div>
+      </div>
+
+      <div className={css.title}>
+        <label className={css.toggle}>
+          <input
+            type="checkbox"
+            checked={voice.shouldSpeak}
+            onChange={(evt) => voice.setShouldSpeak(evt.target.checked)}
+          />
+          <span className={css.toggleSlider}></span>
+        </label>
+        <h2>Call Out Titles</h2>
+      </div>
+      <div>
+        <div className={css.hint}>
+          Read out the titles when an activity begins.
+        </div>
+        <div>
+          Volume:
+          <input
+            type="range"
+            disabled={!voice.shouldSpeak}
+            value={(voice.volume * 100).toFixed(0)}
+            min={0}
+            max={100}
+            onChange={(evt) => voice.setVolume(evt.target.valueAsNumber / 100)}
+          />
+        </div>
+        <div>
+          Voice/Language:
+          <select
+            onChange={(evt) => voice.setVoice(evt.target.value)}
+            value={voice.currentVoice}
+          >
+            {voice.voices().map(([lang, vs]) => (
+              <optgroup label={lang} key={lang}>
+                {vs.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+      </div>
     </div>
   )
 }

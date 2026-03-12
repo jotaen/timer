@@ -128,13 +128,13 @@ export function Editor({
           {showSyntaxRules ? "⏷" : "⏵"} Syntax Rules
         </strong>
         {showSyntaxRules && (
-          <p>
+          <div style={{ marginTop: "1em" }}>
             A timer program is processed line by line, where each line denotes
             either an activity or a loop.
             <h4>Activity</h4>
             An activity is expressed by a time value, optionally followed by a
-            description (separated by one space character). The time value must
-            be formatted <code>M:SS</code> or <code>MM:SS</code> (minutes,
+            title (separated by one space character). The time value must be
+            formatted <code>M:SS</code> or <code>MM:SS</code> (minutes,
             seconds). Examples: <code>0:45</code>, <code>1:00 Work Out!</code>.
             <br />
             If the time value is followed by an asterisk (e.g.,{" "}
@@ -144,7 +144,7 @@ export function Editor({
             <code>2x</code>, denoting that the following block of indented lines
             shall be repeated that many times. Indentation is 2&nbsp;space
             characters. Loops can be nested.
-          </p>
+          </div>
         )}
       </div>
     </div>

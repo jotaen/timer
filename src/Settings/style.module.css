@@ -1,29 +1,65 @@
+.title {
+  margin-top: 1.5em;
+  border-bottom: 1px solid #666;
+  display: flex;
+}
+
 h2 {
   font-size: 1.2em;
-  margin: 1em 0 0.5em 0;
+  margin: 0;
 }
 
-.setting {
-  display: flex;
-  flex-direction: column;
-  padding: 1em 0.5em;
-  border-top: 1px solid #666;
-}
-
-.setting:last-child {
-  border-bottom: 1px solid #666;
-}
-
-.setting div {
-  display: flex;
-}
-
-.setting div strong {
-  flex: 1;
-  margin-bottom: 0.25em;
-}
-
-.setting span {
-  font-size: 0.9em;
+.hint {
   color: #ccc;
+}
+
+.toggle {
+  --height: 1.2em;
+  --width: calc(var(--height) * 1.75);
+  --padding: calc(var(--height) * 0.15);
+
+  position: relative;
+  display: inline-block;
+  width: var(--width);
+  height: var(--height);
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  inset: 0;
+  background-color: #ccc;
+  border-radius: var(--height);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggleSlider::before {
+  content: "";
+  position: absolute;
+  height: calc(var(--height) - var(--padding) * 2);
+  width: calc(var(--height) - var(--padding) * 2);
+  left: var(--padding);
+  bottom: var(--padding);
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+input:checked + .toggleSlider {
+  background-color: #2196f3;
+}
+
+input:checked + .toggleSlider::before {
+  transform: translateX(calc(var(--width) - var(--height)));
+}
+
+input:focus-visible + .toggleSlider {
+  outline: 2px solid #2196f3;
+  outline-offset: 2px;
 }

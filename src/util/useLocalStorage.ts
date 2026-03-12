@@ -9,7 +9,7 @@ export function useLocalStorage<T extends boolean | number | string>(
       case "boolean":
         return [(v) => (v ? "true" : "false"), (v) => (v === "true") as T]
       case "number":
-        return [(v) => v.toString(), (v) => parseInt(v) as T]
+        return [(v) => v.toString(), (v) => parseFloat(v) as T]
       case "string":
         return [(v) => v as string, (v: string) => v as T]
       default:
@@ -20,7 +20,11 @@ export function useLocalStorage<T extends boolean | number | string>(
   const [cachedValue, setCachedValue] = useState(() => {
     const storedValue = window.localStorage.getItem(key)
     if (storedValue) {
-      return unmarshall(storedValue)
+      try {
+        return unmarshall(storedValue)
+      } catch {
+        return defaultValue
+      }
     }
     return defaultValue
   })

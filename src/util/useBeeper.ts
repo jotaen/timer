@@ -5,6 +5,8 @@ export type UseBeeper = {
   beep: (frequency: number, duration: number) => void
   shouldBeep: boolean
   setShouldBeep: (b: boolean) => void
+  volume: number // 0.0 - 1.0
+  setVolume: (v: number) => void
 }
 
 export function useBeeper(): UseBeeper {
@@ -13,6 +15,8 @@ export function useBeeper(): UseBeeper {
     "beep:enabled",
     true,
   )
+  const [volume, setVolume] = useLocalStorage<number>("beep:volume", 1.0)
+
   const beep = useCallback(
     async (frequency: number, duration: number) => {
       if (!shouldBeep) {
@@ -31,15 +35,15 @@ export function useBeeper(): UseBeeper {
 
       const t = audioCtx.currentTime
       const endTime = t + duration / 1000
-      gainNode.gain.value = 0.5 // volume
+      gainNode.gain.value = 0.4 * volume // volume
       oscillator.frequency.value = frequency
       oscillator.type = "square"
       oscillator.start(t)
       oscillator.stop(endTime)
     },
-    [getAudioCtx, shouldBeep],
+    [getAudioCtx, shouldBeep, volume],
   )
-  return { beep, shouldBeep, setShouldBeep }
+  return { beep, shouldBeep, setShouldBeep, volume, setVolume }
 }
 
 export function useAudioContext() {
