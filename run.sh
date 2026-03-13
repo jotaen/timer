@@ -47,6 +47,8 @@ run::build() {
 	if [[ "$1" == '--prod' ]]; then
 	  local TIMESTAMP="$(date +%s%3N)"
     sed -i "s/0000000000000/${TIMESTAMP}/g" public/index.html
+    local BUILD_INFO="$(date -u +"%Y-%m-%dT%H:%M:%SZ") [$(git rev-parse --short=8 HEAD)]"
+    sed -i "s/YYYY-MM-DDTHH:MM:SSZ \[abcdef01\]/${BUILD_INFO}/g" public/index.html
 	fi
 }
 
