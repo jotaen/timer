@@ -8,7 +8,7 @@ import {
   IconFullScreen,
   IconGear,
   IconPencil,
-  IconRocket,
+  IconStars,
 } from "../util/Icons.tsx"
 import { demoProgram } from "../App/useProgram.ts"
 
@@ -68,7 +68,7 @@ export function Menu({
             goToScreen(Screens.Timer)
           }}
         >
-          <IconRocket />
+          <IconStars />
           Try demo timer
         </button>
       </div>

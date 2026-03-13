@@ -3,10 +3,6 @@
   padding: 1em;
 }
 
-.container svg {
-  margin-bottom: 1em;
-}
-
 .link {
   word-wrap: break-word;
 }
@@ -14,4 +10,17 @@
 .hint {
   color: #ccc;
   font-size: 0.9em;
+}
+
+.clipboardButton {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.2em 0.5em;
+}
+
+.clipboardButton svg {
+  height: 1em;
+  width: 1em;
+  margin-right: 0.5em;
 }

@@ -6,6 +6,7 @@ import { Program } from "../program.ts"
 import { encode } from "../encode.ts"
 import { Toolbar } from "../Toolbar"
 import { ScreenProps, Screens } from "../App"
+import { IconClipboard } from "../util/Icons.tsx"
 
 export type ShareProps = ScreenProps & {
   program: Program
@@ -36,19 +37,22 @@ export function Share({ goToScreen, program }: ShareProps) {
       </Toolbar>
       <div className={css.container}>
         <QRCodeSVG size={256} value={shareUrl} />
-        <br />
-        <button
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(shareUrl)
-              setClipboardLabel("URL Copied!")
-            } catch {
-              setClipboardLabel("Failed to copy!")
-            }
-          }}
-        >
-          {clipboardLabel}
-        </button>
+        <p>
+          <button
+            className={css.clipboardButton}
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(shareUrl)
+                setClipboardLabel("URL Copied!")
+              } catch {
+                setClipboardLabel("Failed to copy!")
+              }
+            }}
+          >
+            <IconClipboard />
+            {clipboardLabel}
+          </button>
+        </p>
         <p>
           <a href={shareUrl} className={css.link}>
             {shareUrl}
