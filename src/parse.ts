@@ -35,13 +35,21 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
       break
     }
     if (line.text.trim() === "") {
-      throw new ParseError(line, "Illegal empty line")
+      throw new ParseError(
+        line,
+        "Illegal empty line",
+        "Blank or empty lines are not allowed.",
+      )
     }
     if (line.indent <= parentIndent) {
       break
     }
     if (line.indent > parentIndent + 1) {
-      throw new ParseError(line, "Invalid indentation")
+      throw new ParseError(
+        line,
+        "Invalid indentation",
+        "Indentation must be a multiple of 2 spaces.",
+      )
     }
     lines.shift()
 
@@ -52,7 +60,11 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
         const h = parseInt(hours)
         const m = parseInt(minutes)
         if (minutes.length != 2 || m >= 60) {
-          throw new ParseError(line, "Invalid duration")
+          throw new ParseError(
+            line,
+            "Invalid duration",
+            "A duration must be in the format MM:SS or M:SS.",
+          )
         }
         return h * 60 + m
       })()
@@ -75,6 +87,13 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
     if (loopLine) {
       const [_, repeat] = loopLine
       const [loopItems, remainingLines] = parseItems(lines, line.indent)
+      if (loopItems.length === 0) {
+        throw new ParseError(
+          line,
+          "Illegal empty loop",
+          "Loop must contain at least one activity or another loop.",
+        )
+      }
       items.push({
         kind: "LOOP",
         repeat: parseInt(repeat),
@@ -84,7 +103,11 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
       continue
     }
 
-    throw new ParseError(line, "Invalid entry")
+    throw new ParseError(
+      line,
+      "Invalid entry",
+      "Expected an activity or a loop.",
+    )
   }
   return [items, lines]
 }
@@ -100,7 +123,7 @@ function makeLine(str: string, i: number): Line {
   if (spaceCount % 2 != 0) {
     throw new ParseError(
       line,
-      "Malformed indentation",
+      "Invalid indentation",
       "Indentation must be a multiple of 2 spaces.",
     )
   }

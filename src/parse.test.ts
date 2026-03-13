@@ -178,13 +178,19 @@ describe("parse()", () => {
 
   it("rejects illegal indentation sequences", () => {
     ;[" 0:10", "   2x", "0:10\n 0:05"].forEach((input) => {
-      assert.throws(() => parse("", input), /Malformed indentation/, input)
+      assert.throws(() => parse("", input), /Invalid indentation/, input)
     })
   })
 
   it("rejects illegal indentation changes", () => {
     ;["  0:10", "  2x", "0:10\n  0:05"].forEach((input) => {
       assert.throws(() => parse("", input), /Invalid indentation/, input)
+    })
+  })
+
+  it("rejects empty loops", () => {
+    ;["2x", "2x\n0:10"].forEach((input) => {
+      assert.throws(() => parse("", input), /Illegal empty loop/, input)
     })
   })
 })

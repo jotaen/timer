@@ -127,21 +127,31 @@ export function Editor({
         </strong>
         {showSyntaxRules && (
           <div style={{ marginTop: "1em" }}>
-            A timer program is processed line by line, where each line denotes
-            either an activity or a loop.
+            <p>
+              A timer program is processed line by line, where each line denotes
+              either an activity or a loop.
+            </p>
             <h4>Activity</h4>
-            An activity is expressed by a time value, optionally followed by a
-            title (separated by one space character). The time value must be
-            formatted <code>M:SS</code> or <code>MM:SS</code> (minutes,
-            seconds). Examples: <code>0:45</code>, <code>1:00 Work Out!</code>.
-            <br />
-            If the time value is followed by an asterisk (e.g.,{" "}
-            <code>0:45*</code>), the activity is skipped on the last loop
-            iteration.
-            <h4>Loop</h4>A loop is expressed as repetition count, e.g.{" "}
-            <code>2x</code>, denoting that the following block of indented lines
-            shall be repeated that many times. Indentation is 2&nbsp;space
-            characters. Loops can be nested.
+            <p>
+              An activity is expressed by a time value, optionally followed by a
+              title (separated by one space character). The time value must be
+              formatted <code>MM:SS</code> or <code>M:SS</code> (minutes,
+              seconds). Examples:
+              <br />
+              <code>0:45</code>, <code>10:00</code>, <code>2:30 Work Out!</code>
+            </p>
+            <h4>Loop</h4>
+            <p>
+              A loop is expressed as repetition count, e.g. <code>2x</code>,
+              denoting that the following block of indented lines shall be
+              repeated that many times. Indentation is 2&nbsp;space characters.
+              Loops can be nested.
+            </p>
+            <p>
+              If the time value of an activity is followed by an asterisk (e.g.,{" "}
+              <code>0:45*</code>), the activity is skipped on the last loop
+              iteration.
+            </p>
           </div>
         )}
       </div>
