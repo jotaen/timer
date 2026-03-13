@@ -18,6 +18,7 @@ import { useNavigationGuard } from "../util/useNavigationGuard.ts"
 import { useWakeLock } from "../util/useWakeLock.ts"
 import { ServiceContext } from "./useServiceContext.ts"
 import { useLocalStorage } from "../util/useLocalStorage.ts"
+import { useFullScreen } from "../util/useFullScreen.ts"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
@@ -46,6 +47,7 @@ function App() {
     navigationGuard: useNavigationGuard(),
     wakeLock: useWakeLock(),
     viewPreferences: { showSyntaxRules, setShowSyntaxRules },
+    fullScreen: useFullScreen(),
   }
   return (
     <ServiceContext value={services}>

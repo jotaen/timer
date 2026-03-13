@@ -3,6 +3,7 @@ import { UseBeeper } from "../util/useBeeper.ts"
 import { UseVoice } from "../util/useVoice.ts"
 import { NavigationGuard } from "../util/useNavigationGuard.ts"
 import { WakeLock } from "../util/useWakeLock.ts"
+import { FullScreen } from "../util/useFullScreen.ts"
 
 export type ServiceContext = {
   beeper: UseBeeper
@@ -10,6 +11,7 @@ export type ServiceContext = {
   navigationGuard: NavigationGuard
   wakeLock: WakeLock
   viewPreferences: ViewPreferences
+  fullScreen: FullScreen
 }
 
 export const ServiceContext = createContext<ServiceContext>(

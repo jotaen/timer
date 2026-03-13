@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { ScreenProps, Screens } from "../App"
@@ -12,6 +12,8 @@ import {
   IconStars,
 } from "../util/Icons.tsx"
 import { demoProgram } from "../App/useProgram.ts"
+import { useFullScreen } from "../util/useFullScreen.ts"
+import { useServiceContext } from "../App/useServiceContext.ts"
 
 export type MenuProps = ScreenProps & {
   program?: Program
@@ -25,7 +27,8 @@ export function Menu({
   clearProgram,
   goToScreen,
 }: MenuProps) {
-  const { isFullscreen, toggleFullscreen } = useFullScreen()
+  const { isFullscreen, toggleFullscreen, fullScreenFailed } =
+    useServiceContext().fullScreen
   const confirm = () => {
     return (
       !program ||
@@ -46,7 +49,11 @@ export function Menu({
         </button>
         <button onClick={async () => toggleFullscreen()}>
           <IconFullScreen />
-          {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+          {fullScreenFailed
+            ? "Error: not possible"
+            : isFullscreen
+              ? "Exit Fullscreen"
+              : "Fullscreen"}
         </button>
         <button
           onClick={() => {
@@ -90,31 +97,4 @@ export function Menu({
       </div>
     </div>
   )
-}
-
-function useFullScreen() {
-  const [isFullscreen, setIsFullScreen] = useState(!!document.fullscreenElement)
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullScreen(!!document.fullscreenElement)
-    }
-    document.addEventListener("fullscreenchange", handleFullscreenChange)
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange)
-    }
-  }, [])
-
-  return {
-    isFullscreen,
-    toggleFullscreen: async () => {
-      if (isFullscreen) {
-        await document.exitFullscreen()
-      } else {
-        await document.documentElement.requestFullscreen({
-          navigationUI: "hide",
-        })
-      }
-    },
-  }
 }
