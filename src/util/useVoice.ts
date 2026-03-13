@@ -27,6 +27,9 @@ export function useVoice(): UseVoice {
       return
     }
     let poll: number | undefined = undefined
+    // In theory, we should be able to use the `voiceschanged` event, but this
+    // doesn’t work reliably across browsers. So it’s overall more robust to
+    // use a brute-force polling mechanism.
     const check = () => {
       const vs = synth!.getVoices()
       if (vs.length > 0) {

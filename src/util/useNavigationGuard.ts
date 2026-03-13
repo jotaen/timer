@@ -27,7 +27,7 @@ export function useNavigationGuard(): NavigationGuard {
   const disable = useCallback(() => {
     enabledRef.current = false
   }, [])
-  const confirm = useCallback(() => {
+  const checkAndConfirm = useCallback(() => {
     if (!enabledRef.current) {
       return true
     }
@@ -36,5 +36,5 @@ export function useNavigationGuard(): NavigationGuard {
     )
   }, [])
 
-  return { enable, disable, checkAndConfirm: confirm }
+  return { enable, disable, checkAndConfirm }
 }

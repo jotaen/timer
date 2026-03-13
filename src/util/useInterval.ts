@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 export function useInterval(callback: Function, delay: number) {
   const [isRunning, setIsRunning] = useState(false)
+  // We have to store a callback ref as a workaround:
+  // https://overreacted.io/making-setinterval-declarative-with-react-hooks/
   const savedCallback = useRef<Function>(() => {})
 
   useEffect(() => {
@@ -26,11 +28,11 @@ export function useInterval(callback: Function, delay: number) {
   }, [isRunning])
 
   return {
-    start: () => {
+    start: useCallback(() => {
       setIsRunning(true)
-    },
-    stop: () => {
+    }, []),
+    stop: useCallback(() => {
       setIsRunning(false)
-    },
+    }, []),
   }
 }

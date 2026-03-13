@@ -13,6 +13,8 @@ export function useFullScreen(): FullScreen {
   const handleFullscreenChange = () => {
     setIsFullScreen(!!document.fullscreenElement)
   }
+
+  // Full screen is not allowed on most mobile browsers.
   const handleFullscreenError = () => {
     setFullScreenFailed(true)
     setTimeout(() => setFullScreenFailed(false), 2000)
