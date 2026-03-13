@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 // @ts-ignore
 import css from "./style.module.css"
 import { QRCodeSVG } from "qrcode.react"
@@ -17,6 +17,17 @@ export function Share({ goToScreen, program }: ShareProps) {
       ? "https://timer.jotaen.net"
       : window.location.origin
   const shareUrl = `${baseUrl}/#${encode(program)}`
+  const defaultClipboardLabel = "Copy URL to Clipboard"
+  const [clipboardLabel, setClipboardLabel] = React.useState(
+    defaultClipboardLabel,
+  )
+  useEffect(() => {
+    if (clipboardLabel !== defaultClipboardLabel) {
+      setTimeout(() => {
+        setClipboardLabel(defaultClipboardLabel)
+      }, 1500)
+    }
+  }, [clipboardLabel])
   return (
     <div>
       <Toolbar>
@@ -25,15 +36,30 @@ export function Share({ goToScreen, program }: ShareProps) {
       </Toolbar>
       <div className={css.container}>
         <QRCodeSVG size={256} value={shareUrl} />
-        <a href={shareUrl} className={css.link}>
-          {shareUrl}
-        </a>
-      </div>
-      <p style={{ textAlign: "center" }}>
-        Your timer program is encoded in the URL and QR code.
         <br />
-        You can share it with others or save it as bookmark.
-      </p>
+        <button
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(shareUrl)
+              setClipboardLabel("URL Copied!")
+            } catch {
+              setClipboardLabel("Failed to copy!")
+            }
+          }}
+        >
+          {clipboardLabel}
+        </button>
+        <p>
+          <a href={shareUrl} className={css.link}>
+            {shareUrl}
+          </a>
+        </p>
+        <p className={css.hint}>
+          Your timer program is encoded in the URL and QR code.
+          <br />
+          You can share it with others or save it as bookmark.
+        </p>
+      </div>
     </div>
   )
 }

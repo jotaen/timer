@@ -29,8 +29,6 @@ button {
 }
 
 button,
-textarea,
-input,
 select {
   cursor: pointer;
   font-family: inherit;

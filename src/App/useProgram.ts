@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Program } from "../program.ts"
 import { decode, encode } from "../encode.ts"
 
@@ -29,14 +29,14 @@ export function useProgram(): UseProgram {
 
   return {
     program,
-    loadProgram: (p: Program) => {
+    loadProgram: useCallback((p: Program) => {
       populateTabState(p)
       setProgram(p)
-    },
-    clearProgram: () => {
+    }, []),
+    clearProgram: useCallback(() => {
       populateTabState(undefined)
       setProgram(undefined)
-    },
+    }, []),
   }
 }
 
@@ -56,10 +56,52 @@ function loadFromUrl(): Program | undefined {
   if (!blob) {
     return undefined
   }
+  if (blob === "demo") {
+    return demoProgram
+  }
   try {
     return decode(blob)
   } catch (e) {
     console.error(e)
     return undefined
   }
+}
+
+export const demoProgram: Program = {
+  title: "Sports!",
+  items: [
+    { kind: "ACTIVITY", title: "Get ready", duration: 10, skipLast: false },
+    {
+      kind: "LOOP",
+      repeat: 3,
+      items: [
+        {
+          kind: "ACTIVITY",
+          title: "Work out",
+          duration: 30,
+          skipLast: false,
+        },
+        { kind: "ACTIVITY", title: "Rest", duration: 15, skipLast: true },
+      ],
+    },
+    {
+      kind: "LOOP",
+      repeat: 4,
+      items: [
+        {
+          kind: "ACTIVITY",
+          title: "Stretch",
+          duration: 45,
+          skipLast: false,
+        },
+        {
+          kind: "ACTIVITY",
+          title: "Change position",
+          duration: 10,
+          skipLast: true,
+        },
+      ],
+    },
+    { kind: "ACTIVITY", title: "Cool down", duration: 20, skipLast: false },
+  ],
 }

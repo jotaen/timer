@@ -10,3 +10,8 @@
 .link {
   word-wrap: break-word;
 }
+
+.hint {
+  color: #ccc;
+  font-size: 0.9em;
+}
