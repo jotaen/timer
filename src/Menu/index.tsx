@@ -7,6 +7,7 @@ import { Toolbar } from "../Toolbar"
 import {
   IconFullScreen,
   IconGear,
+  IconGithub,
   IconPencil,
   IconStars,
 } from "../util/Icons.tsx"
@@ -71,6 +72,21 @@ export function Menu({
           <IconStars />
           Try demo timer
         </button>
+      </div>
+      <div className={css.footer}>
+        <p>
+          Created by{" "}
+          <a href="https://www.jotaen.net" target="_blank">
+            Jan Heuermann
+          </a>
+        </p>
+        <p className={css.githubLink}>
+          <IconGithub />
+          Star on{"\u00A0"}
+          <a href="https://github.com/jotaen/timer" target="_blank">
+            GitHub
+          </a>
+        </p>
       </div>
     </div>
   )
