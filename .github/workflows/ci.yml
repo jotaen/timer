@@ -1,9 +1,9 @@
-name: Deploy
+name: CI/CD
 on: [push, workflow_dispatch]
 
 jobs:
-  deploy:
-    name: Deploy (CloudFlare Pages)
+  test_and_deploy:
+    name: CI/CD
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,12 +18,18 @@ jobs:
       - name: Set up environment
         run: |
           npm install -g pnpm@latest-10
+          sudo wget https://raw.githubusercontent.com/jotaen/run.sh/refs/heads/main/run -O /usr/bin/run && sudo chmod +x /usr/bin/run
+      - name: Install
+        run: run install
+      - name: Code Style
+        run: run format --check
+      - name: Type-Check
+        run: run check-types
+      - name: Unit Tests
+        run: run test
       - name: Build
-        run: |
-          . run.sh
-          run::install
-          run::build --prod
-      - name: Publish to Cloudflare Pages
+        run: run build --prod
+      - name: Deploy to Cloudflare Pages
         id: cloudflare-publish
         uses: cloudflare/pages-action@v1
         with:

@@ -20,6 +20,7 @@ run::dev-env() {
 run::install() {
   rm -rf node_modules
   pnpm install \
+    --shamefully-hoist \
     --frozen-lockfile \
     --ignore-scripts
 }
@@ -68,15 +69,13 @@ run::check-format() {
 
 # Reformat all files.
 run::format() {
+  local args=()
+  if [[ "$1" == '--check' ]]; then
+    args+=(--check)
+  else
+    args+=(--write)
+  fi
   prettier \
-    --write \
+    "${args[@]}" \
     src/
-}
-
-# Run all tests and checks.
-run::test-all() {
-  set -o errexit
-  run::test
-  run::check-types
-  run::check-format
 }
