@@ -3,7 +3,7 @@ on: [push, workflow_dispatch]
 
 jobs:
   test_and_deploy:
-    name: CI/CD
+    name: Test and Deploy
     runs-on: ubuntu-latest
     permissions:
       contents: read
