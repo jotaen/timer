@@ -18,7 +18,10 @@ run::dev-env() {
 
 # Install all dependencies.
 run::install() {
-  npm install
+  rm -rf node_modules
+  pnpm install \
+    --frozen-lockfile \
+    --ignore-scripts
 }
 
 ESBUILD_ARGS=(
