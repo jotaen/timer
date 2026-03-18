@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-// @ts-ignore
 import css from "./style.module.css"
 import { createRoot } from "react-dom/client"
 import { Timer } from "../Timer"

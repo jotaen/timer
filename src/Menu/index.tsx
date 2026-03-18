@@ -1,5 +1,4 @@
 import React from "react"
-// @ts-ignore
 import css from "./style.module.css"
 import { ScreenProps, Screens } from "../App"
 import { Program } from "../program.ts"

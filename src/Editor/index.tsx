@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-// @ts-ignore
 import css from "./style.module.css"
 import { ScreenProps, Screens } from "../App"
 import { Toolbar } from "../Toolbar"

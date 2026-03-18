@@ -1,5 +1,4 @@
 import React from "react"
-// @ts-ignore
 import css from "./style.module.css"
 import { formatClock } from "../format"
 import { STATUS, Ticker } from "../useTicker.ts"

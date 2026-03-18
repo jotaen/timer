@@ -1,5 +1,4 @@
 import React, { useEffect } from "react"
-// @ts-ignore
 import css from "./style.module.css"
 import { QRCodeSVG } from "qrcode.react"
 import { Program } from "../program.ts"
