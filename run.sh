@@ -4,15 +4,20 @@
 PATH="${PATH}:./node_modules/.bin/"
 
 # Starts development environment in Docker.
+#   --claude   Injects Anthropic API key read from keychain (`anthropic-api-key`).
 run::dev-env() {
-  PORT="${1:-8000}"
   docker build --tag "timer" .
+  local args=()
+  if [[ " $* " =~ " --claude " ]]; then
+    args+=(--env ANTHROPIC_API_KEY="$(security find-generic-password -s "anthropic-api-key" -w 2>/dev/null || echo "")")
+  fi
 	docker run \
 		--rm \
 		-it \
 		--volume "${PWD}:/app" \
 		--workdir /app \
-		--publish "${PORT}:8000" \
+		--publish "8000:8000" \
+		"${args[@]}" \
 		"timer"
 }
 
@@ -70,6 +75,7 @@ run::check-format() {
 }
 
 # Reformat all files.
+#   --check   Only check, don’t change.
 run::format() {
   local args=()
   if [[ "$1" == '--check' ]]; then
