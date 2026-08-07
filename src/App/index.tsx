@@ -24,11 +24,11 @@ const root = createRoot(container!)
 root.render(<App />)
 
 export enum Screens {
-  "Menu",
-  "Timer",
-  "Editor",
-  "Settings",
-  "Share",
+  Menu,
+  Timer,
+  Editor,
+  Settings,
+  Share,
 }
 
 export type ScreenProps = {

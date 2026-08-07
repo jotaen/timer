@@ -27,6 +27,7 @@ run::install() {
     --shamefully-hoist \
     --frozen-lockfile \
     --ignore-scripts
+  pnpm outdated
 }
 
 ESBUILD_ARGS=(

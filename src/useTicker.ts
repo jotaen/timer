@@ -6,9 +6,9 @@ import { useInterval } from "./util/useInterval.ts"
 import { useServiceContext } from "./App/useServiceContext.ts"
 
 export enum STATUS {
-  "RESET",
-  "RUNNING",
-  "PAUSED",
+  RESET,
+  RUNNING,
+  PAUSED,
 }
 
 export type Ticker = {
