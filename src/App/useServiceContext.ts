@@ -18,7 +18,11 @@ export const ServiceContext = createContext<ServiceContext | null>(null)
 
 export function useServiceContext(): ServiceContext {
   const ctx = useContext(ServiceContext)
-  if (!ctx) throw new Error("useServiceContext called outside <ServiceContext.Provider>")
+  if (!ctx) {
+    throw new Error(
+      "useServiceContext called outside <ServiceContext.Provider>",
+    )
+  }
   return ctx
 }
 
