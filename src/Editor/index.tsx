@@ -24,9 +24,8 @@ export function Editor({
   const [text, setText] = useState<string>("")
   const [title, setTitle] = useState<string>("")
   const [parseError, setParseError] = useState<ParseError | Error | null>(null)
-  const { showSyntaxRules, setShowSyntaxRules } =
-    useServiceContext().viewPreferences
-  const { navigationGuard } = useServiceContext()
+  const { viewPreferences, navigationGuard } = useServiceContext()
+  const { showSyntaxRules, setShowSyntaxRules } = viewPreferences
 
   useEffect(() => {
     if (program) {

@@ -55,18 +55,18 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
 
     const activityLine = line.text.match(/^(\d+):(\d+)(\*)?(.*)?$/)
     if (activityLine) {
-      const [_, hours, minutes, skipLast, title] = activityLine
+      const [_, minutes, seconds, skipLast, title] = activityLine
       const duration = (() => {
-        const h = parseInt(hours)
         const m = parseInt(minutes)
-        if (minutes.length != 2 || m >= 60) {
+        const s = parseInt(seconds)
+        if (seconds.length != 2 || s >= 60) {
           throw new ParseError(
             line,
             "Invalid duration",
             "A duration must be in the format MM:SS or M:SS.",
           )
         }
-        return h * 60 + m
+        return m * 60 + s
       })()
       if (title && title.length > 0 && title.substring(0, 1) !== " ") {
         throw new ParseError(

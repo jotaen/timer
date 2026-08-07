@@ -19,7 +19,7 @@ export function useLocalStorage<T extends boolean | number | string>(
 
   const [cachedValue, setCachedValue] = useState(() => {
     const storedValue = window.localStorage.getItem(key)
-    if (storedValue) {
+    if (storedValue !== null) {
       try {
         return unmarshall(storedValue)
       } catch {

@@ -10,7 +10,10 @@ export type UseBeeper = {
   setVolume: (v: number) => void
 }
 
-const AudioContext = window.AudioContext ?? (window as any).webkitAudioContext
+const AudioContext =
+  window.AudioContext ??
+  (window as Window & { webkitAudioContext?: typeof globalThis.AudioContext })
+    .webkitAudioContext
 
 export function useBeeper(): UseBeeper {
   const getAudioCtx = useAudioContext()
@@ -38,7 +41,7 @@ export function useBeeper(): UseBeeper {
 
       const t = audioCtx.currentTime
       const endTime = t + duration / 1000
-      gainNode.gain.value = volumeOverride || 0.4 * volume
+      gainNode.gain.value = volumeOverride ?? 0.4 * volume
       oscillator.frequency.value = frequency
       oscillator.type = "square"
       oscillator.start(t)
@@ -53,7 +56,7 @@ export function useBeeper(): UseBeeper {
   // inaudible sound to “activate” the audio context.
   const enable = useCallback(() => {
     beep(15000, 1, 0.01)
-  }, [])
+  }, [beep])
 
   return { beep, enable, shouldBeep, setShouldBeep, volume, setVolume }
 }

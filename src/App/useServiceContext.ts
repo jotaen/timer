@@ -14,12 +14,12 @@ export type ServiceContext = {
   fullScreen: FullScreen
 }
 
-export const ServiceContext = createContext<ServiceContext>(
-  {} as ServiceContext, // Guaranteed to be there at runtime.
-)
+export const ServiceContext = createContext<ServiceContext | null>(null)
 
 export function useServiceContext(): ServiceContext {
-  return useContext(ServiceContext)
+  const ctx = useContext(ServiceContext)
+  if (!ctx) throw new Error("useServiceContext called outside <ServiceContext.Provider>")
+  return ctx
 }
 
 type ViewPreferences = {
