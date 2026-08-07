@@ -11,7 +11,6 @@ run::dev-env() {
 		--rm \
 		-it \
 		--volume "${PWD}:/app" \
-		--workdir /app \
 		--publish "8000:8000" \
 		"${args[@]}" \
 		"timer"
