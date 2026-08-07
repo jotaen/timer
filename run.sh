@@ -5,6 +5,9 @@ PATH="${PATH}:./node_modules/.bin/"
 
 # Starts development environment in Docker.
 run::dev-env() {
+  if [[ -n "$(docker ps -q --filter 'name=^timer-dev-env$')" ]]; then
+    docker exec -it timer-dev-env /bin/bash
+  fi
   docker build --tag "timer" .
   local args=()
 	docker run \
@@ -12,6 +15,7 @@ run::dev-env() {
 		-it \
 		--volume "${PWD}:/app" \
 		--publish "8000:8000" \
+		--name timer-dev-env \
 		"${args[@]}" \
 		"timer"
 }
