@@ -4,13 +4,9 @@
 PATH="${PATH}:./node_modules/.bin/"
 
 # Starts development environment in Docker.
-#   --claude   Injects Anthropic API key read from keychain (`anthropic-api-key`).
 run::dev-env() {
   docker build --tag "timer" .
   local args=()
-  if [[ " $* " =~ " --claude " ]]; then
-    args+=(--env ANTHROPIC_API_KEY="$(security find-generic-password -s "anthropic-api-key" -w 2>/dev/null || echo "")")
-  fi
 	docker run \
 		--rm \
 		-it \
