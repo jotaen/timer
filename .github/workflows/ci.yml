@@ -10,11 +10,11 @@ jobs:
       deployments: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: Install dependencies
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '26'
       - name: Set up environment
         run: |
           npm install -g pnpm@latest-10
@@ -29,14 +29,10 @@ jobs:
         run: run test
       - name: Build
         run: run build --prod
-      - name: Deploy to Cloudflare Pages
+      - name: Publish to Cloudflare Pages
         id: cloudflare-publish
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: b41a4d3bbf853994590a9568dda2c43e
-          projectName: timer-jotaen-net
-          directory: public/
-          branch: ${{ github.ref_name }}
-      - name: Print URL
-        run: echo ${{ steps.cloudflare-publish.outputs.url }}
+          command: pages deploy public/ --project-name=timer-jotaen-net
