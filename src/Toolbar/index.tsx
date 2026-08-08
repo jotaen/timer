@@ -3,6 +3,7 @@ import css from "./style.module.css"
 import { formatClock } from "../format.ts"
 import { STATUS } from "../useTicker.ts"
 import { useProgramContext } from "../App/useProgramContext.ts"
+import { useT } from "../i18n/locale.tsx"
 
 export type ToolbarProps = {
   children: React.ReactNode
@@ -15,9 +16,10 @@ export function Toolbar({
   isSubdued = true,
   showProgram = true,
 }: ToolbarProps) {
+  const t = useT()
   const ctx = useProgramContext()
   if (!children) {
-    children = <div className={css.title}>Programmable Timer</div>
+    children = <div className={css.title}>{t.appTitle}</div>
   }
   return (
     <div className={css.container}>
@@ -27,7 +29,9 @@ export function Toolbar({
           <span className={css.programTitle}>{ctx.program.title}</span>
           {ctx.ticker.status === STATUS.PAUSED && (
             <span className={css.status}>
-              {ctx.program.title && "\u00A0"}(Paused){"\u00A0"}
+              {ctx.program.title && "\u00A0"}
+              {t.paused}
+              {"\u00A0"}
             </span>
           )}
           <div style={{ flex: 1 }}></div>

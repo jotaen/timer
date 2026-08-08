@@ -4,9 +4,10 @@ import { ScreenProps, Screens } from "../App"
 import { Toolbar } from "../Toolbar"
 import { Program } from "../program.ts"
 import { serialise } from "../serialise.ts"
-import { parse, ParseError } from "../parse.ts"
+import { parse, ParseError, ProgramError } from "../parse.ts"
 import { handleControlKeys } from "./handleControlKeys.ts"
 import { useServiceContext } from "../App/useServiceContext.ts"
+import { useT } from "../i18n/locale.tsx"
 
 export type EditorProps = ScreenProps & {
   program?: Program
@@ -20,10 +21,11 @@ export function Editor({
   loadProgram,
   isReadonly,
 }: EditorProps) {
+  const t = useT()
   const [initialText, setInitialText] = useState<string>("")
   const [text, setText] = useState<string>("")
   const [title, setTitle] = useState<string>("")
-  const [parseError, setParseError] = useState<ParseError | Error | null>(null)
+  const [parseError, setParseError] = useState<ProgramError | null>(null)
   const { viewPreferences, navigationGuard } = useServiceContext()
   const { showSyntaxRules, setShowSyntaxRules } = viewPreferences
 
@@ -43,7 +45,7 @@ export function Editor({
       goToScreen(Screens.Timer)
       navigationGuard.disable()
     } catch (e) {
-      setParseError(e as Error)
+      setParseError(e as ProgramError)
       return
     }
   }
@@ -67,11 +69,11 @@ export function Editor({
             goToScreen(program ? Screens.Timer : Screens.Menu)
           }}
         >
-          Back
+          {t.back}
         </button>
         <div style={{ flex: 1 }}></div>
         <button onClick={save} disabled={isReadonly || isEmpty}>
-          Save
+          {t.save}
         </button>
       </Toolbar>
 
@@ -81,21 +83,24 @@ export function Editor({
           value={title}
           className={css.title}
           onChange={(evt) => setTitle(evt.target.value)}
-          placeholder="Title"
+          placeholder={t.titlePlaceholder}
           maxLength={30}
         />
       )}
       {parseError && (
         <div className={css.error}>
-          <div className={css.errorMessage}>Error: {parseError.message}</div>
+          <div className={css.errorMessage}>
+            {t.errorPrefix}
+            {t.parseErrors[parseError.code].message}
+          </div>
           {parseError instanceof ParseError && (
             <div className={css.errorDetails}>
-              <strong>Line {parseError.line.number}: </strong>
+              <strong>{t.lineNumber(parseError.line.number)} </strong>
               {parseError.line.text.trimStart()}
-              {parseError.hint && (
+              {t.parseErrors[parseError.code].hint && (
                 <em>
                   <br />
-                  {parseError.hint}
+                  {t.parseErrors[parseError.code].hint}
                 </em>
               )}
             </div>
@@ -114,42 +119,16 @@ export function Editor({
         }}
         value={text}
         disabled={isReadonly}
-        placeholder="Program"
+        placeholder={t.programPlaceholder}
       ></textarea>
-      {isReadonly && (
-        <div className={css.readonlyHint}>Reset timer to make edits.</div>
-      )}
+      {isReadonly && <div className={css.readonlyHint}>{t.readonlyHint}</div>}
       <div className={css.syntaxRules}>
         <strong onClick={() => setShowSyntaxRules(!showSyntaxRules)}>
-          {showSyntaxRules ? "⏷" : "⏵"} Syntax Rules
+          {showSyntaxRules ? "⏷" : "⏵"} {t.syntaxRulesTitle}
         </strong>
         {showSyntaxRules && (
           <div style={{ marginTop: "1em" }}>
-            <p>
-              A timer program is processed line by line, where each line denotes
-              either an activity or a loop.
-            </p>
-            <h4>Activity</h4>
-            <p>
-              An activity is expressed by a time value, optionally followed by a
-              title (separated by one space character). The time value must be
-              formatted <code>MM:SS</code> or <code>M:SS</code> (minutes,
-              seconds). Examples:
-              <br />
-              <code>0:45</code>, <code>10:00</code>, <code>2:30 Work Out!</code>
-            </p>
-            <h4>Loop</h4>
-            <p>
-              A loop is expressed as repetition count, e.g. <code>2x</code>,
-              denoting that the following block of indented lines shall be
-              repeated that many times. Indentation is 2&nbsp;space characters.
-              Loops can be nested.
-            </p>
-            <p>
-              If the time value of an activity is followed by an asterisk (e.g.,{" "}
-              <code>0:45*</code>), the activity is skipped on the last loop
-              iteration.
-            </p>
+            <t.SyntaxRules />
           </div>
         )}
       </div>

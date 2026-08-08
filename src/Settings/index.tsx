@@ -3,47 +3,39 @@ import css from "./style.module.css"
 import { Screens, ScreenProps } from "../App"
 import { Toolbar } from "../Toolbar"
 import { useServiceContext } from "../App/useServiceContext.ts"
+import { Locale, localeOptions, useLocale, useT } from "../i18n/locale.tsx"
 
 export type SettingsProps = ScreenProps & {}
 
 export function Settings({ goToScreen }: SettingsProps) {
+  const t = useT()
   const { beeper, voice } = useServiceContext()
+  const [locale, setLocale] = useLocale()
   return (
     <div>
       <Toolbar>
-        <button onClick={() => goToScreen(Screens.Menu)}>Back</button>
+        <button onClick={() => goToScreen(Screens.Menu)}>{t.back}</button>
         <div style={{ flex: 1 }}></div>
       </Toolbar>
       <div className={css.title}>
-        <label className={css.toggle}>
-          <input
-            type="checkbox"
-            checked={beeper.shouldBeep}
-            onChange={(evt) => beeper.setShouldBeep(evt.target.checked)}
-          />
-          <span className={css.toggleSlider}></span>
-        </label>
-        <h2>“Beep” Countdown</h2>
+        <h2>{t.appLanguageTitle}</h2>
+        <select
+          value={locale}
+          onChange={(evt) => setLocale(evt.target.value as Locale)}
+        >
+          {localeOptions.map(({ code, name }) => (
+            <option key={code} value={code}>
+              {name}
+            </option>
+          ))}
+        </select>
       </div>
       <div className={css.details}>
-        <div className={css.hint}>
-          Count down the last 3 seconds of an activity with a “beep” sound.
-          (Note: make sure to unsilence your device ringtone for this to work.)
-        </div>
-        <div className={css.subsetting}>
-          Volume:
-          <input
-            type="range"
-            disabled={!beeper.shouldBeep}
-            value={(beeper.volume * 100).toFixed(0)}
-            min={0}
-            max={100}
-            onChange={(evt) => beeper.setVolume(evt.target.valueAsNumber / 100)}
-          />
-        </div>
+        <div className={css.hint}>{t.appLanguageHint}</div>
       </div>
 
       <div className={css.title}>
+        <h2>{t.callOutTitlesTitle}</h2>
         <label className={css.toggle}>
           <input
             type="checkbox"
@@ -52,14 +44,11 @@ export function Settings({ goToScreen }: SettingsProps) {
           />
           <span className={css.toggleSlider}></span>
         </label>
-        <h2>Call Out Titles</h2>
       </div>
       <div className={css.details}>
-        <div className={css.hint}>
-          Read out the titles when an activity begins.
-        </div>
+        <div className={css.hint}>{t.callOutTitlesHint}</div>
         <div className={css.subsetting}>
-          Volume:
+          {t.volume}
           <input
             type="range"
             disabled={!voice.shouldSpeak}
@@ -70,7 +59,7 @@ export function Settings({ goToScreen }: SettingsProps) {
           />
         </div>
         <div className={css.subsetting}>
-          Voice/Language:
+          {t.voiceLanguage}
           <select
             disabled={!voice.shouldSpeak}
             onChange={(evt) => voice.setVoice(evt.target.value)}
@@ -86,6 +75,32 @@ export function Settings({ goToScreen }: SettingsProps) {
               </optgroup>
             ))}
           </select>
+        </div>
+      </div>
+
+      <div className={css.title}>
+        <h2>{t.beepCountdownTitle}</h2>
+        <label className={css.toggle}>
+          <input
+            type="checkbox"
+            checked={beeper.shouldBeep}
+            onChange={(evt) => beeper.setShouldBeep(evt.target.checked)}
+          />
+          <span className={css.toggleSlider}></span>
+        </label>
+      </div>
+      <div className={css.details}>
+        <div className={css.hint}>{t.beepHint}</div>
+        <div className={css.subsetting}>
+          {t.volume}
+          <input
+            type="range"
+            disabled={!beeper.shouldBeep}
+            value={(beeper.volume * 100).toFixed(0)}
+            min={0}
+            max={100}
+            onChange={(evt) => beeper.setVolume(evt.target.valueAsNumber / 100)}
+          />
         </div>
       </div>
     </div>

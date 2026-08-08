@@ -10,9 +10,9 @@ import {
   IconPencil,
   IconStars,
 } from "../util/Icons.tsx"
-import { demoProgram } from "../App/useProgram.ts"
 import { useFullScreen } from "../util/useFullScreen.ts"
 import { useServiceContext } from "../App/useServiceContext.ts"
+import { useT } from "../i18n/locale.tsx"
 
 export type MenuProps = ScreenProps & {
   program?: Program
@@ -26,33 +26,31 @@ export function Menu({
   clearProgram,
   goToScreen,
 }: MenuProps) {
+  const t = useT()
   const { isFullscreen, toggleFullscreen, fullScreenFailed } =
     useServiceContext().fullScreen
   const confirm = () => {
-    return (
-      !program ||
-      window.confirm("Your current program will be cleared. Continue?")
-    )
+    return !program || window.confirm(t.confirmClearProgram)
   }
   return (
     <div className={css.main}>
       <Toolbar>
         {program && (
-          <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
+          <button onClick={() => goToScreen(Screens.Timer)}>{t.back}</button>
         )}
       </Toolbar>
       <div className={css.menu}>
         <button onClick={() => goToScreen(Screens.Settings)}>
           <IconGear />
-          Settings
+          {t.settings}
         </button>
         <button onClick={async () => toggleFullscreen()}>
           <IconFullScreen />
           {fullScreenFailed
-            ? "Error: not possible"
+            ? t.fullscreenError
             : isFullscreen
-              ? "Exit Fullscreen"
-              : "Fullscreen"}
+              ? t.exitFullscreen
+              : t.fullscreen}
         </button>
         <button
           onClick={() => {
@@ -64,31 +62,32 @@ export function Menu({
           }}
         >
           <IconPencil />
-          New timer program
+          {t.newTimerProgram}
         </button>
         <button
           onClick={() => {
             if (!confirm()) {
               return
             }
-            loadProgram(demoProgram)
+            loadProgram(t.demoProgram)
             goToScreen(Screens.Timer)
           }}
         >
           <IconStars />
-          Try demo timer
+          {t.tryDemoTimer}
         </button>
       </div>
       <div className={css.footer}>
         <p>
-          Created by{" "}
+          {t.createdBy}{" "}
           <a href="https://www.jotaen.net" target="_blank">
             Jan Heuermann
           </a>
         </p>
         <p className={css.githubLink}>
           <IconGithub />
-          Star on{"\u00A0"}
+          {t.starOn}
+          {"\u00A0"}
           <a href="https://github.com/jotaen/timer" target="_blank">
             GitHub
           </a>

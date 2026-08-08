@@ -6,32 +6,34 @@ import { encode } from "../encode.ts"
 import { Toolbar } from "../Toolbar"
 import { ScreenProps, Screens } from "../App"
 import { IconClipboard } from "../util/Icons.tsx"
+import { useT } from "../i18n/locale.tsx"
 
 export type ShareProps = ScreenProps & {
   program: Program
 }
 
 export function Share({ goToScreen, program }: ShareProps) {
+  const t = useT()
   const baseUrl =
     window.location.hostname === "localhost"
       ? "https://timer.jotaen.net"
       : window.location.origin
   const shareUrl = `${baseUrl}/#${encode(program)}`
-  const defaultClipboardLabel = "Copy URL to Clipboard"
-  const [clipboardLabel, setClipboardLabel] = React.useState(
-    defaultClipboardLabel,
-  )
+  const [clipboardLabel, setClipboardLabel] = React.useState(t.copyUrl)
   useEffect(() => {
-    if (clipboardLabel !== defaultClipboardLabel) {
+    setClipboardLabel(t.copyUrl)
+  }, [t])
+  useEffect(() => {
+    if (clipboardLabel !== t.copyUrl) {
       setTimeout(() => {
-        setClipboardLabel(defaultClipboardLabel)
+        setClipboardLabel(t.copyUrl)
       }, 1500)
     }
   }, [clipboardLabel])
   return (
     <div>
       <Toolbar>
-        <button onClick={() => goToScreen(Screens.Timer)}>Back</button>
+        <button onClick={() => goToScreen(Screens.Timer)}>{t.back}</button>
         <div style={{ flex: 1 }}></div>
       </Toolbar>
       <div className={css.container}>
@@ -42,9 +44,9 @@ export function Share({ goToScreen, program }: ShareProps) {
             onClick={async () => {
               try {
                 await navigator.clipboard.writeText(shareUrl)
-                setClipboardLabel("URL Copied!")
+                setClipboardLabel(t.urlCopied)
               } catch {
-                setClipboardLabel("Failed to copy!")
+                setClipboardLabel(t.copyFailed)
               }
             }}
           >
@@ -58,9 +60,12 @@ export function Share({ goToScreen, program }: ShareProps) {
           </a>
         </p>
         <p className={css.hint}>
-          Your timer program is encoded in the URL and QR code.
-          <br />
-          You can share it with others or save it as bookmark.
+          {t.shareHint.map((line, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <br />}
+              {line}
+            </React.Fragment>
+          ))}
         </p>
       </div>
     </div>

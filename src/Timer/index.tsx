@@ -5,26 +5,28 @@ import { STATUS, Ticker } from "../useTicker.ts"
 import { Screens, ScreenProps } from "../App"
 import { Toolbar } from "../Toolbar"
 import { IconPause, IconPlay, IconStop } from "../util/Icons.tsx"
+import { useT } from "../i18n/locale.tsx"
 
 export type TimerProps = ScreenProps & {
   ticker: Ticker
 }
 
 export function Timer({ ticker, goToScreen }: TimerProps) {
+  const t = useT()
   const [mins, secs] = formatClock(ticker.tick?.remaining).split(":")
 
   return (
     <div className={css.main}>
       <Toolbar isSubdued={false}>
-        <button onClick={() => goToScreen(Screens.Editor)}>Edit</button>
-        <button onClick={() => goToScreen(Screens.Share)}>Share</button>
+        <button onClick={() => goToScreen(Screens.Editor)}>{t.edit}</button>
+        <button onClick={() => goToScreen(Screens.Share)}>{t.share}</button>
         <div style={{ flex: 1 }}></div>
         <button
           onClick={() => {
             goToScreen(Screens.Menu)
           }}
         >
-          Menu
+          {t.menu}
         </button>
       </Toolbar>
       <div className={css.clock}>
@@ -50,19 +52,19 @@ export function Timer({ ticker, goToScreen }: TimerProps) {
                 [STATUS.RESET]: (
                   <>
                     <IconPlay />
-                    <span>Start</span>
+                    <span>{t.start}</span>
                   </>
                 ),
                 [STATUS.RUNNING]: (
                   <>
                     <IconPause />
-                    <span>Pause</span>
+                    <span>{t.pause}</span>
                   </>
                 ),
                 [STATUS.PAUSED]: (
                   <>
                     <IconPlay />
-                    <span>Resume</span>
+                    <span>{t.resume}</span>
                   </>
                 ),
               }[ticker.status]
@@ -74,14 +76,14 @@ export function Timer({ ticker, goToScreen }: TimerProps) {
             className={css.btnControl}
             disabled={ticker.status === STATUS.RESET}
             onClick={() => {
-              if (!window.confirm("Are you sure?")) {
+              if (!window.confirm(t.confirmReset)) {
                 return
               }
               ticker.reset()
             }}
           >
             <IconStop />
-            <span>Reset</span>
+            <span>{t.reset}</span>
           </button>
         </div>
       </div>

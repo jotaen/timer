@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Program } from "../program.ts"
 import { decode, encode } from "../encode.ts"
+import { useT } from "../i18n/locale.tsx"
 
 export type UseProgram = {
   program?: Program
@@ -9,15 +10,16 @@ export type UseProgram = {
 }
 
 export function useProgram(): UseProgram {
+  const { demoProgram } = useT()
   const [program, setProgram] = useState<Program | undefined>(() => {
-    const p = loadFromUrl()
+    const p = loadFromUrl(demoProgram)
     populateTabState(p, false)
     return p
   })
 
   useEffect(() => {
     const handleHashChange = () => {
-      const p = loadFromUrl()
+      const p = loadFromUrl(demoProgram)
       populateTabState(p, false)
       setProgram(p)
     }
@@ -25,7 +27,7 @@ export function useProgram(): UseProgram {
     return () => {
       window.removeEventListener("hashchange", handleHashChange)
     }
-  }, [])
+  }, [demoProgram])
 
   return {
     program,
@@ -51,7 +53,7 @@ function populateTabState(p?: Program, newHistoryEntry = true): void {
   }
 }
 
-function loadFromUrl(): Program | undefined {
+function loadFromUrl(demoProgram: Program): Program | undefined {
   const blob = window.location.hash.substring(1)
   if (!blob) {
     return undefined
@@ -65,43 +67,4 @@ function loadFromUrl(): Program | undefined {
     console.error(e)
     return undefined
   }
-}
-
-export const demoProgram: Program = {
-  title: "Sports!",
-  items: [
-    { kind: "ACTIVITY", title: "Get ready", duration: 10, skipLast: false },
-    {
-      kind: "LOOP",
-      repeat: 3,
-      items: [
-        {
-          kind: "ACTIVITY",
-          title: "Work out",
-          duration: 30,
-          skipLast: false,
-        },
-        { kind: "ACTIVITY", title: "Rest", duration: 15, skipLast: true },
-      ],
-    },
-    {
-      kind: "LOOP",
-      repeat: 4,
-      items: [
-        {
-          kind: "ACTIVITY",
-          title: "Stretch",
-          duration: 45,
-          skipLast: false,
-        },
-        {
-          kind: "ACTIVITY",
-          title: "Change position",
-          duration: 10,
-          skipLast: true,
-        },
-      ],
-    },
-    { kind: "ACTIVITY", title: "Cool down", duration: 20, skipLast: false },
-  ],
 }

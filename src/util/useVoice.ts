@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocalStorage } from "./useLocalStorage.ts"
+import { useLocale } from "../i18n/locale.tsx"
 
 export type UseVoice = {
   say: (text: string) => void
@@ -13,6 +14,7 @@ export type UseVoice = {
 }
 
 export function useVoice(): UseVoice {
+  const [locale] = useLocale()
   const [shouldSpeak, setShouldSpeak] = useLocalStorage<boolean>(
     "voice:enabled",
     true,
@@ -53,16 +55,22 @@ export function useVoice(): UseVoice {
       if (!shouldSpeak || !synth) {
         return
       }
+      const allVoices = synth.getVoices()
+      const voice =
+        allVoices.find((v) => v.name === currentVoice) ??
+        allVoices.find((v) => v.lang.toLowerCase().startsWith(locale)) ??
+        allVoices[0]
+      if (!voice) {
+        return
+      }
       const utterance = new SpeechSynthesisUtterance(text)
-      utterance.voice =
-        synth.getVoices().find((v) => v.name === currentVoice) ||
-        synth.getVoices()[0]
+      utterance.voice = voice
       utterance.pitch = 1.0
       utterance.rate = 1.0
       utterance.volume = volume
       synth.speak(utterance)
     },
-    [shouldSpeak, volume, currentVoice],
+    [shouldSpeak, volume, currentVoice, locale],
   )
 
   return {

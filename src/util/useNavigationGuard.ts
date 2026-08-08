@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useRef } from "react"
+import { useT } from "../i18n/locale.tsx"
 
 export type NavigationGuard = {
   enable: (isEnabled?: boolean) => void
@@ -7,6 +8,7 @@ export type NavigationGuard = {
 }
 
 export function useNavigationGuard(): NavigationGuard {
+  const t = useT()
   const enabledRef = useRef(false)
 
   useEffect(() => {
@@ -31,10 +33,8 @@ export function useNavigationGuard(): NavigationGuard {
     if (!enabledRef.current) {
       return true
     }
-    return window.confirm(
-      "You have unsaved changes. Are you sure you want to leave?",
-    )
-  }, [])
+    return window.confirm(t.unsavedChangesConfirm)
+  }, [t])
 
   return { enable, disable, checkAndConfirm }
 }

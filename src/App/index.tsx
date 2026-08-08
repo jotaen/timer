@@ -18,10 +18,15 @@ import { useWakeLock } from "../util/useWakeLock.ts"
 import { ServiceContext } from "./useServiceContext.ts"
 import { useLocalStorage } from "../util/useLocalStorage.ts"
 import { useFullScreen } from "../util/useFullScreen.ts"
+import { LocaleProvider } from "../i18n/locale.tsx"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
-root.render(<App />)
+root.render(
+  <LocaleProvider>
+    <App />
+  </LocaleProvider>,
+)
 
 export enum Screens {
   Menu,
