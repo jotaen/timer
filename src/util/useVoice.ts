@@ -56,9 +56,10 @@ export function useVoice(): UseVoice {
         return
       }
       const allVoices = synth.getVoices()
+      const voiceLang = locale.toLowerCase()
       const voice =
         allVoices.find((v) => v.name === currentVoice) ??
-        allVoices.find((v) => v.lang.toLowerCase().startsWith(locale)) ??
+        allVoices.find((v) => v.lang.toLowerCase().startsWith(voiceLang)) ??
         allVoices[0]
       if (!voice) {
         return

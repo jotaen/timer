@@ -1,5 +1,5 @@
 import React from "react"
-import en, { ParseErrorDictionary } from "./en.tsx"
+import en, { ParseErrorDictionary } from "./en-GB.tsx"
 
 export default {
   name: "Deutsch",
