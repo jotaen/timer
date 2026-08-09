@@ -9,7 +9,16 @@ export function useLocalStorage<T extends boolean | number | string>(
       case "boolean":
         return [(v) => (v ? "true" : "false"), (v) => (v === "true") as T]
       case "number":
-        return [(v) => v.toString(), (v) => parseFloat(v) as T]
+        return [
+          (v) => v.toString(),
+          (v) => {
+            const n = parseFloat(v)
+            if (Number.isNaN(n)) {
+              throw new Error("Not a number")
+            }
+            return n as T
+          },
+        ]
       case "string":
         return [(v) => v as string, (v: string) => v as T]
       default:
@@ -23,6 +32,7 @@ export function useLocalStorage<T extends boolean | number | string>(
       try {
         return unmarshall(storedValue)
       } catch {
+        window.localStorage.removeItem(key)
         return defaultValue
       }
     }
