@@ -12,17 +12,14 @@ export function Settings({ goToScreen }: SettingsProps) {
   const { beeper, voice } = useServiceContext()
   const [locale, setLocale] = useLocale()
 
-  const selectedVoiceLanguage =
-    voice.voices.find(([, names]) =>
-      names.includes(voice.currentVoice ?? ""),
-    )?.[0] ?? voice.voices[0]?.[0]
+  const selectedVoiceLanguage = voice.currentVoice?.lang
   const voicesForSelectedLanguage =
     voice.voices.find(([lang]) => lang === selectedVoiceLanguage)?.[1] ?? []
 
   const changeVoiceLanguage = (lang: string) => {
-    const names = voice.voices.find(([l]) => l === lang)?.[1] ?? []
-    if (names.length > 0) {
-      voice.setVoice(names[0])
+    const voicesOfLanguage = voice.voices.find(([l]) => l === lang)?.[1] ?? []
+    if (voicesOfLanguage.length > 0) {
+      voice.setVoice(voicesOfLanguage[0].voiceURI)
     }
   }
 
@@ -78,7 +75,7 @@ export function Settings({ goToScreen }: SettingsProps) {
           <select
             disabled={!voice.shouldSpeak}
             onChange={(evt) => changeVoiceLanguage(evt.target.value)}
-            value={selectedVoiceLanguage}
+            value={selectedVoiceLanguage ?? ""}
           >
             {voice.voices.map(([lang]) => (
               <option key={lang} value={lang}>
@@ -89,11 +86,11 @@ export function Settings({ goToScreen }: SettingsProps) {
           <select
             disabled={!voice.shouldSpeak}
             onChange={(evt) => voice.setVoice(evt.target.value)}
-            value={voice.currentVoice}
+            value={voice.currentVoice?.voiceURI ?? ""}
           >
             {voicesForSelectedLanguage.map((v) => (
-              <option key={v} value={v}>
-                {v}
+              <option key={v.voiceURI} value={v.voiceURI}>
+                {v.name}
               </option>
             ))}
           </select>
