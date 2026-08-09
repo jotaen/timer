@@ -25,9 +25,10 @@ export function Share({ goToScreen, program }: ShareProps) {
   }, [t])
   useEffect(() => {
     if (clipboardLabel !== t.copyUrl) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setClipboardLabel(t.copyUrl)
       }, 1500)
+      return () => clearTimeout(timeout)
     }
   }, [clipboardLabel])
   return (
