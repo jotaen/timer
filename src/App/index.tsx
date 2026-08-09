@@ -106,5 +106,14 @@ function useScreen(program?: Program) {
   const [screen, setScreen] = useState<Screens>(
     program ? Screens.Timer : Screens.Menu,
   )
-  return { screen, goToScreen: setScreen }
+  // The program can disappear underneath the current screen, e.g. through
+  // browser back navigation to a URL without a program. Timer and Share
+  // cannot render without a program, so fall back to the menu.
+  return {
+    screen:
+      !program && (screen === Screens.Timer || screen === Screens.Share)
+        ? Screens.Menu
+        : screen,
+    goToScreen: setScreen,
+  }
 }
