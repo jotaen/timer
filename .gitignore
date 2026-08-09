@@ -2,3 +2,5 @@ node_modules/
 public/dist/
 .pnpm-store/
 .claude/
+.idea/
+.DS_Store

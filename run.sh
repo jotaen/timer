@@ -7,6 +7,7 @@ PATH="${PATH}:./node_modules/.bin/"
 run::dev-env() {
   if [[ -n "$(docker ps -q --filter 'name=^timer-dev-env$')" ]]; then
     docker exec -it timer-dev-env /bin/bash
+    return
   fi
   docker build --tag "timer" .
   local args=()
