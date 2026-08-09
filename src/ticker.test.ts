@@ -128,4 +128,27 @@ describe("ticker*()", () => {
     })
     assertTick(tick.next(), undefined)
   })
+
+  it("keeps nested loops in the last loop repetition", () => {
+    const items: Item[] = [
+      {
+        kind: "LOOP",
+        repeat: 2,
+        items: [
+          {
+            kind: "LOOP",
+            repeat: 2,
+            items: [
+              { kind: "ACTIVITY", title: "a", duration: 1, skipLast: false },
+            ],
+          },
+          { kind: "ACTIVITY", title: "b", duration: 1, skipLast: true },
+        ],
+      },
+    ]
+    assert.strictEqual(totalDuration(items), 5)
+
+    const sequence = [...ticker(items)].map((t) => t.currentActivity)
+    assert.deepStrictEqual(sequence, ["a", "a", "b", "a", "a"])
+  })
 })

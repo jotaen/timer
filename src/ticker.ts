@@ -18,7 +18,9 @@ export function* ticker(items: Item[]): Generator<Tick> {
         for (let r = item.repeat; r > 0; r--) {
           let items = [...item.items]
           if (r === 1) {
-            items = items.filter((it) => it.kind === "ACTIVITY" && !it.skipLast)
+            items = items.filter(
+              (it) => !(it.kind === "ACTIVITY" && it.skipLast),
+            )
           }
           yield* ticker(items)
         }
@@ -48,9 +50,21 @@ export function* ticker(items: Item[]): Generator<Tick> {
 
 export function totalDuration(items: Item[]): number {
   let result = 0
-  let t = ticker(items)
-  while (!t.next().done) {
-    result++
+  for (const item of items) {
+    switch (item.kind) {
+      case "ACTIVITY":
+        result += item.duration
+        break
+      case "LOOP":
+        const round = totalDuration(item.items)
+        const skippedInLastRound = item.items.reduce(
+          (sum, it) =>
+            sum + (it.kind === "ACTIVITY" && it.skipLast ? it.duration : 0),
+          0,
+        )
+        result += item.repeat * round - skippedInLastRound
+        break
+    }
   }
   return result
 }
