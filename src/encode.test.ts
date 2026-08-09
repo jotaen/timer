@@ -8,6 +8,10 @@ describe("encode()", () => {
     assert.match(encode({ title: "Hello World!", items: [] }), /^hello-world\//)
     assert.match(encode({ title: "hello-world", items: [] }), /^hello-world\//)
     assert.match(
+      encode({ title: "H€eπlälﬁo/W!o#r$l^d...", items: [] }),
+      /^helloworld\//,
+    )
+    assert.match(
       encode({ title: "Hey! 😀ö↓¼ foo \"\']}", items: [] }),
       /^hey-foo\//,
     )

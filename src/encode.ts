@@ -16,7 +16,7 @@ export function encode(p: Program): string {
 
 export function decode(encodedData: string): Program {
   const { version, checksum, blob } = (() => {
-    const parts = encodedData.match(/^(.*)\/(\d+):(.{4}):(.+)$/) || []
+    const parts = encodedData.match(/^([a-z0-9-]*)\/(\d+):(.{4}):(.+)$/) || []
     if (!parts.length) {
       throw new Error("Invalid URL")
     }
