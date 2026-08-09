@@ -24,18 +24,28 @@ export function Editor({
   const t = useT()
   const [initialText, setInitialText] = useState<string>("")
   const [text, setText] = useState<string>("")
+  const [initialTitle, setInitialTitle] = useState<string>("")
   const [title, setTitle] = useState<string>("")
   const [parseError, setParseError] = useState<ProgramError | null>(null)
   const { viewPreferences, navigationGuard } = useServiceContext()
   const { showSyntaxRules, setShowSyntaxRules } = viewPreferences
+  const isDirty = text !== initialText || title !== initialTitle
+  const isEmpty = text.trim() === "" // Empty title is fine.
 
   useEffect(() => {
-    if (program) {
-      const p = serialise(program)
-      setInitialText(p.program)
-      setTitle(p.title)
-      setText(p.program)
-    }
+    navigationGuard.enable(isDirty)
+  }, [isDirty])
+
+  useEffect(() => {
+    // The program can change underneath the editor through browser history
+    // navigation. In case there were unsaved edits, the `hashchange` handler
+    // has already asked for confirmation, so it’s safe to re-sync here.
+    const p = program ? serialise(program) : { title: "", program: "" }
+    setInitialText(p.program)
+    setText(p.program)
+    setInitialTitle(p.title)
+    setTitle(p.title)
+    setParseError(null)
   }, [program])
 
   const save = () => {
@@ -50,13 +60,10 @@ export function Editor({
     }
   }
 
-  const handleTextChange = (text: string) => {
-    navigationGuard.enable(text !== initialText)
-    setText(text)
+  const handleTextChange = (newText: string) => {
+    setText(newText)
     setParseError(null)
   }
-
-  const isEmpty = text.trim() === "" // Empty title is fine.
 
   return (
     <div className={css.main}>

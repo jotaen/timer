@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Program } from "../program.ts"
 import { decode, encode } from "../encode.ts"
 import { useT } from "../i18n/locale.tsx"
+import { useServiceContext } from "./useServiceContext.ts"
 
 export type UseProgram = {
   program?: Program
@@ -11,14 +12,22 @@ export type UseProgram = {
 
 export function useProgram(): UseProgram {
   const { demoProgram } = useT()
+  const { navigationGuard } = useServiceContext()
   const [program, setProgram] = useState<Program | undefined>(() => {
     const p = loadFromUrl(demoProgram)
     populateTabState(p, false)
     return p
   })
-
   useEffect(() => {
     const handleHashChange = () => {
+      // In-app history navigation doesn’t unload the page, so the
+      // `beforeunload` guard cannot intercept it. Hence, ask for confirmation
+      // here, and cancel the navigation by re-pushing the current program’s
+      // URL. (`pushState` doesn’t emit another `hashchange` event.)
+      if (!navigationGuard.checkAndConfirm()) {
+        populateTabState(program)
+        return
+      }
       const p = loadFromUrl(demoProgram)
       populateTabState(p, false)
       setProgram(p)
@@ -27,7 +36,7 @@ export function useProgram(): UseProgram {
     return () => {
       window.removeEventListener("hashchange", handleHashChange)
     }
-  }, [demoProgram])
+  }, [demoProgram, program, navigationGuard.checkAndConfirm])
 
   return {
     program,
