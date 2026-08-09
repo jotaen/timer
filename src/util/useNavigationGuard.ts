@@ -33,7 +33,12 @@ export function useNavigationGuard(): NavigationGuard {
     if (!enabledRef.current) {
       return true
     }
-    return window.confirm(t.unsavedChangesConfirm)
+    const confirmed = window.confirm(t.unsavedChangesConfirm)
+    if (confirmed) {
+      // The changes are discarded, so there is nothing to guard anymore.
+      enabledRef.current = false
+    }
+    return confirmed
   }, [t])
 
   return { enable, disable, checkAndConfirm }
