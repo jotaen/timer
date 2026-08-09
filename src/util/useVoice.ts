@@ -88,7 +88,7 @@ export function useVoice(): UseVoice {
 
 // The voice explicitly chosen by the user, or (if there is none, or it’s not
 // available on this device) the best match for the app locale.
-function resolveVoice(
+export function resolveVoice(
   voices: SpeechSynthesisVoice[],
   chosenVoiceURI: string,
   locale: string,

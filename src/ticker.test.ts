@@ -151,4 +151,44 @@ describe("ticker*()", () => {
     const sequence = [...ticker(items)].map((t) => t.currentActivity)
     assert.deepStrictEqual(sequence, ["a", "a", "b", "a", "a"])
   })
+
+  it("produces a single 500ms-beep tick for a 1-second activity", () => {
+    const items: Item[] = [
+      { kind: "ACTIVITY", title: "a", duration: 1, skipLast: false },
+    ]
+    assert.strictEqual(totalDuration(items), 1)
+
+    const tick = ticker(items)
+    assertTick(tick.next(), {
+      remaining: 1,
+      currentActivity: "a",
+      readOut: true,
+      beep: 500,
+    })
+    assertTick(tick.next(), undefined)
+  })
+
+  it("skips over a loop with no items without hanging", () => {
+    const items: Item[] = [
+      { kind: "LOOP", repeat: 3, items: [] },
+      { kind: "ACTIVITY", title: "after", duration: 1, skipLast: false },
+    ]
+    const sequence = [...ticker(items)].map((t) => t.currentActivity)
+    assert.deepStrictEqual(sequence, ["after"])
+  })
+
+  it("can produce a negative total for a zero-repeat loop with a skip-last activity", () => {
+    // `parse()` currently rejects `repeat: 0` before it ever reaches here
+    // (see INVALID_REPETITIONS), so this is a latent rather than a presently
+    // reachable defect. This test documents the current behaviour so that a
+    // future change to `totalDuration()` has to touch it deliberately.
+    const items: Item[] = [
+      {
+        kind: "LOOP",
+        repeat: 0,
+        items: [{ kind: "ACTIVITY", title: "a", duration: 5, skipLast: true }],
+      },
+    ]
+    assert.strictEqual(totalDuration(items), -5)
+  })
 })

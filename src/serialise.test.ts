@@ -1,5 +1,6 @@
 import assert from "assert"
 import { serialise } from "./serialise.ts"
+import { parse } from "./parse.ts"
 import { Program } from "./program.ts"
 
 describe("serialise()", () => {
@@ -102,6 +103,13 @@ describe("serialise()", () => {
         title: input[0],
         program: input[1],
       })
+    })
+  })
+
+  tests.forEach(({ desc, expect }) => {
+    it(`round-trips through parse() for ${desc}`, () => {
+      const { title, program } = serialise(expect)
+      assert.deepStrictEqual(parse(title, program), expect)
     })
   })
 })

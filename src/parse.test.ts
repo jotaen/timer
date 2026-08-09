@@ -144,6 +144,61 @@ describe("parse()", () => {
         items: [{ kind: "ACTIVITY", title: "", duration: 1, skipLast: false }],
       },
     },
+    {
+      desc: "CRLF line endings",
+      input: [
+        "Sports!",
+        "0:05 Get ready!\r\n2x\r\n  0:10 Work out\r\n  0:05* Rest",
+      ],
+      expect: {
+        title: "Sports!",
+        items: [
+          {
+            kind: "ACTIVITY",
+            title: "Get ready!",
+            duration: 5,
+            skipLast: false,
+          },
+          {
+            kind: "LOOP",
+            repeat: 2,
+            items: [
+              {
+                kind: "ACTIVITY",
+                title: "Work out",
+                duration: 10,
+                skipLast: false,
+              },
+              { kind: "ACTIVITY", title: "Rest", duration: 5, skipLast: true },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      desc: "title at the 30 character boundary",
+      input: ["123456789012345678901234567890", "0:01"],
+      expect: {
+        title: "123456789012345678901234567890",
+        items: [{ kind: "ACTIVITY", title: "", duration: 1, skipLast: false }],
+      },
+    },
+    {
+      desc: "loop with a large repeat count",
+      input: ["", "999x\n  0:10 A"],
+      expect: {
+        title: "",
+        items: [
+          {
+            kind: "LOOP",
+            repeat: 999,
+            items: [
+              { kind: "ACTIVITY", title: "A", duration: 10, skipLast: false },
+            ],
+          },
+        ],
+      },
+    },
   ]
   tests.forEach(({ desc, input, expect }) => {
     it(`parses ${desc}`, () => {
@@ -219,6 +274,42 @@ describe("parse()", () => {
   it("rejects empty loops", () => {
     ;["2x", "2x\n0:10"].forEach((input) => {
       assert.throws(() => parse("", input), hasCode("EMPTY_LOOP"), input)
+    })
+  })
+
+  it("rejects tab-indented lines as invalid entries, not as invalid indentation", () => {
+    // Tabs aren’t recognised as indentation at all (only spaces are), so a
+    // tab-indented line is treated as unindented content and fails to match
+    // any known entry shape.
+    ;["\t0:10", "0:10\n\t0:05"].forEach((input) => {
+      assert.throws(() => parse("", input), hasCode("INVALID_ENTRY"), input)
+    })
+  })
+
+  it("rejects malformed loop headers", () => {
+    ;["2xx", "2x0"].forEach((input) => {
+      assert.throws(
+        () => parse("", `${input}\n  0:10 A`),
+        hasCode("INVALID_ENTRY"),
+        input,
+      )
+    })
+  })
+
+  it("accepts trailing whitespace after a loop repeat count", () => {
+    ;["2x ", "2x  "].forEach((input) => {
+      assert.deepStrictEqual(parse("", `${input}\n  0:10 A`), {
+        title: "",
+        items: [
+          {
+            kind: "LOOP",
+            repeat: 2,
+            items: [
+              { kind: "ACTIVITY", title: "A", duration: 10, skipLast: false },
+            ],
+          },
+        ],
+      })
     })
   })
 })

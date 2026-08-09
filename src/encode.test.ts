@@ -87,3 +87,27 @@ describe("encode()", () => {
     assert.deepStrictEqual(output2, input2)
   })
 })
+
+describe("decode()", () => {
+  it("rejects a string that doesn't match the expected shape", () => {
+    assert.throws(() => decode("not-a-valid-encoded-string"), /Invalid URL/)
+  })
+
+  it("rejects a tampered/corrupted payload via checksum mismatch", () => {
+    const encoded = encode({ title: "Hello", items: [] })
+    const tampered = encoded.replace(/:(.{4}):/, ":xxxx:")
+    assert.throws(() => decode(tampered), /Checksum mismatch/)
+  })
+
+  it("rejects unsupported encoding versions", () => {
+    const encoded = encode({ title: "Hello", items: [] })
+    assert.throws(
+      () => decode(encoded.replace("/1:", "/0:")),
+      /Unsupported encoding version 0/,
+    )
+    assert.throws(
+      () => decode(encoded.replace("/1:", "/2:")),
+      /Unsupported encoding version 2/,
+    )
+  })
+})
