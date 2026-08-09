@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocalStorage } from "./useLocalStorage.ts"
 import { useLocale } from "../i18n/locale.tsx"
 
@@ -56,6 +56,7 @@ export function useVoice(): UseVoice {
   }, [])
 
   const effectiveVoice = resolveVoice(allVoices, chosenVoiceURI, locale)
+  const voices = useMemo(() => groupVoicesByLanguage(allVoices), [allVoices])
 
   const say = useCallback(
     (text: string) => {
@@ -75,7 +76,7 @@ export function useVoice(): UseVoice {
 
   return {
     say,
-    voices: groupVoicesByLanguage(allVoices),
+    voices,
     setVoice,
     currentVoice: effectiveVoice,
     shouldSpeak,

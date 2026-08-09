@@ -98,13 +98,13 @@ export function Editor({
         <div className={css.error}>
           <div className={css.errorMessage}>
             {t.errorPrefix}
-            {t.parseErrors[parseError.code].message}
+            {t.parseErrors[parseError.code]?.message ?? parseError.message}
           </div>
           {parseError instanceof ParseError && (
             <div className={css.errorDetails}>
               <strong>{t.lineNumber(parseError.line.number)} </strong>
               {parseError.line.text.trimStart()}
-              {t.parseErrors[parseError.code].hint && (
+              {t.parseErrors[parseError.code]?.hint && (
                 <em>
                   <br />
                   {t.parseErrors[parseError.code].hint}
