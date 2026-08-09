@@ -12,7 +12,7 @@ export default {
   tryDemoTimer: "Demo-Timer ausprobieren",
   confirmClearProgram: "Dein aktuelles Programm wird gelöscht. Fortfahren?",
   createdBy: "Erstellt von",
-  starOn: "Star on",
+  starOn: "Gib uns einen Stern auf",
 
   beepCountdownTitle: "„Piep“-Countdown",
   beepHint:
@@ -72,7 +72,7 @@ export default {
     },
     INVALID_DURATION: {
       message: "Ungültige Dauer",
-      hint: "Eine Dauer muss im Format MM:SS oder M:SS angegeben werden.",
+      hint: "Eine Dauer muss im Format MM:SS oder M:SS angegeben werden und größer als null sein.",
     },
     MISSING_SPACE_SEPARATOR: {
       message: "Fehlendes Leerzeichen vor dem Titel der Aktivität",
@@ -82,6 +82,10 @@ export default {
       hint:
         "Eine Schleife muss mindestens eine Aktivität oder eine weitere " +
         "Schleife enthalten.",
+    },
+    INVALID_REPETITIONS: {
+      message: "Ungültige Wiederholungsanzahl",
+      hint: "Eine Schleife muss mindestens einmal wiederholt werden.",
     },
     INVALID_ENTRY: {
       message: "Ungültiger Eintrag",

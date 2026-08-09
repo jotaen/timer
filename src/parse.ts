@@ -18,6 +18,7 @@ export type ErrorCode =
   | "INVALID_DURATION"
   | "MISSING_SPACE_SEPARATOR"
   | "EMPTY_LOOP"
+  | "INVALID_REPETITIONS"
   | "INVALID_ENTRY"
 
 export class ProgramError extends Error {
@@ -69,7 +70,11 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
         if (seconds.length != 2 || s >= 60) {
           throw new ParseError(line, "INVALID_DURATION")
         }
-        return m * 60 + s
+        const total = m * 60 + s
+        if (total === 0) {
+          throw new ParseError(line, "INVALID_DURATION")
+        }
+        return total
       })()
       if (title && title.length > 0 && title.substring(0, 1) !== " ") {
         throw new ParseError(line, "MISSING_SPACE_SEPARATOR")
@@ -86,6 +91,9 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
     const loopLine = line.text.match(/^(\d+)x *$/)
     if (loopLine) {
       const [_, repeat] = loopLine
+      if (parseInt(repeat) === 0) {
+        throw new ParseError(line, "INVALID_REPETITIONS")
+      }
       const [loopItems, remainingLines] = parseItems(lines, line.indent)
       if (loopItems.length === 0) {
         throw new ParseError(line, "EMPTY_LOOP")

@@ -171,7 +171,7 @@ describe("parse()", () => {
   })
 
   it("rejects invalid durations", () => {
-    ;["0:1", "0:60", "0:61", "0:100"].forEach((input) => {
+    ;["0:1", "0:60", "0:61", "0:100", "0:00"].forEach((input) => {
       assert.throws(() => parse("", input), hasCode("INVALID_DURATION"), input)
     })
   })
@@ -201,6 +201,16 @@ describe("parse()", () => {
       assert.throws(
         () => parse("", input),
         hasCode("INVALID_INDENTATION"),
+        input,
+      )
+    })
+  })
+
+  it("rejects loops with zero repetitions", () => {
+    ;["0x\n  0:10", "00x\n  0:10"].forEach((input) => {
+      assert.throws(
+        () => parse("", input),
+        hasCode("INVALID_REPETITIONS"),
         input,
       )
     })

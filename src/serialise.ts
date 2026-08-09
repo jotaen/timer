@@ -16,9 +16,9 @@ function serialiseItems(items: Item[], indent: number): string {
     .map((item) => {
       switch (item.kind) {
         case "ACTIVITY":
-          const hour = String(Math.floor(item.duration / 60))
-          const minute = String(item.duration % 60).padStart(2, "0")
-          const duration = `${hour}:${minute}`
+          const minutes = String(Math.floor(item.duration / 60))
+          const seconds = String(item.duration % 60).padStart(2, "0")
+          const duration = `${minutes}:${seconds}`
           const skipLast = item.skipLast ? "*" : ""
           const title = item.title.length > 0 ? ` ${item.title}` : ""
           return `${indentation}${duration}${skipLast}${title}`

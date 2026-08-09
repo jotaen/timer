@@ -72,7 +72,7 @@ export default {
     },
     INVALID_DURATION: {
       message: "Duración no válida",
-      hint: "Una duración debe tener el formato MM:SS o M:SS.",
+      hint: "Una duración debe tener el formato MM:SS o M:SS y ser mayor que cero.",
     },
     MISSING_SPACE_SEPARATOR: {
       message: "Falta el espacio separador antes del título de la actividad",
@@ -80,6 +80,10 @@ export default {
     EMPTY_LOOP: {
       message: "Bucle vacío no permitido",
       hint: "Un bucle debe contener al menos una actividad u otro bucle.",
+    },
+    INVALID_REPETITIONS: {
+      message: "Número de repeticiones no válido",
+      hint: "Un bucle debe repetirse al menos una vez.",
     },
     INVALID_ENTRY: {
       message: "Entrada no válida",
@@ -171,9 +175,9 @@ export default {
           2&nbsp;espacios. Los bucles se pueden anidar.
         </p>
         <p>
-          Si al valor de tiempo de una actividad le sigue un asterisco (p.
-          ej., <code>0:45*</code>), la actividad se omite en la última
-          repetición del bucle.
+          Si al valor de tiempo de una actividad le sigue un asterisco (p. ej.,{" "}
+          <code>0:45*</code>), la actividad se omite en la última repetición del
+          bucle.
         </p>
       </>
     )

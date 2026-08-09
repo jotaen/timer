@@ -77,7 +77,7 @@ export default {
     },
     INVALID_DURATION: {
       message: "Invalid duration",
-      hint: "A duration must be in the format MM:SS or M:SS.",
+      hint: "A duration must be in the format MM:SS or M:SS, and greater than zero.",
     },
     MISSING_SPACE_SEPARATOR: {
       message: "Missing space separator before activity title",
@@ -85,6 +85,10 @@ export default {
     EMPTY_LOOP: {
       message: "Illegal empty loop",
       hint: "Loop must contain at least one activity or another loop.",
+    },
+    INVALID_REPETITIONS: {
+      message: "Invalid repetition count",
+      hint: "A loop must repeat at least once.",
     },
     INVALID_ENTRY: {
       message: "Invalid entry",
