@@ -11,6 +11,21 @@ export function Settings({ goToScreen }: SettingsProps) {
   const t = useT()
   const { beeper, voice } = useServiceContext()
   const [locale, setLocale] = useLocale()
+
+  const selectedVoiceLanguage =
+    voice.voices.find(([, names]) =>
+      names.includes(voice.currentVoice ?? ""),
+    )?.[0] ?? voice.voices[0]?.[0]
+  const voicesForSelectedLanguage =
+    voice.voices.find(([lang]) => lang === selectedVoiceLanguage)?.[1] ?? []
+
+  const changeVoiceLanguage = (lang: string) => {
+    const names = voice.voices.find(([l]) => l === lang)?.[1] ?? []
+    if (names.length > 0) {
+      voice.setVoice(names[0])
+    }
+  }
+
   return (
     <div>
       <Toolbar>
@@ -62,17 +77,24 @@ export function Settings({ goToScreen }: SettingsProps) {
           {t.voiceLanguage}
           <select
             disabled={!voice.shouldSpeak}
+            onChange={(evt) => changeVoiceLanguage(evt.target.value)}
+            value={selectedVoiceLanguage}
+          >
+            {voice.voices.map(([lang]) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
+            ))}
+          </select>
+          <select
+            disabled={!voice.shouldSpeak}
             onChange={(evt) => voice.setVoice(evt.target.value)}
             value={voice.currentVoice}
           >
-            {voice.voices.map(([lang, vs]) => (
-              <optgroup label={lang} key={lang}>
-                {vs.map((v) => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-              </optgroup>
+            {voicesForSelectedLanguage.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
             ))}
           </select>
         </div>

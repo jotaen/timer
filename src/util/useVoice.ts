@@ -95,5 +95,5 @@ function groupVoicesByLanguage(voices: SpeechSynthesisVoice[]) {
       acc[voice.lang].push(voice.name)
       return acc
     }, {}),
-  )
+  ).sort(([langA], [langB]) => langA.localeCompare(langB))
 }
