@@ -13,7 +13,7 @@ export default {
   settings: "Settings",
   fullscreen: "Fullscreen",
   exitFullscreen: "Exit Fullscreen",
-  fullscreenError: "Error: not possible",
+  fullscreenError: "Error: blocked by device!",
   newTimerProgram: "New timer program",
   tryDemoTimer: "Try demo timer",
   confirmClearProgram: "Your current program will be cleared. Continue?",

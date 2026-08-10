@@ -7,7 +7,7 @@ export default {
   settings: "Einstellungen",
   fullscreen: "Vollbild",
   exitFullscreen: "Vollbild beenden",
-  fullscreenError: "Fehler: Vollbild wird von deinem Endgerät blockiert",
+  fullscreenError: "Fehler: blockiert durch Gerät!",
   newTimerProgram: "Neues Timer-Programm",
   tryDemoTimer: "Demo-Timer ausprobieren",
   confirmClearProgram: "Dein aktuelles Programm wird gelöscht. Fortfahren?",

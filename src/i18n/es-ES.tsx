@@ -7,7 +7,7 @@ export default {
   settings: "Ajustes",
   fullscreen: "Pantalla completa",
   exitFullscreen: "Salir de pantalla completa",
-  fullscreenError: "Error: no es posible",
+  fullscreenError: "Error: bloqueado por dispositivo!",
   newTimerProgram: "Nuevo programa de temporizador",
   tryDemoTimer: "Probar temporizador de demostración",
   confirmClearProgram: "Se borrará tu programa actual. ¿Continuar?",
