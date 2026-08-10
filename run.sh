@@ -28,7 +28,7 @@ run::install() {
     --shamefully-hoist \
     --frozen-lockfile \
     --ignore-scripts
-  pnpm outdated
+  pnpm outdated || true # Ignore non-zero exit code
 }
 
 ESBUILD_ARGS=(
