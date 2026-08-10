@@ -102,7 +102,7 @@ export default {
       { kind: "ACTIVITY", title: "Get ready", duration: 10, skipLast: false },
       {
         kind: "LOOP",
-        repeat: 3,
+        repeat: 4,
         items: [
           {
             kind: "ACTIVITY",
@@ -115,7 +115,7 @@ export default {
       },
       {
         kind: "LOOP",
-        repeat: 4,
+        repeat: 3,
         items: [
           {
             kind: "ACTIVITY",
@@ -137,7 +137,7 @@ export default {
           },
         ],
       },
-      { kind: "ACTIVITY", title: "Cool down", duration: 20, skipLast: false },
+      { kind: "ACTIVITY", title: "Cool down", duration: 45, skipLast: false },
     ],
   } as Program,
 

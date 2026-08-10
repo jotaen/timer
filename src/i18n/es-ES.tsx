@@ -102,7 +102,7 @@ export default {
       },
       {
         kind: "LOOP",
-        repeat: 3,
+        repeat: 4,
         items: [
           {
             kind: "ACTIVITY",
@@ -120,7 +120,7 @@ export default {
       },
       {
         kind: "LOOP",
-        repeat: 4,
+        repeat: 3,
         items: [
           {
             kind: "ACTIVITY",
@@ -145,7 +145,7 @@ export default {
       {
         kind: "ACTIVITY",
         title: "Enfría",
-        duration: 20,
+        duration: 45,
         skipLast: false,
       },
     ],
