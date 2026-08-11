@@ -52,8 +52,7 @@ export function useProgram(): UseProgram {
 }
 
 function populateTabState(p?: Program, newHistoryEntry = true): void {
-  const prefix = p ? `${p.title} – ` : ""
-  document.title = `${prefix}Timer`
+  document.title = p ? `${p.title} – Timer` : "Timer – Programmable timer web app, e.g. for gym workouts or stretching sessions"
   const hash = p ? `/#${encode(p)}` : "/"
   if (newHistoryEntry) {
     window.history.pushState({}, "", hash)
