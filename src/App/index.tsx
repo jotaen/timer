@@ -19,13 +19,16 @@ import { ServiceContext } from "./useServiceContext.ts"
 import { useLocalStorage } from "../util/useLocalStorage.ts"
 import { useFullScreen } from "../util/useFullScreen.ts"
 import { LocaleProvider } from "../i18n/locale.tsx"
+import { ErrorBoundary } from "./ErrorBoundary.tsx"
 
 const container = document.getElementById("app")
 const root = createRoot(container!)
 root.render(
-  <LocaleProvider>
-    <App />
-  </LocaleProvider>,
+  <ErrorBoundary>
+    <LocaleProvider>
+      <App />
+    </LocaleProvider>
+  </ErrorBoundary>,
 )
 
 export enum Screens {
