@@ -9,6 +9,10 @@ They are encoded in the URL and can be stored, shared or transferred via URL or 
 
 👉 Try a [demo timer here](https://timer.jotaen.net/#demo).
 
+## Development
+
+Please refer to [the `run.sh` file](./run.sh) for a curated set of development commands. You can use this file with [the “run” tool](https://run.jotaen.net), or source it (`source run.sh`) and invoke the commands directly (e.g., `run::server`).
+
 ## About
 
 Created by [Jan Heuermann](https://jotaen.net).
