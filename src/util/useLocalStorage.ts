@@ -27,12 +27,21 @@ export function useLocalStorage<T extends boolean | number | string>(
   })()
 
   const [cachedValue, setCachedValue] = useState(() => {
-    const storedValue = window.localStorage.getItem(key)
+    // localStorage access can throw (e.g. blocked by browser privacy
+    // settings), in which case we just fall back to the default.
+    let storedValue: string | null = null
+    try {
+      storedValue = window.localStorage.getItem(key)
+    } catch {
+      return defaultValue
+    }
     if (storedValue !== null) {
       try {
         return unmarshall(storedValue)
       } catch {
-        window.localStorage.removeItem(key)
+        try {
+          window.localStorage.removeItem(key)
+        } catch {}
         return defaultValue
       }
     }
@@ -40,7 +49,9 @@ export function useLocalStorage<T extends boolean | number | string>(
   })
 
   const setValue = useCallback((v: T) => {
-    window.localStorage.setItem(key, marshall(v))
+    try {
+      window.localStorage.setItem(key, marshall(v))
+    } catch {}
     setCachedValue(v)
   }, [])
 
