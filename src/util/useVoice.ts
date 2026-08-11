@@ -30,7 +30,16 @@ export function useVoice(): UseVoice {
     }
     let poll: number | undefined = undefined
     const check = () => {
-      const vs = synth!.getVoices()
+      let vs: SpeechSynthesisVoice[]
+      try {
+        vs = synth!.getVoices()
+      } catch {
+        // Some browsers throw here (e.g., Brave mobile), likely due to bugs in
+        // their fingerprinting protection (which fakes the voice list). Voice
+        // features just stay unavailable in that case.
+        clearInterval(poll)
+        return
+      }
       if (vs.length > 0) {
         setAllVoices(vs)
         clearInterval(poll)
@@ -64,12 +73,16 @@ export function useVoice(): UseVoice {
       if (!shouldSpeak || !synth || !effectiveVoice) {
         return
       }
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.voice = effectiveVoice
-      utterance.pitch = 1.0
-      utterance.rate = 1.0
-      utterance.volume = volume
-      synth.speak(utterance)
+      try {
+        const utterance = new SpeechSynthesisUtterance(text)
+        utterance.voice = effectiveVoice
+        utterance.pitch = 1.0
+        utterance.rate = 1.0
+        utterance.volume = volume
+        synth.speak(utterance)
+      } catch {
+        // Same fingerprinting-protection related failures as in getVoices().
+      }
     },
     [shouldSpeak, volume, effectiveVoice],
   )
