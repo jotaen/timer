@@ -18,6 +18,13 @@ export function useProgram(): UseProgram {
     populateTabState(p, false)
     return p
   })
+  // `hashchange` fires outside React’s render call stack, so a thrown decode
+  // error wouldn’t reach the ErrorBoundary. Stash it and re-throw during
+  // render instead.
+  const [hashChangeError, setHashChangeError] = useState<unknown>(null)
+  if (hashChangeError) {
+    throw hashChangeError
+  }
   useEffect(() => {
     const handleHashChange = () => {
       // In-app history navigation doesn’t unload the page, so the
@@ -28,9 +35,13 @@ export function useProgram(): UseProgram {
         populateTabState(program)
         return
       }
-      const p = loadFromUrl(demoProgram)
-      populateTabState(p, false)
-      setProgram(p)
+      try {
+        const p = loadFromUrl(demoProgram)
+        populateTabState(p, false)
+        setProgram(p)
+      } catch (e) {
+        setHashChangeError(e)
+      }
     }
     window.addEventListener("hashchange", handleHashChange)
     return () => {
@@ -71,10 +82,5 @@ function loadFromUrl(demoProgram: Program): Program | undefined {
   if (blob === "demo") {
     return demoProgram
   }
-  try {
-    return decode(blob)
-  } catch (e) {
-    console.error(e)
-    return undefined
-  }
+  return decode(blob)
 }

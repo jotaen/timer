@@ -39,12 +39,17 @@ export class ErrorBoundary extends React.Component<Props, State> {
           boxSizing: "border-box",
           background: "#000",
           color: "#fff",
-          fontFamily: "sans-serif",
+          fontFamily: "'Cascadia Mono', monospace",
           textAlign: "center",
         }}
       >
         <p>Something went wrong.</p>
-        <button onClick={() => window.location.reload()}>Reload</button>
+        <div style={{ display: "flex", gap: "1em" }}>
+          <button onClick={() => window.location.reload()}>Try again</button>
+          <button onClick={() => (window.location.href = "/")}>
+            Go to menu
+          </button>
+        </div>
         <pre
           style={{
             width: "100%",
