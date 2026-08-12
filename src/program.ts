@@ -16,4 +16,5 @@ export type Loop = {
 export type Program = {
   title: string
   items: Item[]
+  createdAt: Date
 }

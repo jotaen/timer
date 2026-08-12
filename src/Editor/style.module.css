@@ -3,12 +3,39 @@
   flex-direction: column;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
 .title {
+  flex: 1;
   font-size: inherit;
   font-family: inherit;
   margin: 0.5em -0.5em;
   padding: 0.25em 0.5em;
   border-radius: 5px;
+}
+
+.infoButton {
+  font-size: 0.8em;
+  font-family: inherit;
+  padding: 0.5em;
+  border: 1px solid #acacac;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: unset;
+  margin-right: -0.5em;
+}
+
+.createdAtInfo {
+  font-size: 0.9em;
+  margin: 0 -0.5em 0.5em -0.5em;
+  padding: 0.4em 0.5em;
+  border-radius: 5px;
+  background: #a0c9e1;
+  color: #000;
 }
 
 .editor {

@@ -1,6 +1,6 @@
 import { Item, Program } from "./program.ts"
 
-export function parse(title: string, text: string): Program {
+export function parse(title: string, text: string, createdAt: Date): Program {
   if (title.length > 30) {
     throw new ProgramError("TITLE_TOO_LONG")
   }
@@ -8,7 +8,7 @@ export function parse(title: string, text: string): Program {
     text.replace(/\r\n/g, "\n").split("\n").map(makeLine),
   )
   const [items] = text !== "" ? parseItems(lines, -1) : [[]]
-  return { title: title.trim(), items }
+  return { title: title.trim(), items, createdAt }
 }
 
 export type ErrorCode =

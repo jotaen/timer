@@ -1,12 +1,18 @@
 import assert from "assert"
 import { ErrorCode, parse, ProgramError } from "./parse.ts"
-import { Program } from "./program.ts"
+import { Item } from "./program.ts"
 
 const hasCode = (code: ErrorCode) => (e: unknown) =>
   e instanceof ProgramError && e.code === code
 
+const createdAt = new Date(Date.UTC(2026, 0, 1))
+
 describe("parse()", () => {
-  const tests: { desc: string; input: string[]; expect: Program }[] = [
+  const tests: {
+    desc: string
+    input: string[]
+    expect: { title: string; items: Item[] }
+  }[] = [
     {
       desc: "empty program",
       input: ["", ""],
@@ -202,39 +208,54 @@ describe("parse()", () => {
   ]
   tests.forEach(({ desc, input, expect }) => {
     it(`parses ${desc}`, () => {
-      assert.deepStrictEqual(parse(input[0], input[1]), expect)
+      assert.deepStrictEqual(parse(input[0], input[1], createdAt), {
+        ...expect,
+        createdAt,
+      })
     })
   })
 
   it("rejects too long title", () => {
     assert.throws(
-      () => parse("1234567890123456789012345678901", ""),
+      () => parse("1234567890123456789012345678901", "", createdAt),
       hasCode("TITLE_TOO_LONG"),
     )
   })
 
   it("rejects invalid entry type", () => {
     ;["hello", "1h30m Hello"].forEach((input) => {
-      assert.throws(() => parse("", input), hasCode("INVALID_ENTRY"), input)
+      assert.throws(
+        () => parse("", input, createdAt),
+        hasCode("INVALID_ENTRY"),
+        input,
+      )
     })
   })
 
   it("rejects blank or empty lines in between", () => {
     ;["0:10\n\n0:20", "0:10\n  \n0:20"].forEach((input) => {
-      assert.throws(() => parse("", input), hasCode("EMPTY_LINE"), input)
+      assert.throws(
+        () => parse("", input, createdAt),
+        hasCode("EMPTY_LINE"),
+        input,
+      )
     })
   })
 
   it("rejects invalid durations", () => {
     ;["0:1", "0:60", "0:61", "0:100", "0:00"].forEach((input) => {
-      assert.throws(() => parse("", input), hasCode("INVALID_DURATION"), input)
+      assert.throws(
+        () => parse("", input, createdAt),
+        hasCode("INVALID_DURATION"),
+        input,
+      )
     })
   })
 
   it("rejects missing whitespace separator", () => {
     ;["0:10Hello", "0:10**", "0:10*Hello"].forEach((input) => {
       assert.throws(
-        () => parse("", input),
+        () => parse("", input, createdAt),
         hasCode("MISSING_SPACE_SEPARATOR"),
         input,
       )
@@ -244,7 +265,7 @@ describe("parse()", () => {
   it("rejects illegal indentation sequences", () => {
     ;[" 0:10", "   2x", "0:10\n 0:05"].forEach((input) => {
       assert.throws(
-        () => parse("", input),
+        () => parse("", input, createdAt),
         hasCode("INVALID_INDENTATION"),
         input,
       )
@@ -254,7 +275,7 @@ describe("parse()", () => {
   it("rejects illegal indentation changes", () => {
     ;["  0:10", "  2x", "0:10\n  0:05"].forEach((input) => {
       assert.throws(
-        () => parse("", input),
+        () => parse("", input, createdAt),
         hasCode("INVALID_INDENTATION"),
         input,
       )
@@ -264,7 +285,7 @@ describe("parse()", () => {
   it("rejects loops with zero repetitions", () => {
     ;["0x\n  0:10", "00x\n  0:10"].forEach((input) => {
       assert.throws(
-        () => parse("", input),
+        () => parse("", input, createdAt),
         hasCode("INVALID_REPETITIONS"),
         input,
       )
@@ -273,7 +294,11 @@ describe("parse()", () => {
 
   it("rejects empty loops", () => {
     ;["2x", "2x\n0:10"].forEach((input) => {
-      assert.throws(() => parse("", input), hasCode("EMPTY_LOOP"), input)
+      assert.throws(
+        () => parse("", input, createdAt),
+        hasCode("EMPTY_LOOP"),
+        input,
+      )
     })
   })
 
@@ -282,14 +307,18 @@ describe("parse()", () => {
     // tab-indented line is treated as unindented content and fails to match
     // any known entry shape.
     ;["\t0:10", "0:10\n\t0:05"].forEach((input) => {
-      assert.throws(() => parse("", input), hasCode("INVALID_ENTRY"), input)
+      assert.throws(
+        () => parse("", input, createdAt),
+        hasCode("INVALID_ENTRY"),
+        input,
+      )
     })
   })
 
   it("rejects malformed loop headers", () => {
     ;["2xx", "2x0"].forEach((input) => {
       assert.throws(
-        () => parse("", `${input}\n  0:10 A`),
+        () => parse("", `${input}\n  0:10 A`, createdAt),
         hasCode("INVALID_ENTRY"),
         input,
       )
@@ -298,8 +327,9 @@ describe("parse()", () => {
 
   it("accepts trailing whitespace after a loop repeat count", () => {
     ;["2x ", "2x  "].forEach((input) => {
-      assert.deepStrictEqual(parse("", `${input}\n  0:10 A`), {
+      assert.deepStrictEqual(parse("", `${input}\n  0:10 A`, createdAt), {
         title: "",
+        createdAt,
         items: [
           {
             kind: "LOOP",

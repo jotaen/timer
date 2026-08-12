@@ -1,10 +1,16 @@
 import assert from "assert"
 import { serialise } from "./serialise.ts"
 import { parse } from "./parse.ts"
-import { Program } from "./program.ts"
+import { Item } from "./program.ts"
+
+const createdAt = new Date(Date.UTC(2026, 0, 1))
 
 describe("serialise()", () => {
-  const tests: { desc: string; input: string[]; expect: Program }[] = [
+  const tests: {
+    desc: string
+    input: string[]
+    expect: { title: string; items: Item[] }
+  }[] = [
     {
       desc: "empty program",
       input: ["", ""],
@@ -99,7 +105,7 @@ describe("serialise()", () => {
   ]
   tests.forEach(({ desc, input, expect }) => {
     it(`serialises ${desc}`, () => {
-      assert.deepStrictEqual(serialise(expect), {
+      assert.deepStrictEqual(serialise({ ...expect, createdAt }), {
         title: input[0],
         program: input[1],
       })
@@ -108,8 +114,11 @@ describe("serialise()", () => {
 
   tests.forEach(({ desc, expect }) => {
     it(`round-trips through parse() for ${desc}`, () => {
-      const { title, program } = serialise(expect)
-      assert.deepStrictEqual(parse(title, program), expect)
+      const { title, program } = serialise({ ...expect, createdAt })
+      assert.deepStrictEqual(parse(title, program, createdAt), {
+        ...expect,
+        createdAt,
+      })
     })
   })
 })

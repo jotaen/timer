@@ -7,6 +7,8 @@ export type ParseErrorDictionary = Record<
   { message: string; hint?: string }
 >
 
+export const DEMO_PROGRAM_CREATED_AT = new Date("2026-08-11T00:00:00Z")
+
 export default {
   name: "English",
   back: "Back",
@@ -51,6 +53,8 @@ export default {
   syntaxRulesTitle: "Syntax Rules",
   errorPrefix: "Error: ",
   lineNumber: (n: number) => `Line ${n}:`,
+  programInfoButtonLabel: "Program info",
+  programCreatedAt: (date: string) => `Program created by user at ${date}`,
 
   copyUrl: "Copy URL to Clipboard",
   urlCopied: "URL Copied!",
@@ -98,6 +102,7 @@ export default {
 
   demoProgram: {
     title: "Sports!",
+    createdAt: DEMO_PROGRAM_CREATED_AT,
     items: [
       { kind: "ACTIVITY", title: "Get ready", duration: 10, skipLast: false },
       {

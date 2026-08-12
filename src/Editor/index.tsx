@@ -7,7 +7,7 @@ import { serialise } from "../serialise.ts"
 import { parse, ParseError, ProgramError } from "../parse.ts"
 import { handleControlKeys } from "./handleControlKeys.ts"
 import { useServiceContext } from "../App/useServiceContext.ts"
-import { useT } from "../i18n/locale.tsx"
+import { useT, useLocale } from "../i18n/locale.tsx"
 
 export type EditorProps = ScreenProps & {
   program?: Program
@@ -22,11 +22,13 @@ export function Editor({
   isReadonly,
 }: EditorProps) {
   const t = useT()
+  const [locale] = useLocale()
   const [initialText, setInitialText] = useState<string>("")
   const [text, setText] = useState<string>("")
   const [initialTitle, setInitialTitle] = useState<string>("")
   const [title, setTitle] = useState<string>("")
   const [parseError, setParseError] = useState<ProgramError | null>(null)
+  const [showCreatedAtInfo, setShowCreatedAtInfo] = useState<boolean>(false)
   const { viewPreferences, navigationGuard } = useServiceContext()
   const { showSyntaxRules, setShowSyntaxRules } = viewPreferences
   const isDirty = text !== initialText || title !== initialTitle
@@ -46,12 +48,13 @@ export function Editor({
     setInitialTitle(p.title)
     setTitle(p.title)
     setParseError(null)
+    setShowCreatedAtInfo(false)
   }, [program])
 
   const save = () => {
     try {
-      const program = parse(title, text)
-      loadProgram(program)
+      const p = parse(title, text, new Date())
+      loadProgram(p)
       goToScreen(Screens.Timer)
       navigationGuard.disable()
     } catch (e) {
@@ -85,14 +88,37 @@ export function Editor({
       </Toolbar>
 
       {!isReadonly && (
-        <input
-          type="text"
-          value={title}
-          className={css.title}
-          onChange={(evt) => setTitle(evt.target.value)}
-          placeholder={t.titlePlaceholder}
-          maxLength={30}
-        />
+        <div className={css.titleRow}>
+          <input
+            type="text"
+            value={title}
+            className={css.title}
+            onChange={(evt) => setTitle(evt.target.value)}
+            placeholder={t.titlePlaceholder}
+            maxLength={30}
+          />
+          {program && (
+            <button
+              type="button"
+              className={css.infoButton}
+              aria-label={t.programInfoButtonLabel}
+              title={t.programInfoButtonLabel}
+              onClick={() => setShowCreatedAtInfo((show) => !show)}
+            >
+              (i)
+            </button>
+          )}
+        </div>
+      )}
+      {showCreatedAtInfo && program && (
+        <div className={css.createdAtInfo}>
+          {t.programCreatedAt(
+            new Intl.DateTimeFormat(locale, {
+              dateStyle: "long",
+              timeStyle: "short",
+            }).format(program.createdAt),
+          )}
+        </div>
       )}
       {parseError && (
         <div className={css.error}>

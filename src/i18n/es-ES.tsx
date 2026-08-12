@@ -1,5 +1,5 @@
 import React from "react"
-import en, { ParseErrorDictionary } from "./en-GB.tsx"
+import en, { DEMO_PROGRAM_CREATED_AT, ParseErrorDictionary } from "./en-GB.tsx"
 
 export default {
   name: "Español",
@@ -46,6 +46,9 @@ export default {
   syntaxRulesTitle: "Reglas de sintaxis",
   errorPrefix: "Error: ",
   lineNumber: (n: number) => `Línea ${n}:`,
+  programInfoButtonLabel: "Información del programa",
+  programCreatedAt: (date: string) =>
+    `Programa creado por el usuario el ${date}`,
 
   copyUrl: "Copiar URL al portapapeles",
   urlCopied: "¡URL copiada!",
@@ -93,6 +96,7 @@ export default {
 
   demoProgram: {
     title: "¡Deporte!",
+    createdAt: DEMO_PROGRAM_CREATED_AT,
     items: [
       {
         kind: "ACTIVITY",
