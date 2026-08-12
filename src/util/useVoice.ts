@@ -4,6 +4,7 @@ import { useLocale } from "../i18n/locale.tsx"
 
 export type UseVoice = {
   say: (text: string) => void
+  stop: () => void
   voices: [string, SpeechSynthesisVoice[]][] // Voices grouped by language
   setVoice: (voiceURI: string) => void
   currentVoice?: SpeechSynthesisVoice // The voice that’s effectively in use
@@ -74,6 +75,9 @@ export function useVoice(): UseVoice {
         return
       }
       try {
+        // Cancel anything still queued or being spoken, so that announcements
+        // never lag behind the activity they belong to.
+        synth.cancel()
         const utterance = new SpeechSynthesisUtterance(text)
         utterance.voice = effectiveVoice
         utterance.pitch = 1.0
@@ -87,8 +91,17 @@ export function useVoice(): UseVoice {
     [shouldSpeak, volume, effectiveVoice],
   )
 
+  const stop = useCallback(() => {
+    try {
+      window.speechSynthesis?.cancel()
+    } catch {
+      // Same fingerprinting-protection related failures as in getVoices().
+    }
+  }, [])
+
   return {
     say,
+    stop,
     voices,
     setVoice,
     currentVoice: effectiveVoice,
