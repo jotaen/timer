@@ -15,6 +15,8 @@ export type EditorProps = ScreenProps & {
   isReadonly: boolean
 }
 
+const UNSAVED_CHANGES_GUARD = "editor:unsaved-changes"
+
 export function Editor({
   goToScreen,
   program,
@@ -35,8 +37,12 @@ export function Editor({
   const isEmpty = text.trim() === "" // Empty title is fine.
 
   useEffect(() => {
-    navigationGuard.enable(isDirty)
-  }, [isDirty])
+    navigationGuard.enable(
+      UNSAVED_CHANGES_GUARD,
+      t.unsavedChangesConfirm,
+      isDirty,
+    )
+  }, [isDirty, t])
 
   useEffect(() => {
     // The program can change underneath the editor through browser history
@@ -56,7 +62,7 @@ export function Editor({
       const p = parse(title, text, new Date())
       loadProgram(p)
       goToScreen(Screens.Timer)
-      navigationGuard.disable()
+      navigationGuard.disable(UNSAVED_CHANGES_GUARD)
     } catch (e) {
       setParseError(e as ProgramError)
       return
@@ -73,7 +79,7 @@ export function Editor({
       <Toolbar showProgram={isReadonly}>
         <button
           onClick={() => {
-            if (!navigationGuard.checkAndConfirm()) {
+            if (!navigationGuard.checkAndConfirm(UNSAVED_CHANGES_GUARD)) {
               return
             }
             goToScreen(program ? Screens.Timer : Screens.Menu)
@@ -82,7 +88,7 @@ export function Editor({
           {t.back}
         </button>
         <div style={{ flex: 1 }}></div>
-        <button onClick={save} disabled={isReadonly || isEmpty}>
+        <button onClick={save} disabled={isReadonly || isEmpty || !isDirty}>
           {t.save}
         </button>
       </Toolbar>

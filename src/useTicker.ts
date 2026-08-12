@@ -4,6 +4,7 @@ import { Program } from "./program.ts"
 import { useInterval } from "./util/useInterval.ts"
 
 import { useServiceContext } from "./App/useServiceContext.ts"
+import { useT } from "./i18n/locale.tsx"
 
 export enum STATUS {
   RESET,
@@ -20,6 +21,8 @@ export type Ticker = {
   reset: () => void
 }
 
+const TIMER_RUNNING_GUARD = "ticker:timer-running"
+
 const voidProgram = {
   title: "",
   items: [],
@@ -34,7 +37,8 @@ export function useTicker(program?: Program): Ticker {
   const [remaining, setRemaining] = useState<number>(0)
   const [tick, setTick] = useState<Tick | null>(null)
   const [ticker, setTicker] = useState<Generator<Tick>>()
-  const { beeper, voice, wakeLock } = useServiceContext()
+  const { beeper, voice, wakeLock, navigationGuard } = useServiceContext()
+  const t = useT()
   const interval = useInterval(() => {
     if (!ticker) {
       return
@@ -66,12 +70,15 @@ export function useTicker(program?: Program): Ticker {
     interval.start()
     setStatus(STATUS.RUNNING)
     wakeLock.on()
+    navigationGuard.enable(TIMER_RUNNING_GUARD, t.timerRunningConfirm)
   }
 
+  // Note: the navigation guard stays enabled while the timer is paused.
   const pause = () => {
     interval.stop()
     setStatus(STATUS.PAUSED)
     wakeLock.off()
+    voice.stop()
   }
 
   const reset = () => {
@@ -81,6 +88,8 @@ export function useTicker(program?: Program): Ticker {
     setRemaining(totalDuration(program.items))
     setStatus(STATUS.RESET)
     wakeLock.off()
+    voice.stop()
+    navigationGuard.disable(TIMER_RUNNING_GUARD)
   }
 
   // Trigger (initial) reset.
