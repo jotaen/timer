@@ -12,6 +12,27 @@ export type ShareProps = ScreenProps & {
   program: Program
 }
 
+// qrcode.react throws during render when the value exceeds the QR code’s
+// data capacity, which can happen for very large programs. Catch that and
+// show a hint instead of crashing the whole app.
+class QRCode extends React.Component<
+  { value: string; fallback: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  render() {
+    if (this.state.failed) {
+      return this.props.fallback
+    }
+    return <QRCodeSVG size={256} value={this.props.value} />
+  }
+}
+
 export function Share({ goToScreen, program }: ShareProps) {
   const t = useT()
   const baseUrl =
@@ -38,7 +59,11 @@ export function Share({ goToScreen, program }: ShareProps) {
         <div style={{ flex: 1 }}></div>
       </Toolbar>
       <div className={css.container}>
-        <QRCodeSVG size={256} value={shareUrl} />
+        <QRCode
+          key={shareUrl}
+          value={shareUrl}
+          fallback={<div className={css.qrFallback}>{t.qrCodeTooLarge}</div>}
+        />
         <p>
           <button
             className={css.clipboardButton}

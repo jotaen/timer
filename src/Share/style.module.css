@@ -24,3 +24,17 @@
   width: 1em;
   margin-right: 0.5em;
 }
+
+.qrFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 256px;
+  min-height: 256px;
+  margin: 0 auto;
+  padding: 1em;
+  box-sizing: border-box;
+  border: 1px dashed #666;
+  border-radius: 5px;
+  color: #ccc;
+}
