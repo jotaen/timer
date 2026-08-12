@@ -7,11 +7,7 @@ export function handleControlKeys(
   const INDENTATION = "  "
 
   if (evt.key == "Tab") {
-    textarea.value =
-      textarea.value.substring(0, start) +
-      INDENTATION +
-      textarea.value.substring(end)
-    textarea.selectionStart = textarea.selectionEnd = start + INDENTATION.length
+    replaceRange(textarea, start, end, INDENTATION)
     return true
   }
 
@@ -23,12 +19,7 @@ export function handleControlKeys(
     const indentMatch = currentLine.match(/^(\s*)/)
     const indent = indentMatch ? indentMatch[1] : ""
 
-    textarea.value =
-      textarea.value.substring(0, start) +
-      "\n" +
-      indent +
-      textarea.value.substring(end)
-    textarea.selectionStart = textarea.selectionEnd = start + 1 + indent.length
+    replaceRange(textarea, start, end, "\n" + indent)
     return true
   }
 
@@ -40,15 +31,38 @@ export function handleControlKeys(
 
       if (/^\s+$/.test(currentLine) && currentLine.length >= 2) {
         const removeCount = Math.min(2, currentLine.length)
-
-        textarea.value =
-          textarea.value.substring(0, start - removeCount) +
-          textarea.value.substring(end)
-        textarea.selectionStart = textarea.selectionEnd = start - removeCount
+        replaceRange(textarea, start - removeCount, end, "")
         return true
       }
     }
   }
 
   return false
+}
+
+// Replaces the given range with the new text and puts the cursor right after
+// it. `execCommand` is deprecated, but it’s the only mechanism through which
+// programmatic edits keep the browser’s undo history intact, so try it first
+// and only fall back to rewriting the value wholesale.
+function replaceRange(
+  textarea: HTMLTextAreaElement,
+  from: number,
+  to: number,
+  newText: string,
+): void {
+  textarea.setSelectionRange(from, to)
+  let done = false
+  try {
+    done =
+      newText === ""
+        ? document.execCommand("delete")
+        : document.execCommand("insertText", false, newText)
+  } catch {
+    done = false
+  }
+  if (!done) {
+    textarea.value =
+      textarea.value.substring(0, from) + newText + textarea.value.substring(to)
+    textarea.selectionStart = textarea.selectionEnd = from + newText.length
+  }
 }
