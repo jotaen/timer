@@ -59,10 +59,19 @@ export default {
 
   unsavedChangesConfirm:
     "Du hast ungespeicherte Änderungen. Möchtest du die Seite wirklich verlassen?",
+  timerRunningConfirm:
+    "Der Timer läuft noch. Möchtest du die Seite wirklich verlassen?",
+
+  qrCodeTooLarge:
+    "Dieses Programm ist zu groß, um als QR-Code angezeigt zu werden. Verwende stattdessen die URL unten.",
 
   parseErrors: {
     TITLE_TOO_LONG: {
       message: "Titel darf nicht länger als 30 Zeichen sein",
+    },
+    PROGRAM_TOO_LONG: {
+      message: "Programm ist zu lang",
+      hint: "Die Gesamtdauer eines Programms darf 99:59 nicht überschreiten.",
     },
     EMPTY_LINE: {
       message: "Unzulässige leere Zeile",
@@ -88,6 +97,10 @@ export default {
     INVALID_REPETITIONS: {
       message: "Ungültige Wiederholungsanzahl",
       hint: "Eine Schleife muss mindestens einmal wiederholt werden.",
+    },
+    SKIP_LAST_OUTSIDE_LOOP: {
+      message: "Überspringen-Markierung (*) außerhalb einer Schleife",
+      hint: "Eine Aktivität kann nur innerhalb einer Schleife mit * markiert werden.",
     },
     INVALID_ENTRY: {
       message: "Ungültiger Eintrag",

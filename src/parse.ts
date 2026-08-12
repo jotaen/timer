@@ -1,24 +1,30 @@
-import { Item, Program } from "./program.ts"
+import { Item, MAX_TOTAL_DURATION, Program } from "./program.ts"
+import { totalDuration } from "./ticker.ts"
 
 export function parse(title: string, text: string, createdAt: Date): Program {
   if (title.length > 30) {
     throw new ProgramError("TITLE_TOO_LONG")
   }
-  const lines = trimLeadingAndTrailingBlankLines(
+  const lines = trimTrailingBlankLines(
     text.replace(/\r\n/g, "\n").split("\n").map(makeLine),
   )
-  const [items] = text !== "" ? parseItems(lines, -1) : [[]]
+  const [items] = parseItems(lines, -1)
+  if (totalDuration(items) > MAX_TOTAL_DURATION) {
+    throw new ProgramError("PROGRAM_TOO_LONG")
+  }
   return { title: title.trim(), items, createdAt }
 }
 
 export type ErrorCode =
   | "TITLE_TOO_LONG"
+  | "PROGRAM_TOO_LONG"
   | "EMPTY_LINE"
   | "INVALID_INDENTATION"
   | "INVALID_DURATION"
   | "MISSING_SPACE_SEPARATOR"
   | "EMPTY_LOOP"
   | "INVALID_REPETITIONS"
+  | "SKIP_LAST_OUTSIDE_LOOP"
   | "INVALID_ENTRY"
 
 export class ProgramError extends Error {
@@ -79,6 +85,9 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
       if (title && title.length > 0 && title.substring(0, 1) !== " ") {
         throw new ParseError(line, "MISSING_SPACE_SEPARATOR")
       }
+      if (skipLast === "*" && parentIndent < 0) {
+        throw new ParseError(line, "SKIP_LAST_OUTSIDE_LOOP")
+      }
       items.push({
         kind: "ACTIVITY",
         title: title?.substring(1).trim() || "",
@@ -113,6 +122,11 @@ function parseItems(lines: Line[], parentIndent: number): [Item[], Line[]] {
 }
 
 function makeLine(str: string, i: number): Line {
+  if (str.trim() === "") {
+    // Blank lines are exempt from the indentation rules, so that stray
+    // (invisible) whitespace doesn’t trigger confusing errors.
+    return { number: i + 1, indent: 0, text: "" }
+  }
   const match = str.match(/^( *)/)
   const spaceCount = match ? match[1].length : 0
   const line = {
@@ -126,14 +140,10 @@ function makeLine(str: string, i: number): Line {
   return line
 }
 
-function trimLeadingAndTrailingBlankLines(ls: Line[]) {
-  let start = 0
+function trimTrailingBlankLines(ls: Line[]) {
   let end = ls.length - 1
-  while (start < ls.length && ls[start].text.trim() === "") {
-    start++
-  }
-  while (end >= start && ls[end].text.trim() === "") {
+  while (end >= 0 && ls[end].text === "") {
     end--
   }
-  return ls.slice(start, end + 1)
+  return ls.slice(0, end + 1)
 }

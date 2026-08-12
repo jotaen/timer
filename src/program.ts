@@ -18,3 +18,6 @@ export type Program = {
   items: Item[]
   createdAt: Date
 }
+
+// The longest total duration the clock display can show (99:59).
+export const MAX_TOTAL_DURATION = 99 * 60 + 59

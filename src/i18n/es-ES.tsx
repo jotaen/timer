@@ -60,10 +60,19 @@ export default {
 
   unsavedChangesConfirm:
     "Tienes cambios sin guardar. ¿Seguro que quieres salir?",
+  timerRunningConfirm:
+    "El temporizador todavía está en marcha. ¿Seguro que quieres salir?",
+
+  qrCodeTooLarge:
+    "Este programa es demasiado grande para mostrarse como código QR. Usa la URL de abajo.",
 
   parseErrors: {
     TITLE_TOO_LONG: {
       message: "El título no puede tener más de 30 caracteres",
+    },
+    PROGRAM_TOO_LONG: {
+      message: "El programa es demasiado largo",
+      hint: "La duración total de un programa no puede superar 99:59.",
     },
     EMPTY_LINE: {
       message: "Línea vacía no permitida",
@@ -87,6 +96,10 @@ export default {
     INVALID_REPETITIONS: {
       message: "Número de repeticiones no válido",
       hint: "Un bucle debe repetirse al menos una vez.",
+    },
+    SKIP_LAST_OUTSIDE_LOOP: {
+      message: "Marcador de omisión (*) fuera de un bucle",
+      hint: "Una actividad solo se puede marcar con * dentro de un bucle.",
     },
     INVALID_ENTRY: {
       message: "Entrada no válida",

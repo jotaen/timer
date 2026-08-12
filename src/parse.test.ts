@@ -151,6 +151,30 @@ describe("parse()", () => {
       },
     },
     {
+      desc: "trailing blank lines with stray whitespace",
+      input: ["Test", "0:01\n \n   \n"],
+      expect: {
+        title: "Test",
+        items: [{ kind: "ACTIVITY", title: "", duration: 1, skipLast: false }],
+      },
+    },
+    {
+      desc: "trailing blank line after an indented loop body",
+      input: ["Test", "2x\n  0:10 A\n "],
+      expect: {
+        title: "Test",
+        items: [
+          {
+            kind: "LOOP",
+            repeat: 2,
+            items: [
+              { kind: "ACTIVITY", title: "A", duration: 10, skipLast: false },
+            ],
+          },
+        ],
+      },
+    },
+    {
       desc: "CRLF line endings",
       input: [
         "Sports!",
@@ -191,7 +215,7 @@ describe("parse()", () => {
     },
     {
       desc: "loop with a large repeat count",
-      input: ["", "999x\n  0:10 A"],
+      input: ["", "999x\n  0:01 A"],
       expect: {
         title: "",
         items: [
@@ -199,9 +223,19 @@ describe("parse()", () => {
             kind: "LOOP",
             repeat: 999,
             items: [
-              { kind: "ACTIVITY", title: "A", duration: 10, skipLast: false },
+              { kind: "ACTIVITY", title: "A", duration: 1, skipLast: false },
             ],
           },
+        ],
+      },
+    },
+    {
+      desc: "program at the 99:59 total duration boundary",
+      input: ["", "99:59"],
+      expect: {
+        title: "",
+        items: [
+          { kind: "ACTIVITY", title: "", duration: 5999, skipLast: false },
         ],
       },
     },
@@ -233,10 +267,40 @@ describe("parse()", () => {
   })
 
   it("rejects blank or empty lines in between", () => {
-    ;["0:10\n\n0:20", "0:10\n  \n0:20"].forEach((input) => {
+    ;["0:10\n\n0:20", "0:10\n  \n0:20", "0:10\n \n0:20"].forEach((input) => {
       assert.throws(
         () => parse("", input, createdAt),
         hasCode("EMPTY_LINE"),
+        input,
+      )
+    })
+  })
+
+  it("rejects blank or empty lines at the start", () => {
+    ;["\n0:10", "  \n0:10", " \n0:10"].forEach((input) => {
+      assert.throws(
+        () => parse("", input, createdAt),
+        hasCode("EMPTY_LINE"),
+        input,
+      )
+    })
+  })
+
+  it("rejects programs whose total duration exceeds 99:59", () => {
+    ;["100:00", "99:59\n0:01", "999x\n  0:10 A"].forEach((input) => {
+      assert.throws(
+        () => parse("", input, createdAt),
+        hasCode("PROGRAM_TOO_LONG"),
+        input,
+      )
+    })
+  })
+
+  it("rejects a skip-last marker outside of a loop", () => {
+    ;["0:10*", "0:10* Rest", "2x\n  0:10 A\n0:10* B"].forEach((input) => {
+      assert.throws(
+        () => parse("", input, createdAt),
+        hasCode("SKIP_LAST_OUTSIDE_LOOP"),
         input,
       )
     })

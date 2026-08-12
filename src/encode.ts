@@ -2,7 +2,8 @@ import {
   decode as msgpackDecode,
   encode as msgpackEncode,
 } from "@msgpack/msgpack"
-import { Item, Program } from "./program.ts"
+import { Item, MAX_TOTAL_DURATION, Program } from "./program.ts"
+import { totalDuration } from "./ticker.ts"
 
 const VERSION = 1
 
@@ -55,14 +56,20 @@ function validateProgram(p: Program): void {
   if (p.title.length > 30) {
     throw invalidProgram("title too long")
   }
-  validateItems(p.items)
+  validateItems(p.items, true)
+  if (totalDuration(p.items) > MAX_TOTAL_DURATION) {
+    throw invalidProgram("program too long")
+  }
 }
 
-function validateItems(items: Item[]): void {
+function validateItems(items: Item[], isTopLevel: boolean): void {
   for (const item of items) {
     if (item.kind === "ACTIVITY") {
       if (!Number.isInteger(item.duration) || item.duration <= 0) {
         throw invalidProgram("invalid duration")
+      }
+      if (item.skipLast && isTopLevel) {
+        throw invalidProgram("skip-last marker outside loop")
       }
     } else {
       if (!Number.isInteger(item.repeat) || item.repeat <= 0) {
@@ -71,7 +78,7 @@ function validateItems(items: Item[]): void {
       if (item.items.length === 0) {
         throw invalidProgram("empty loop")
       }
-      validateItems(item.items)
+      validateItems(item.items, false)
     }
   }
 }

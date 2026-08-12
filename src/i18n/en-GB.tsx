@@ -64,10 +64,19 @@ export default {
 
   unsavedChangesConfirm:
     "You have unsaved changes. Are you sure you want to leave?",
+  timerRunningConfirm:
+    "The timer is still running. Are you sure you want to leave?",
+
+  qrCodeTooLarge:
+    "This program is too large to be displayed as a QR code. Use the URL below instead.",
 
   parseErrors: {
     TITLE_TOO_LONG: {
       message: "Title cannot be longer than 30 characters",
+    },
+    PROGRAM_TOO_LONG: {
+      message: "Program is too long",
+      hint: "The total duration of a program cannot exceed 99:59.",
     },
     EMPTY_LINE: {
       message: "Illegal empty line",
@@ -91,6 +100,10 @@ export default {
     INVALID_REPETITIONS: {
       message: "Invalid repetition count",
       hint: "A loop must repeat at least once.",
+    },
+    SKIP_LAST_OUTSIDE_LOOP: {
+      message: "Skip-last marker (*) outside of a loop",
+      hint: "An activity can only be marked with * inside a loop.",
     },
     INVALID_ENTRY: {
       message: "Invalid entry",

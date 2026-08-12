@@ -287,6 +287,36 @@ describe("decode()", () => {
     }
   })
 
+  it("rejects a program whose total duration exceeds 99:59", () => {
+    const encoded = encode({
+      title: "Hello",
+      items: [{ kind: "ACTIVITY", title: "", duration: 6000, skipLast: false }],
+      createdAt,
+    })
+    assert.throws(() => decode(encoded), /Invalid program: program too long/)
+  })
+
+  it("accepts a program with a total duration of exactly 99:59", () => {
+    const encoded = encode({
+      title: "Hello",
+      items: [{ kind: "ACTIVITY", title: "", duration: 5999, skipLast: false }],
+      createdAt,
+    })
+    assert.doesNotThrow(() => decode(encoded))
+  })
+
+  it("rejects a skip-last marker on a top-level activity", () => {
+    const encoded = encode({
+      title: "Hello",
+      items: [{ kind: "ACTIVITY", title: "", duration: 30, skipLast: true }],
+      createdAt,
+    })
+    assert.throws(
+      () => decode(encoded),
+      /Invalid program: skip-last marker outside loop/,
+    )
+  })
+
   it("rejects an empty loop", () => {
     const encoded = encode({
       title: "Hello",
