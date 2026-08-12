@@ -69,7 +69,7 @@ export function Menu({
             if (!confirm()) {
               return
             }
-            loadProgram(t.demoProgram)
+            loadProgram(t.demoProgram())
             goToScreen(Screens.Timer)
           }}
         >

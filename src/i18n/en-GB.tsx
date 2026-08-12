@@ -7,8 +7,6 @@ export type ParseErrorDictionary = Record<
   { message: string; hint?: string }
 >
 
-export const DEMO_PROGRAM_CREATED_AT = new Date("2026-08-11T00:00:00Z")
-
 export default {
   name: "English",
   back: "Back",
@@ -100,51 +98,52 @@ export default {
     },
   } as ParseErrorDictionary,
 
-  demoProgram: {
-    title: "Sports!",
-    createdAt: DEMO_PROGRAM_CREATED_AT,
-    items: [
-      { kind: "ACTIVITY", title: "Get ready", duration: 10, skipLast: false },
-      {
-        kind: "LOOP",
-        repeat: 4,
-        items: [
-          {
-            kind: "ACTIVITY",
-            title: "Work out",
-            duration: 30,
-            skipLast: false,
-          },
-          { kind: "ACTIVITY", title: "Rest", duration: 15, skipLast: true },
-        ],
-      },
-      {
-        kind: "LOOP",
-        repeat: 3,
-        items: [
-          {
-            kind: "ACTIVITY",
-            title: "Stretch",
-            duration: 45,
-            skipLast: false,
-          },
-          {
-            kind: "ACTIVITY",
-            title: "Relax",
-            duration: 15,
-            skipLast: false,
-          },
-          {
-            kind: "ACTIVITY",
-            title: "Change position",
-            duration: 10,
-            skipLast: true,
-          },
-        ],
-      },
-      { kind: "ACTIVITY", title: "Cool down", duration: 45, skipLast: false },
-    ],
-  } as Program,
+  demoProgram: () =>
+    ({
+      title: "Sports!",
+      createdAt: new Date(),
+      items: [
+        { kind: "ACTIVITY", title: "Get ready", duration: 10, skipLast: false },
+        {
+          kind: "LOOP",
+          repeat: 4,
+          items: [
+            {
+              kind: "ACTIVITY",
+              title: "Work out",
+              duration: 30,
+              skipLast: false,
+            },
+            { kind: "ACTIVITY", title: "Rest", duration: 15, skipLast: true },
+          ],
+        },
+        {
+          kind: "LOOP",
+          repeat: 3,
+          items: [
+            {
+              kind: "ACTIVITY",
+              title: "Stretch",
+              duration: 45,
+              skipLast: false,
+            },
+            {
+              kind: "ACTIVITY",
+              title: "Relax",
+              duration: 15,
+              skipLast: false,
+            },
+            {
+              kind: "ACTIVITY",
+              title: "Change position",
+              duration: 10,
+              skipLast: true,
+            },
+          ],
+        },
+        { kind: "ACTIVITY", title: "Cool down", duration: 45, skipLast: false },
+      ],
+    }) as Program,
 
   SyntaxRules() {
     return (

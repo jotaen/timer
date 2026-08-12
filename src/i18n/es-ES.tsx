@@ -1,5 +1,5 @@
 import React from "react"
-import en, { DEMO_PROGRAM_CREATED_AT, ParseErrorDictionary } from "./en-GB.tsx"
+import en, { ParseErrorDictionary } from "./en-GB.tsx"
 
 export default {
   name: "Español",
@@ -94,9 +94,9 @@ export default {
     },
   } as ParseErrorDictionary,
 
-  demoProgram: {
+  demoProgram: () => ({
     title: "¡Deporte!",
-    createdAt: DEMO_PROGRAM_CREATED_AT,
+    createdAt: new Date(),
     items: [
       {
         kind: "ACTIVITY",
@@ -153,7 +153,7 @@ export default {
         skipLast: false,
       },
     ],
-  },
+  }),
 
   SyntaxRules() {
     return (

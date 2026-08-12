@@ -14,7 +14,7 @@ export function useProgram(): UseProgram {
   const { demoProgram } = useT()
   const { navigationGuard } = useServiceContext()
   const [program, setProgram] = useState<Program | undefined>(() => {
-    const p = loadFromUrl(demoProgram)
+    const p = loadFromUrl(demoProgram())
     populateTabState(p, false)
     return p
   })
@@ -36,7 +36,7 @@ export function useProgram(): UseProgram {
         return
       }
       try {
-        const p = loadFromUrl(demoProgram)
+        const p = loadFromUrl(demoProgram())
         populateTabState(p, false)
         setProgram(p)
       } catch (e) {
