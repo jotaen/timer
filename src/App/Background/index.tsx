@@ -144,9 +144,9 @@ function interpolateWaypoints(
 // ---------------------------------------------------------------------------
 
 /**
- * We render at half the device pixel ratio — the content is so blurry
- * that the quality difference is invisible, but it halves the texture size
- * (and therefore roughly quarters the blur pass cost on Retina displays).
+ * We render at a fraction of the CSS pixel size — the content is so blurry
+ * that the quality difference is invisible, but it drastically shrinks the
+ * texture (and therefore the per-frame rendering cost).
  */
 const RENDER_SCALE = 0.3
 const TARGET_FPS = 15
