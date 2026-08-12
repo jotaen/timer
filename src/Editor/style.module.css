@@ -27,6 +27,7 @@
   cursor: pointer;
   text-transform: unset;
   margin-right: -0.5em;
+  color: #000;
 }
 
 .createdAtInfo {

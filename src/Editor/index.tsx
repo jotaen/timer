@@ -118,6 +118,7 @@ export function Editor({
               timeStyle: "short",
             }).format(program.createdAt),
           )}
+          .
         </div>
       )}
       {parseError && (
